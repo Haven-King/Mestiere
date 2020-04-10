@@ -1,0 +1,13 @@
+{
+  "type": "mestiere:skill_recipe",
+  "firstIngredient": {
+    "item": "minecraft:leather",
+    "amount": 1
+  },
+  "outputItem": {
+    "item": "minecraft:stick",
+    "amount": 8
+  },
+  "skill": "leatherworking",
+  "value": 1
+}

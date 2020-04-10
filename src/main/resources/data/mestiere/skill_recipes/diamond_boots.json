@@ -1,0 +1,18 @@
+{
+  "type": "mestiere:skill_recipe",
+  "firstIngredient": {
+    "item": "minecraft:diamond",
+    "amount": 4
+  },
+  "secondIngredient": {
+    "item": "minecraft:leather_boots",
+    "amount": 1
+  },
+  "outputItem": {
+    "item": "minecraft:diamond_boots",
+    "amount": 1
+  },
+  "skill": "smithing",
+  "value": 64,
+  "level_requirement": 30
+}

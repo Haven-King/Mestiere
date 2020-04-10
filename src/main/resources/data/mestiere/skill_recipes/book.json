@@ -1,0 +1,17 @@
+{
+  "type": "mestiere:skill_recipe",
+  "firstIngredient": {
+    "item": "minecraft:leather",
+    "amount": 1
+  },
+  "secondIngredient": {
+    "item": "minecraft:paper",
+    "amount": 3
+  },
+  "outputItem": {
+    "item": "minecraft:book",
+    "amount": 1
+  },
+  "skill": "leatherworking",
+  "value": 64
+}

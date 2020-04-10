@@ -1,0 +1,26 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.hephaestus.mestiere.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "BlastFurnaceMixin",
+    "CauldronBlockMixin",
+    "MerchantContainerMixin",
+    "SmithingTableMixin",
+    "ComposterBlockMixin",
+    "HostileEntityMixin",
+    "AnimalEntityMixin",
+    "SheepEntityMixin",
+    "BlockMixin",
+    "hardcore.OreFeatureMixin",
+    "hardcore.ServerPlayerEntityMixin",
+    "plants.CropBlockMixin",
+    "plants.MelonBlockMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

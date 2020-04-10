@@ -1,0 +1,18 @@
+{
+  "type": "mestiere:skill_recipe",
+  "firstIngredient": {
+    "item": "minecraft:diamond",
+    "amount": 3
+  },
+  "secondIngredient": {
+    "item": "minecraft:stick",
+    "amount": 2
+  },
+  "outputItem": {
+    "item": "minecraft:diamond_pickaxe",
+    "amount": 1
+  },
+  "skill": "smithing",
+  "value": 48,
+  "level_requirement": 30
+}

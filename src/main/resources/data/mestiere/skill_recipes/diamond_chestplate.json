@@ -1,0 +1,18 @@
+{
+  "type": "mestiere:skill_recipe",
+  "firstIngredient": {
+    "item": "minecraft:diamond",
+    "amount": 8
+  },
+  "secondIngredient": {
+    "item": "minecraft:leather_chestplate",
+    "amount": 1
+  },
+  "outputItem": {
+    "item": "minecraft:diamond_chestplate",
+    "amount": 1
+  },
+  "skill": "smithing",
+  "value": 128,
+  "level_requirement": 30
+}

@@ -1,0 +1,18 @@
+{
+  "type": "mestiere:skill_recipe",
+  "firstIngredient": {
+    "item": "minecraft:diamond",
+    "amount": 1
+  },
+  "secondIngredient": {
+    "item": "minecraft:stick",
+    "amount": 2
+  },
+  "outputItem": {
+    "item": "minecraft:diamond_shovel",
+    "amount": 1
+  },
+  "skill": "smithing",
+  "value": 16,
+  "level_requirement": 30
+}

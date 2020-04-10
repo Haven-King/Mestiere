@@ -1,0 +1,17 @@
+{
+  "type": "mestiere:skill_recipe",
+  "firstIngredient": {
+    "item": "minecraft:gold_ingot",
+    "amount": 8
+  },
+  "secondIngredient": {
+    "item": "minecraft:leather_chestplate",
+    "amount": 1
+  },
+  "outputItem": {
+    "item": "minecraft:golden_chestplate",
+    "amount": 1
+  },
+  "skill": "smithing",
+  "value": 32
+}
