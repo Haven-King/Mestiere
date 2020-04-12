@@ -2,7 +2,6 @@ package dev.hephaestus.mestiere.mixin.hardcore;
 
 import dev.hephaestus.fiblib.FibLib;
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.util.MestiereConfig;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.GameMode;
@@ -18,6 +17,6 @@ public class ServerPlayerEntityMixin {
 
     @Inject(method = "setGameMode", at = @At("TAIL"))
     public void setGamemodeInjection(GameMode gameMode, CallbackInfo ci) {
-        FibLib.update(this.getServerWorld(), Mestiere.CONFIG.levelRequireToDetect.keySet());
+        FibLib.Blocks.update(this.getServerWorld(), Mestiere.CONFIG.levelRequiredToDetect.keySet());
     }
 }

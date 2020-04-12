@@ -50,7 +50,7 @@ public class Commands {
 
         Skill s = Mestiere.SKILLS.get(skill);
 
-        if (s == Skill.NONE) {
+        if (s == Skills.NONE) {
             throw new SimpleCommandExceptionType(new LiteralText("Invalid skill: " + skill.toString())).create();
         }
 

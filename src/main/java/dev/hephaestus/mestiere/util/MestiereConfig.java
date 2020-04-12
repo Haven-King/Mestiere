@@ -1,11 +1,9 @@
 package dev.hephaestus.mestiere.util;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import dev.hephaestus.fiblib.FibLib;
 import dev.hephaestus.mestiere.Mestiere;
+import dev.hephaestus.mestiere.skills.MiningPerk;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -13,9 +11,11 @@ import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.Items;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -30,11 +30,15 @@ public class MestiereConfig implements ConfigData {
     float levelModifier = 1.0f;
     public boolean hardcoreProgression = false;
 
-    public HashMap<Block, Integer> miningValues = new HashMap<>();
-    public HashMap<Block, Formatting> blockFormatting = new HashMap<>();
-    public HashMap<Block, Integer> levelRequireToDetect = new HashMap<>();
+    public static HashMap<Block, Integer> miningValues = new HashMap<>();
+    public static HashMap<Identifier, Formatting> messageFormatting = new HashMap<>();
+    public static HashMap<Block, Integer> levelRequiredToDetect = new HashMap<>();
 
-    public MestiereConfig() {
+    private static File CONFIG_DIRECTORY = FabricLoader.getInstance().getConfigDirectory();
+
+    public static MestiereConfig init() {
+        MestiereConfig instance = new MestiereConfig();
+
         miningValues.put(Blocks.STONE, 1);
         miningValues.put(Blocks.COAL_ORE, 4);
         miningValues.put(Blocks.REDSTONE_ORE, 8);
@@ -44,30 +48,33 @@ public class MestiereConfig implements ConfigData {
         miningValues.put(Blocks.DIAMOND_ORE, 256);
         miningValues.put(Blocks.EMERALD_ORE, 384);
 
-        blockFormatting.put(Blocks.COAL_ORE, Formatting.BLACK);
-        blockFormatting.put(Blocks.REDSTONE_ORE, Formatting.DARK_RED);
-        blockFormatting.put(Blocks.IRON_ORE, Formatting.YELLOW);
-        blockFormatting.put(Blocks.LAPIS_ORE, Formatting.DARK_BLUE);
-        blockFormatting.put(Blocks.GOLD_ORE, Formatting.GOLD);
-        blockFormatting.put(Blocks.DIAMOND_ORE, Formatting.AQUA);
-        blockFormatting.put(Blocks.EMERALD_ORE, Formatting.GREEN);
+        messageFormatting.put(Registry.BLOCK.getId(Blocks.COAL_ORE), Formatting.DARK_GRAY);
+        messageFormatting.put(Registry.BLOCK.getId(Blocks.REDSTONE_ORE), Formatting.DARK_RED);
+        messageFormatting.put(Registry.BLOCK.getId(Blocks.IRON_ORE), Formatting.YELLOW);
+        messageFormatting.put(Registry.BLOCK.getId(Blocks.LAPIS_ORE), Formatting.DARK_BLUE);
+        messageFormatting.put(Registry.BLOCK.getId(Blocks.GOLD_ORE), Formatting.GOLD);
+        messageFormatting.put(Registry.BLOCK.getId(Blocks.DIAMOND_ORE), Formatting.AQUA);
+        messageFormatting.put(Registry.BLOCK.getId(Blocks.EMERALD_ORE), Formatting.GREEN);
 
-        levelRequireToDetect.put(Blocks.COAL_ORE, 10);
-        levelRequireToDetect.put(Blocks.REDSTONE_ORE, 15);
-        levelRequireToDetect.put(Blocks.IRON_ORE, 15);
-        levelRequireToDetect.put(Blocks.LAPIS_ORE, 20);
-        levelRequireToDetect.put(Blocks.GOLD_ORE, 20);
-        levelRequireToDetect.put(Blocks.DIAMOND_ORE, 30);
-        levelRequireToDetect.put(Blocks.EMERALD_ORE, 30);
+        messageFormatting.put(Registry.ITEM.getId(Items.GOLD_INGOT), Formatting.GOLD);
+        messageFormatting.put(Registry.ITEM.getId(Items.DIAMOND), Formatting.AQUA);
+
+        levelRequiredToDetect.put(Blocks.COAL_ORE, 10);
+        levelRequiredToDetect.put(Blocks.REDSTONE_ORE, 15);
+        levelRequiredToDetect.put(Blocks.IRON_ORE, 15);
+        levelRequiredToDetect.put(Blocks.LAPIS_ORE, 20);
+        levelRequiredToDetect.put(Blocks.GOLD_ORE, 20);
+        levelRequiredToDetect.put(Blocks.DIAMOND_ORE, 30);
+        levelRequiredToDetect.put(Blocks.EMERALD_ORE, 30);
 
         try {
-            InputStream fi = new FileInputStream(new File("config" + File.separator + Mestiere.MOD_ID + ".json"));
+            InputStream fi = new FileInputStream(new File(CONFIG_DIRECTORY + File.separator + Mestiere.MOD_ID + ".json"));
             JsonParser jsonParser = new JsonParser();
 
             JsonObject json = (JsonObject)jsonParser.parse(new InputStreamReader(fi));
 
-            levelModifier = json.get("levelModifier").getAsFloat();
-            hardcoreProgression = json.get("hardcoreProgression").getAsBoolean();
+            instance.levelModifier = json.get("levelModifier").getAsFloat();
+            instance.hardcoreProgression = json.get("hardcoreProgression").getAsBoolean();
 
             JsonObject miningValuesJson = json.getAsJsonObject("mining_values");
 
@@ -87,7 +94,7 @@ public class MestiereConfig implements ConfigData {
                     Identifier blockId = new Identifier(element.getKey());
                     if (Registry.BLOCK.getOrEmpty(blockId).isPresent()) {
                         String value = element.getValue().getAsString();
-                        blockFormatting.put(Registry.BLOCK.get(blockId), Formatting.byName(value) == null ? Formatting.WHITE : Formatting.byName(value));
+                        messageFormatting.put(blockId, Formatting.byName(value) == null ? Formatting.WHITE : Formatting.byName(value));
                     }
                 }
             }
@@ -95,29 +102,34 @@ public class MestiereConfig implements ConfigData {
             fi.close();
         } catch (FileNotFoundException e) {
             Mestiere.log("No user config found; creating default user config");
-            writeConfig();
+            instance.writeConfig();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        for (Map.Entry<Block, Integer> e : levelRequireToDetect.entrySet()) {
-            FibLib.register(DimensionType.OVERWORLD, e.getKey(), (state, player) ->
-                Mestiere.COMPONENT.get(player).getLevel(Mestiere.MINING) >= e.getValue() || player.isCreative() ?
-                    state :
-                    Blocks.STONE.getDefaultState()
-            );
+        for (Map.Entry<Block, Integer> e : levelRequiredToDetect.entrySet()) {
+            if (instance.hardcoreProgression) {
+                FibLib.Blocks.register(DimensionType.OVERWORLD, e.getKey(), (state, player) ->
+                        Mestiere.COMPONENT.get(player).getLevel(Skills.MINING) >= e.getValue() || !instance.hardcoreProgression || player.isCreative() ?
+                                state :
+                                Blocks.STONE.getDefaultState()
+                );
+            }
+
+            Mestiere.PERKS.register(new MiningPerk(e.getValue(), e.getKey()));
         }
+
+        return instance;
     }
 
     public void writeConfig() {
         File configFile = new File("config" + File.separator + Mestiere.MOD_ID + ".json");
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
             JsonObject config = new JsonObject();
             config.addProperty("levelModifier", levelModifier);
             config.addProperty("hardcoreProgression", hardcoreProgression);
-//            config.add("mining_values", gson.toJsonTree(miningValues));
 
             JsonObject miningValuesJson = new JsonObject();
             for (Map.Entry<Block, Integer> entry : miningValues.entrySet()) {
@@ -127,8 +139,8 @@ public class MestiereConfig implements ConfigData {
             config.add("mining_values", miningValuesJson);
 
             JsonObject blockFormattingJson = new JsonObject();
-            for (Map.Entry<Block, Formatting> entry : blockFormatting.entrySet()) {
-                blockFormattingJson.addProperty(Registry.BLOCK.getId(entry.getKey()).toString(), entry.getValue().name());
+            for (Map.Entry<Identifier, Formatting> entry : messageFormatting.entrySet()) {
+                blockFormattingJson.addProperty(entry.getKey().toString(), entry.getValue().name());
             }
 
             config.add("block_formatting", blockFormattingJson);
@@ -157,25 +169,31 @@ public class MestiereConfig implements ConfigData {
 
         generalCategory.addEntry(
             entryBuilder.startBooleanToggle("mestiere.hardcoreProgression", Mestiere.CONFIG.hardcoreProgression)
-            .setSaveConsumer((bool) -> Mestiere.CONFIG.hardcoreProgression = bool)
+            .setSaveConsumer((bool) -> {
+                Mestiere.CONFIG.hardcoreProgression = bool;
+                if (MinecraftClient.getInstance().getServer() != null)
+                    FibLib.Blocks.update(MinecraftClient.getInstance().getServer().getWorld(DimensionType.OVERWORLD),
+                        MestiereConfig.levelRequiredToDetect.keySet()
+                    );
+            })
             .build()
         );
 
         ConfigCategory miningValuesCategory = builder.getOrCreateCategory("category.mestiere.miningLevels");
-        for (Map.Entry<Block, Integer> entry: Mestiere.CONFIG.miningValues.entrySet()) {
+        for (Map.Entry<Block, Integer> entry: MestiereConfig.miningValues.entrySet()) {
             miningValuesCategory.addEntry(
                 entryBuilder.startIntField("block.minecraft." + Registry.BLOCK.getId(entry.getKey()).getPath(), entry.getValue())
-                .setSaveConsumer((value) -> Mestiere.CONFIG.miningValues.put(entry.getKey(), value))
+                .setSaveConsumer((value) -> MestiereConfig.miningValues.put(entry.getKey(), value))
                 .build()
             );
         }
 
         ConfigCategory oreColorsCategory = builder.getOrCreateCategory("category.mestiere.oreColors");
-        for (Map.Entry<Block, Formatting> entry: Mestiere.CONFIG.blockFormatting.entrySet()) {
+        for (Map.Entry<Identifier, Formatting> entry: MestiereConfig.messageFormatting.entrySet()) {
             oreColorsCategory.addEntry(
-                entryBuilder.startStringDropdownMenu("block.minecraft." + Registry.BLOCK.getId(entry.getKey()).getPath(), entry.getValue().name().toLowerCase())
+                entryBuilder.startStringDropdownMenu("block.minecraft." + entry.getKey().getPath(), entry.getValue().name().toLowerCase())
                     .setSelections(Formatting.getNames(true, false))
-                    .setSaveConsumer((value) -> Mestiere.CONFIG.blockFormatting.put(entry.getKey(), Formatting.byName(value) == null ? Formatting.WHITE : Formatting.byName(value)))
+                    .setSaveConsumer((value) -> MestiereConfig.messageFormatting.put(entry.getKey(), Formatting.byName(value) == null ? Formatting.WHITE : Formatting.byName(value)))
                     .build()
             );
         }

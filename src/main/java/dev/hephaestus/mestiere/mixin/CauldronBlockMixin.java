@@ -3,6 +3,7 @@ package dev.hephaestus.mestiere.mixin;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.SkillCrafter;
 import dev.hephaestus.mestiere.skills.SkillRecipe;
+import dev.hephaestus.mestiere.util.Skills;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CauldronBlock;
@@ -33,9 +34,9 @@ public class CauldronBlockMixin extends Block {
         ItemStack itemStack_1 = player.getStackInHand(hand);
         if (itemStack_1.getItem() == Items.LEATHER && blockState.get(Properties.LEVEL_3) == 3 && !world.isClient()) {
 
-            SkillCrafter crafter = new SkillCrafter(player, Mestiere.LEATHERWORKING, this, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER);
+            SkillCrafter crafter = new SkillCrafter(player, Skills.LEATHERWORKING, this, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER);
 
-            for (SkillRecipe r : Mestiere.RECIPES.getRegistered(Mestiere.LEATHERWORKING)) {
+            for (SkillRecipe r : Mestiere.RECIPES.getRegistered(Skills.LEATHERWORKING)) {
                 crafter.addRecipe(r);
             }
 

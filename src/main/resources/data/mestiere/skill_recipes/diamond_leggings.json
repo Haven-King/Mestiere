@@ -14,5 +14,5 @@
   },
   "skill": "smithing",
   "value": 112,
-  "level_requirement": 30
+  "perk_required": "mestiere:smithing.diamond"
 }

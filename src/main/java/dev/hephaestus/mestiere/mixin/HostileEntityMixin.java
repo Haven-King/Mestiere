@@ -1,6 +1,7 @@
 package dev.hephaestus.mestiere.mixin;
 
 import dev.hephaestus.mestiere.Mestiere;
+import dev.hephaestus.mestiere.util.Skills;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.HostileEntity;
@@ -21,7 +22,7 @@ public class HostileEntityMixin extends MobEntityWithAi {
     public void onDeath(DamageSource source) {
         super.onDeath(source);
         if (source.getAttacker() instanceof ServerPlayerEntity) {
-            Mestiere.COMPONENT.get(source.getAttacker()).addXp(Mestiere.SLAYING, this.getCurrentExperience((PlayerEntity) source.getAttacker()));
+            Mestiere.COMPONENT.get(source.getAttacker()).addXp(Skills.SLAYING, this.getCurrentExperience((PlayerEntity) source.getAttacker()));
         }
     }
 }

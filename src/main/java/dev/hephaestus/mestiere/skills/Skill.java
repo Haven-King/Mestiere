@@ -6,8 +6,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 public class Skill {
-    public static Skill NONE = new Skill(Mestiere.newID("none"), Formatting.BLACK);
-
     public final Identifier id;
     public final String name;
     public final Formatting format;

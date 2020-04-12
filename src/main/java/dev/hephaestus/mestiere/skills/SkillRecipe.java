@@ -7,7 +7,6 @@ import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
@@ -22,20 +21,24 @@ public class SkillRecipe extends TradeOffer implements Recipe<TraderInventory> {
     private PlayerEntity player;
     public final Skill skill;
     public final int value;
-    public final int level_requirement;
+    public final SkillPerk perkRequired;
     public final Identifier id;
 
-    public SkillRecipe(PlayerEntity player, int value, Skill skill, ItemStack firstIngredient, ItemStack secondIngredient, ItemStack outputItem, int level_requirement, Identifier id) {
+    public SkillRecipe(PlayerEntity player, int value, Skill skill, ItemStack firstIngredient, ItemStack secondIngredient, ItemStack outputItem, SkillPerk perkRequired, Identifier id) {
         super(firstIngredient, secondIngredient, outputItem, Integer.MAX_VALUE, 0, 1.0f);
         this.player = player;
         this.skill = skill;
         this.value = value;
-        this.level_requirement = level_requirement;
+        this.perkRequired = perkRequired;
         this.id = id;
     }
 
-    public SkillRecipe(int value, Skill skill, ItemStack firstIngredient, ItemStack secondIngredient, ItemStack outputItem, Identifier id, int level_requirement) {
-        this(null, value, skill, firstIngredient, secondIngredient, outputItem, level_requirement, id);
+    public SkillRecipe(int value, Skill skill, ItemStack firstIngredient, ItemStack secondIngredient, ItemStack outputItem, Identifier id, SkillPerk perkRequired) {
+        this(null, value, skill, firstIngredient, secondIngredient, outputItem, perkRequired, id);
+    }
+
+    public SkillRecipe(int value, Skill skill, ItemStack firstIngredient, ItemStack secondIngredient, ItemStack outputItem, Identifier id) {
+        this(null, value, skill, firstIngredient, secondIngredient, outputItem, SkillPerk.NONE, id);
     }
 
     public SkillRecipe(PlayerEntity player, SkillRecipe recipe) {
@@ -45,7 +48,7 @@ public class SkillRecipe extends TradeOffer implements Recipe<TraderInventory> {
         this.id = recipe.id;
         this.sound = recipe.sound;
         this.player = player;
-        this.level_requirement = recipe.level_requirement;
+        this.perkRequired = recipe.perkRequired;
     }
 
     public SkillRecipe withSound(SoundEvent sound) {

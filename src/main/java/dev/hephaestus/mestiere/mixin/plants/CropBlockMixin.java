@@ -1,6 +1,7 @@
 package dev.hephaestus.mestiere.mixin.plants;
 
 import dev.hephaestus.mestiere.Mestiere;
+import dev.hephaestus.mestiere.util.Skills;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropBlock;
@@ -39,7 +40,7 @@ public abstract class CropBlockMixin extends PlantBlock {
                     Block.dropStack(world, pos, stack);
                 });
 
-                Mestiere.COMPONENT.get(player).addXp(Mestiere.FARMING, 1);
+                Mestiere.COMPONENT.get(player).addXp(Skills.FARMING, 1);
                 world.setBlockState(pos, this.withAge(0));
             }
 

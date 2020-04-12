@@ -1,6 +1,7 @@
 package dev.hephaestus.mestiere.mixin;
 
 import dev.hephaestus.mestiere.Mestiere;
+import dev.hephaestus.mestiere.util.Skills;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
@@ -13,6 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class SheepEntityMixin {
     @Inject(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;damage(ILnet/minecraft/entity/LivingEntity;Ljava/util/function/Consumer;)V"))
     public void addXP(PlayerEntity player, Hand hand, CallbackInfoReturnable<Boolean> cir) {
-        Mestiere.COMPONENT.get(player).addXp(Mestiere.FARMING, 2);
+        Mestiere.COMPONENT.get(player).addXp(Skills.FARMING, 2);
     }
 }

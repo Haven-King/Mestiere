@@ -26,9 +26,12 @@ public class SkillCrafter extends SimpleTrader {
         assert recipe != null;
         ItemStack item1 = recipe.getAdjustedFirstBuyItem();
         ItemStack item2 = recipe.getSecondBuyItem();
+        Mestiere.debug("%d %d", Mestiere.COMPONENT.get(player).getLevel(this.skill), recipe.perkRequired.level);
         if (this.player.inventory.countInInv(item1.getItem()) >= item1.getCount()
             && player.inventory.countInInv(item2.getItem()) >= item2.getCount()
-            && Mestiere.COMPONENT.get(player).getLevel(this.skill) >= recipe.level_requirement ){
+            && (Mestiere.COMPONENT.get(player).getLevel(this.skill) >= recipe.perkRequired.level ||
+                (!Mestiere.CONFIG.hardcoreProgression && recipe.perkRequired.hardcore)
+               ) ){
 
             this.getOffers().add(new SkillRecipe(this.player, recipe.withSound(this.craftSound)));
         }

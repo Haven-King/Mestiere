@@ -3,6 +3,7 @@ package dev.hephaestus.mestiere.mixin;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.SkillCrafter;
 import dev.hephaestus.mestiere.skills.SkillRecipe;
+import dev.hephaestus.mestiere.util.Skills;
 import net.minecraft.block.BlastFurnaceBlock;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,9 +30,9 @@ public class BlastFurnaceMixin extends Block {
         Item mainHand = player.getMainHandStack().getItem();
         if ( mainHand == Items.LEATHER_HELMET || mainHand == Items.LEATHER_CHESTPLATE || mainHand == Items.LEATHER_LEGGINGS || mainHand == Items.LEATHER_BOOTS || mainHand == Items.LEATHER_HORSE_ARMOR) {
 
-            SkillCrafter crafter = new SkillCrafter(player, Mestiere.SMITHING, this, SoundEvents.ENTITY_VILLAGER_WORK_ARMORER);
+            SkillCrafter crafter = new SkillCrafter(player, Skills.SMITHING, this, SoundEvents.ENTITY_VILLAGER_WORK_ARMORER);
 
-            for (SkillRecipe r : Mestiere.RECIPES.getRegistered(Mestiere.SMITHING)) {
+            for (SkillRecipe r : Mestiere.RECIPES.getRegistered(Skills.SMITHING)) {
                 if (r.getSecondBuyItem().getItem() != Items.STICK && r.getOriginalFirstBuyItem().getItem() != Items.STICK)
                     crafter.addRecipe(r);
             }

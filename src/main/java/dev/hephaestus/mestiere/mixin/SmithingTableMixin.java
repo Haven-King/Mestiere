@@ -3,6 +3,7 @@ package dev.hephaestus.mestiere.mixin;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.SkillCrafter;
 import dev.hephaestus.mestiere.skills.SkillRecipe;
+import dev.hephaestus.mestiere.util.Skills;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SmithingTableBlock;
@@ -29,9 +30,9 @@ public class SmithingTableMixin extends Block {
             return ActionResult.PASS;
         }
 
-        SkillCrafter crafter = new SkillCrafter(player, Mestiere.SMITHING, this, SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH);
+        SkillCrafter crafter = new SkillCrafter(player, Skills.SMITHING, this, SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH);
 
-        for (SkillRecipe r : Mestiere.RECIPES.getRegistered(Mestiere.SMITHING)) {
+        for (SkillRecipe r : Mestiere.RECIPES.getRegistered(Skills.SMITHING)) {
             if (r.getSecondBuyItem().getItem() == Items.STICK || r.getOriginalFirstBuyItem().getItem() == Items.STICK)
                 crafter.addRecipe(r);
         }

@@ -13,5 +13,6 @@
     "amount": 1
   },
   "skill": "smithing",
-  "value": 20
+  "value": 20,
+  "perk_requirement": "mestiere:smithing.gold_ingot"
 }

@@ -1,6 +1,7 @@
 package dev.hephaestus.mestiere.mixin;
 
 import dev.hephaestus.mestiere.Mestiere;
+import dev.hephaestus.mestiere.util.Skills;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -25,7 +26,7 @@ public class AnimalEntityMixin extends PassiveEntity {
     public void onDeath(DamageSource source) {
         super.onDeath(source);
         if (source.getAttacker() instanceof ServerPlayerEntity && !this.isBaby()) {
-            Mestiere.COMPONENT.get(source.getAttacker()).addXp(Mestiere.HUNTING, 3 * this.getCurrentExperience((PlayerEntity) source.getAttacker()));
+            Mestiere.COMPONENT.get(source.getAttacker()).addXp(Skills.HUNTING, 3 * this.getCurrentExperience((PlayerEntity) source.getAttacker()));
         }
     }
 }

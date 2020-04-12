@@ -1,0 +1,23 @@
+{
+  "levelModifier": 1.0,
+  "hardcoreProgression": false,
+  "mining_values": {
+    "minecraft:redstone_ore": 8,
+    "minecraft:emerald_ore": 384,
+    "minecraft:stone": 1,
+    "minecraft:diamond_ore": 256,
+    "minecraft:lapis_ore": 32,
+    "minecraft:coal_ore": 4,
+    "minecraft:iron_ore": 16,
+    "minecraft:gold_ore": 64
+  },
+  "block_formatting": {
+    "minecraft:redstone_ore": "DARK_RED",
+    "minecraft:emerald_ore": "GREEN",
+    "minecraft:diamond_ore": "AQUA",
+    "minecraft:lapis_ore": "DARK_BLUE",
+    "minecraft:coal_ore": "DARK_GRAY",
+    "minecraft:iron_ore": "YELLOW",
+    "minecraft:gold_ore": "GOLD"
+  }
+}

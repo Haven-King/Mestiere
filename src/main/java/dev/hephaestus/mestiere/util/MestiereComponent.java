@@ -3,6 +3,7 @@ package dev.hephaestus.mestiere.util;
 import dev.hephaestus.fiblib.FibLib;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.Skill;
+import dev.hephaestus.mestiere.skills.SkillPerk;
 import nerdhub.cardinal.components.api.component.Component;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundTag;
@@ -56,7 +57,7 @@ public class MestiereComponent implements XpComponent {
 
     @Override
     public int getLevel(Skill skill) {
-        return (int) MathHelper.sqrt((float)getXp(skill)/2 + 1);
+        return (int) MathHelper.sqrt((float)getXp(skill)/1.375 + 1);
     }
 
     @Override
@@ -73,10 +74,10 @@ public class MestiereComponent implements XpComponent {
     public void addXp(Skill skill, int xp) {
         this.player.addExperience(xp);
 
-        int level = getLevel(skill);
+        int oldLevel = getLevel(skill);
         this.skills.put(skill, this.skills.getOrDefault(skill, 0) + xp);
         int newLevel = getLevel(skill);
-        if (newLevel > level) {
+        if (newLevel > oldLevel) {
             LiteralText sText = new LiteralText(skill.name);
             sText.setStyle(new Style().setColor(skill.format).setBold(true));
 
@@ -90,11 +91,14 @@ public class MestiereComponent implements XpComponent {
                         .append(sText).append("!"),
                 MessageType.CHAT);
 
-            for (Map.Entry<Block, Integer> e: Mestiere.CONFIG.levelRequireToDetect.entrySet()) {
-                if (e.getValue() <= newLevel && e.getValue() > level)
-                    FibLib.update(this.player.getServerWorld(), Mestiere.CONFIG.levelRequireToDetect.keySet());
+            for (SkillPerk perk : Mestiere.PERKS.get(skill)) {
+                if (perk.level > oldLevel && perk.level <= newLevel) {
+                    player.sendChatMessage(perk.message, MessageType.CHAT);
+                    perk.gained(player);
+                }
             }
         }
-        Mestiere.debug(String.format("%s has %dXP in %s. They are level %d", this.player.getName().asString(), this.skills.getOrDefault(skill, 0), skill.name, getLevel(skill)));
+
+        Mestiere.debug("%s has %dXP in %s. They are level %d", this.player.getName().asString(), this.skills.getOrDefault(skill, 0), skill.name, getLevel(skill));
     }
 }
