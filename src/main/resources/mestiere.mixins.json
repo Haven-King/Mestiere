@@ -17,8 +17,9 @@
     "hardcore.ServerPlayerEntityMixin",
     "plants.CropBlockMixin",
     "plants.MelonBlockMixin",
+    "BlockMixin",
     "HostileEntityMixin",
-    "BlockMixin"
+    "PlayerInventoryMixin"
   ],
   "client": [
   ],
