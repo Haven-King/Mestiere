@@ -2,6 +2,7 @@ package dev.hephaestus.mestiere.util;
 
 import dev.hephaestus.fiblib.FibLib;
 import dev.hephaestus.mestiere.Mestiere;
+import dev.hephaestus.mestiere.skills.Perks;
 import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.skills.SkillPerk;
 import nerdhub.cardinal.components.api.component.Component;
@@ -12,6 +13,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.HashMap;
@@ -100,5 +102,13 @@ public class MestiereComponent implements XpComponent {
         }
 
         Mestiere.debug("%s has %dXP in %s. They are level %d", this.player.getName().asString(), this.skills.getOrDefault(skill, 0), skill.name, getLevel(skill));
+    }
+
+    public boolean hasPerk(SkillPerk perk) {
+        return skills.getOrDefault(perk.skill, 0) >= perk.level;
+    }
+
+    public boolean hasPerk(Identifier perk) {
+        return hasPerk(Mestiere.PERKS.get(perk));
     }
 }

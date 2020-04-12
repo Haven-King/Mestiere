@@ -4,8 +4,6 @@ import com.google.gson.*;
 import dev.hephaestus.fiblib.FibLib;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.MiningPerk;
-import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -25,8 +23,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@Config(name = "mestiere")
-public class MestiereConfig implements ConfigData {
+public class MestiereConfig {
     float levelModifier = 1.0f;
     public boolean hardcoreProgression = false;
 
@@ -108,13 +105,11 @@ public class MestiereConfig implements ConfigData {
         }
 
         for (Map.Entry<Block, Integer> e : levelRequiredToDetect.entrySet()) {
-            if (instance.hardcoreProgression) {
-                FibLib.Blocks.register(DimensionType.OVERWORLD, e.getKey(), (state, player) ->
-                        Mestiere.COMPONENT.get(player).getLevel(Skills.MINING) >= e.getValue() || !instance.hardcoreProgression || player.isCreative() ?
-                                state :
-                                Blocks.STONE.getDefaultState()
-                );
-            }
+            FibLib.Blocks.register(DimensionType.OVERWORLD, e.getKey(), (state, player) ->
+                    Mestiere.COMPONENT.get(player).getLevel(Skills.MINING) >= e.getValue() || !instance.hardcoreProgression || player.isCreative() ?
+                            state :
+                            Blocks.STONE.getDefaultState()
+            );
 
             Mestiere.PERKS.register(new MiningPerk(e.getValue(), e.getKey()));
         }

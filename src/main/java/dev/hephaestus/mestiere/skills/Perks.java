@@ -1,7 +1,9 @@
 package dev.hephaestus.mestiere.skills;
 
 import dev.hephaestus.mestiere.Mestiere;
+import dev.hephaestus.mestiere.util.Skills;
 import net.minecraft.item.Items;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 
 import java.util.Collection;
@@ -18,6 +20,7 @@ public class Perks {
 
         instance.register(new SmithingPerk(10, Items.GOLD_INGOT));
         instance.register(new SmithingPerk(20, Items.DIAMOND));
+        instance.register(new SkillPerk(Mestiere.newID("sex_guru"), Skills.FARMING, 10, new LiteralText("You can now determine the sex of animals!")));
 
         return instance;
     }

@@ -1,4 +1,4 @@
-package dev.hephaestus.mestiere.mixin;
+package dev.hephaestus.mestiere.mixin.crafters;
 
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.SkillCrafter;

@@ -1,4 +1,4 @@
-package dev.hephaestus.mestiere.mixin;
+package dev.hephaestus.mestiere.mixin.crafters;
 
 import net.minecraft.container.MerchantContainer;
 import net.minecraft.entity.Entity;

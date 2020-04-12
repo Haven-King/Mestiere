@@ -29,7 +29,7 @@ public class SkillCrafter extends SimpleTrader {
         Mestiere.debug("%d %d", Mestiere.COMPONENT.get(player).getLevel(this.skill), recipe.perkRequired.level);
         if (this.player.inventory.countInInv(item1.getItem()) >= item1.getCount()
             && player.inventory.countInInv(item2.getItem()) >= item2.getCount()
-            && (Mestiere.COMPONENT.get(player).getLevel(this.skill) >= recipe.perkRequired.level ||
+            && (Mestiere.COMPONENT.get(player).hasPerk(recipe.perkRequired)||
                 (!Mestiere.CONFIG.hardcoreProgression && recipe.perkRequired.hardcore)
                ) ){
 
