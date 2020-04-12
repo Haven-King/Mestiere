@@ -21,6 +21,7 @@ public class Perks {
         instance.register(new SmithingPerk(10, Items.GOLD_INGOT));
         instance.register(new SmithingPerk(20, Items.DIAMOND));
         instance.register(new SkillPerk(Mestiere.newID("sex_guru"), Skills.FARMING, 10, new LiteralText("You can now determine the sex of animals!")));
+        instance.register(new SkillPerk(Mestiere.newID("green_thumb"), Skills.FARMING, 5, new LiteralText("You now know how to harvest crops without damaging them.")));
 
         return instance;
     }

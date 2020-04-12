@@ -30,8 +30,8 @@ public abstract class CropBlockMixin extends PlantBlock {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (this.isMature(state)) {
-            if (!world.isClient) {
+        if (this.isMature(state) && !world.isClient) {
+            if (Mestiere.COMPONENT.get(player).hasPerk(Mestiere.newID("green_thumb"))) {
                 Block.getDroppedStacks(state, (ServerWorld)world, pos, null).forEach((stack) -> {
                     if (stack.getItem().toString().contains("seeds")) { // This is hacky as fuck, but so is Minecraft
                         stack.setCount(stack.getCount() - 1);
@@ -48,5 +48,11 @@ public abstract class CropBlockMixin extends PlantBlock {
         } else {
             return ActionResult.PASS;
         }
+    }
+
+    @Override
+    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        super.onBreak(world, pos, state, player);
+        Mestiere.COMPONENT.get(player).addXp(Skills.FARMING, 1);
     }
 }

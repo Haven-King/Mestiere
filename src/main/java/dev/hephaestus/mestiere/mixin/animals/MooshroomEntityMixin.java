@@ -47,10 +47,10 @@ public class MooshroomEntityMixin extends CowEntity {
                 }
             }
             cir.setReturnValue(false);
+        } else {
+            Mestiere.COMPONENT.get(player).addXp(Skills.FARMING, 4);
+            this.timeToMilk = 14000;
         }
-
-        Mestiere.COMPONENT.get(player).addXp(Skills.FARMING, 4);
-        this.timeToMilk = 14000;
     }
 
     @Inject(method = "readCustomDataFromTag", at = @At("TAIL"))
