@@ -19,6 +19,7 @@
     "plants.CropBlockMixin",
     "plants.MelonBlockMixin",
     "BlockMixin",
+    "BrewingStandBlockEntityMixin",
     "ExperienceOrbEntityMixin",
     "HostileEntityMixin",
     "PlayerInventoryMixin"

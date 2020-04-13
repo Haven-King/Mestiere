@@ -1,12 +1,8 @@
 package dev.hephaestus.mestiere.skills;
 
-import dev.hephaestus.fiblib.FibLib;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.util.MestiereConfig;
-import dev.hephaestus.mestiere.util.Skills;
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.TranslatableText;

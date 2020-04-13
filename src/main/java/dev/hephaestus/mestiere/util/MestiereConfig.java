@@ -4,6 +4,7 @@ import com.google.gson.*;
 import dev.hephaestus.fiblib.FibLib;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.MiningPerk;
+import dev.hephaestus.mestiere.skills.Skills;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -13,6 +14,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -25,11 +27,12 @@ import java.util.Map;
 
 public class MestiereConfig {
     float levelModifier = 1.0f;
-    public boolean hardcoreProgression = false;
+    public boolean hardcoreProgression = true;
 
     public static HashMap<Block, Integer> miningValues = new HashMap<>();
     public static HashMap<Identifier, Formatting> messageFormatting = new HashMap<>();
     public static HashMap<Block, Integer> levelRequiredToDetect = new HashMap<>();
+    public static HashMap<Item, Integer> alchemicalReagentValues = new HashMap<>();
 
     private static File CONFIG_DIRECTORY = FabricLoader.getInstance().getConfigDirectory();
 
@@ -63,6 +66,25 @@ public class MestiereConfig {
         levelRequiredToDetect.put(Blocks.GOLD_ORE, 20);
         levelRequiredToDetect.put(Blocks.DIAMOND_ORE, 30);
         levelRequiredToDetect.put(Blocks.EMERALD_ORE, 30);
+
+        alchemicalReagentValues.put(Items.GUNPOWDER, 1);
+        alchemicalReagentValues.put(Items.NETHER_WART, 1);
+        alchemicalReagentValues.put(Items.REDSTONE, 2);
+        alchemicalReagentValues.put(Items.GLOWSTONE, 3);
+
+        alchemicalReagentValues.put(Items.SUGAR, 1);
+        alchemicalReagentValues.put(Items.SPIDER_EYE, 1);
+        alchemicalReagentValues.put(Items.FERMENTED_SPIDER_EYE, 2);
+        alchemicalReagentValues.put(Items.RABBIT_FOOT, 2);
+        alchemicalReagentValues.put(Items.BLAZE_POWDER, 3);
+        alchemicalReagentValues.put(Items.GLISTERING_MELON_SLICE, 2);
+        alchemicalReagentValues.put(Items.GHAST_TEAR, 5);
+        alchemicalReagentValues.put(Items.MAGMA_CREAM, 5);
+        alchemicalReagentValues.put(Items.PUFFERFISH, 3);
+        alchemicalReagentValues.put(Items.GOLDEN_CARROT, 2);
+        alchemicalReagentValues.put(Items.TURTLE_HELMET, 5);
+        alchemicalReagentValues.put(Items.PHANTOM_MEMBRANE, 4);
+
 
         try {
             InputStream fi = new FileInputStream(new File(CONFIG_DIRECTORY + File.separator + Mestiere.MOD_ID + ".json"));

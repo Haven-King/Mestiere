@@ -1,7 +1,7 @@
 package dev.hephaestus.mestiere.mixin;
 
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.util.Skills;
+import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;

@@ -1,7 +1,6 @@
 package dev.hephaestus.mestiere.skills;
 
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.util.Skills;
 import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;

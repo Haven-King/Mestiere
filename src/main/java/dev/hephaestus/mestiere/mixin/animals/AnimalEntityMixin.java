@@ -2,7 +2,7 @@ package dev.hephaestus.mestiere.mixin.animals;
 
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.util.SexedEntity;
-import dev.hephaestus.mestiere.util.Skills;
+import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.AnimalEntity;

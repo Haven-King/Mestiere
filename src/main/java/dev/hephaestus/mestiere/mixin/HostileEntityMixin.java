@@ -1,12 +1,11 @@
 package dev.hephaestus.mestiere.mixin;
 
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.util.Skills;
+import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntityWithAi;
-import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;

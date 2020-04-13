@@ -6,6 +6,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.Skill;
+import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.command.arguments.EntityArgumentType;
 import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.server.command.CommandManager;

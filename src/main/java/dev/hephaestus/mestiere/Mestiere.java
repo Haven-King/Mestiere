@@ -2,6 +2,7 @@ package dev.hephaestus.mestiere;
 
 import dev.hephaestus.mestiere.skills.Perks;
 import dev.hephaestus.mestiere.skills.Recipes;
+import dev.hephaestus.mestiere.skills.Skills;
 import dev.hephaestus.mestiere.util.*;
 import nerdhub.cardinal.components.api.ComponentRegistry;
 import nerdhub.cardinal.components.api.ComponentType;
@@ -11,14 +12,10 @@ import nerdhub.cardinal.components.api.util.RespawnCopyStrategy;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.lang.reflect.Field;
 
 import static org.apache.commons.lang3.reflect.FieldUtils.getField;
 
@@ -26,7 +23,6 @@ public class Mestiere implements ModInitializer {
 	public static final String MOD_ID = "mestiere";
 	public static final String MOD_NAME = "Mestiere";
 	public static final Logger LOGGER = LogManager.getLogger();
-	public static final boolean DEBUG = true;
 
 	public static final Skills SKILLS = Skills.init();
 	public static final Perks PERKS = Perks.init();

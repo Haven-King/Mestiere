@@ -1,7 +1,7 @@
 package dev.hephaestus.mestiere.mixin.animals;
 
 import dev.hephaestus.mestiere.SkilledExperienceOrbEntity;
-import dev.hephaestus.mestiere.util.Skills;
+import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.entity.ai.goal.AnimalMateGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.world.World;

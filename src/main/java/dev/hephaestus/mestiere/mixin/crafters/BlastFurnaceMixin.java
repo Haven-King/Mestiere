@@ -3,7 +3,7 @@ package dev.hephaestus.mestiere.mixin.crafters;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.SkillCrafter;
 import dev.hephaestus.mestiere.skills.SkillRecipe;
-import dev.hephaestus.mestiere.util.Skills;
+import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.block.BlastFurnaceBlock;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;

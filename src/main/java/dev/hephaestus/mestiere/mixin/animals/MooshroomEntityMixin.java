@@ -2,9 +2,8 @@ package dev.hephaestus.mestiere.mixin.animals;
 
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.util.InventoryGetter;
-import dev.hephaestus.mestiere.util.MestiereComponent;
 import dev.hephaestus.mestiere.util.SexedEntity;
-import dev.hephaestus.mestiere.util.Skills;
+import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.passive.MooshroomEntity;

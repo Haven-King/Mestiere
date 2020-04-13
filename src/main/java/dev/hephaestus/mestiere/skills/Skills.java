@@ -1,8 +1,7 @@
-package dev.hephaestus.mestiere.util;
+package dev.hephaestus.mestiere.skills;
 
 import com.google.common.collect.ImmutableList;
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.skills.Skill;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -16,6 +15,7 @@ import static dev.hephaestus.mestiere.Mestiere.newID;
 
 public class Skills implements Iterable<Skill> {
     public static Skill NONE;
+    public static Skill ALCHEMY;
     public static Skill SMITHING;
     public static Skill LEATHERWORKING;
     public static Skill FARMING;
@@ -27,6 +27,7 @@ public class Skills implements Iterable<Skill> {
         Skills instance = new Skills();
 
         NONE = instance.register(new Skill(Mestiere.newID("none"), Formatting.BLACK));
+        ALCHEMY = instance.register(new Skill(newID("alchemy"), Formatting.LIGHT_PURPLE));
         SMITHING = instance.register(new Skill(newID("smithing"), Formatting.DARK_RED, SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH));
         LEATHERWORKING = instance.register(new Skill(newID("leatherworking"), Formatting.GOLD, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER));
         FARMING = instance.register(new Skill(newID("farming"), Formatting.DARK_GREEN));

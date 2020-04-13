@@ -16,6 +16,4 @@ public class SkilledExperienceOrbEntity extends ExperienceOrbEntity {
         super(entityType, world);
         this.skill = skill;
     }
-
-
 }
