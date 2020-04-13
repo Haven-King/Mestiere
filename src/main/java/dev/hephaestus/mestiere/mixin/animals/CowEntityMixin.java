@@ -47,7 +47,9 @@ public class CowEntityMixin extends AnimalEntity {
             }
             cir.setReturnValue(false);
         } else {
-            Mestiere.COMPONENT.get(player).addXp(Skills.FARMING, 2);
+            if (player instanceof ServerPlayerEntity)
+                Mestiere.COMPONENT.get(player).addXp(Skills.FARMING, 2);
+
             this.timeToMilk = 14000;
         }
     }

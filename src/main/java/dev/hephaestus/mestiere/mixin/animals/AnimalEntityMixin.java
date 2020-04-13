@@ -61,7 +61,10 @@ public class AnimalEntityMixin extends PassiveEntity implements SexedEntity {
 
     @Inject(method = "readCustomDataFromTag", at = @At("TAIL"))
     public void readSex(CompoundTag tag, CallbackInfo ci) {
-        this.sex = Sex.valueOf(tag.getString(Mestiere.MOD_ID + ".sex"));
+        if (tag.contains(Mestiere.MOD_ID + ".sex"))
+            this.sex = Sex.valueOf(tag.getString(Mestiere.MOD_ID + ".sex"));
+        else
+            this.sex = this.random.nextBoolean() ? Sex.FEMALE : Sex.MALE;
     }
 
     private Sex sex;
