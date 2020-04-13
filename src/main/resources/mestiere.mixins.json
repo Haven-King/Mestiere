@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "animals.AnimalEntityMixin",
+    "animals.AnimalMateGoalMixin",
     "animals.CowEntityMixin",
     "animals.MooshroomEntityMixin",
     "animals.SheepEntityMixin",
@@ -18,6 +19,7 @@
     "plants.CropBlockMixin",
     "plants.MelonBlockMixin",
     "BlockMixin",
+    "ExperienceOrbEntityMixin",
     "HostileEntityMixin",
     "PlayerInventoryMixin"
   ],
