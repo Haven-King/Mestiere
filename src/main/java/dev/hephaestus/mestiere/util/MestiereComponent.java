@@ -75,6 +75,10 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
         return this.skills.getOrDefault(skill, 0);
     }
 
+    public int getXp(int level) {
+        return (int) (1.375 * ((level * level) - 1));
+    }
+
     @Override
     @Environment(EnvType.SERVER)
     public void setXp(Skill skill, int xp) {

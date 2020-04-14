@@ -26,7 +26,7 @@ public class MiningPerk extends SkillPerk {
                 new ItemStack(block.asItem()));
 
         this.block = block;
-        stext = new TranslatableText(block.getTranslationKey()).setStyle(new Style().setColor(MestiereConfig.messageFormatting.getOrDefault(Registry.BLOCK.getId(block), Formatting.WHITE)).setBold(true));
+        stext = new TranslatableText(block.getTranslationKey()).setStyle(new Style().setColor(MestiereConfig.messageFormatting.getOrDefault(Registry.BLOCK.getId(block), Formatting.WHITE)));
     }
 
     @Override
