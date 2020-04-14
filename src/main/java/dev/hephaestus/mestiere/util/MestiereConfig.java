@@ -29,62 +29,66 @@ public class MestiereConfig {
     float levelModifier = 1.0f;
     public boolean hardcoreProgression = true;
 
-    public static HashMap<Block, Integer> miningValues = new HashMap<>();
-    public static HashMap<Identifier, Formatting> messageFormatting = new HashMap<>();
-    public static HashMap<Block, Integer> levelRequiredToDetect = new HashMap<>();
-    public static HashMap<Item, Integer> alchemicalReagentValues = new HashMap<>();
+    public static HashMap<Block, Integer> miningValues = new HashMap<Block, Integer>() {{
+        put(Blocks.STONE, 1);
+        put(Blocks.COAL_ORE, 4);
+        put(Blocks.REDSTONE_ORE, 8);
+        put(Blocks.IRON_ORE, 16);
+        put(Blocks.LAPIS_ORE, 32);
+        put(Blocks.GOLD_ORE, 64);
+        put(Blocks.DIAMOND_ORE, 256);
+        put(Blocks.EMERALD_ORE, 384);
+    }};
+
+    public static HashMap<Identifier, Formatting> messageFormatting = new HashMap<Identifier, Formatting>() {{
+        put(Registry.BLOCK.getId(Blocks.COAL_ORE), Formatting.DARK_GRAY);
+        put(Registry.BLOCK.getId(Blocks.REDSTONE_ORE), Formatting.DARK_RED);
+        put(Registry.BLOCK.getId(Blocks.IRON_ORE), Formatting.YELLOW);
+        put(Registry.BLOCK.getId(Blocks.LAPIS_ORE), Formatting.DARK_BLUE);
+        put(Registry.BLOCK.getId(Blocks.GOLD_ORE), Formatting.GOLD);
+        put(Registry.BLOCK.getId(Blocks.DIAMOND_ORE), Formatting.AQUA);
+        put(Registry.BLOCK.getId(Blocks.EMERALD_ORE), Formatting.GREEN);
+
+        put(Registry.ITEM.getId(Items.GOLD_INGOT), Formatting.GOLD);
+        put(Registry.ITEM.getId(Items.DIAMOND), Formatting.AQUA);
+
+    }};
+
+    public static HashMap<Block, Integer> levelRequiredToDetect = new HashMap<Block, Integer>() {{
+        put(Blocks.COAL_ORE, 10);
+        put(Blocks.REDSTONE_ORE, 13);
+        put(Blocks.IRON_ORE, 16);
+        put(Blocks.LAPIS_ORE, 20);
+        put(Blocks.GOLD_ORE, 25);
+        put(Blocks.DIAMOND_ORE, 30);
+        put(Blocks.EMERALD_ORE, 33);
+    }};
+
+    public static HashMap<Item, Integer> alchemicalReagentValues = new HashMap<Item, Integer>() {{
+        put(Items.GUNPOWDER, 1);
+        put(Items.NETHER_WART, 1);
+        put(Items.REDSTONE, 2);
+        put(Items.GLOWSTONE, 3);
+
+        put(Items.SUGAR, 1);
+        put(Items.SPIDER_EYE, 1);
+        put(Items.FERMENTED_SPIDER_EYE, 2);
+        put(Items.RABBIT_FOOT, 2);
+        put(Items.BLAZE_POWDER, 3);
+        put(Items.GLISTERING_MELON_SLICE, 2);
+        put(Items.GHAST_TEAR, 5);
+        put(Items.MAGMA_CREAM, 5);
+        put(Items.PUFFERFISH, 3);
+        put(Items.GOLDEN_CARROT, 2);
+        put(Items.TURTLE_HELMET, 5);
+        put(Items.PHANTOM_MEMBRANE, 4);
+
+    }};
 
     private static File CONFIG_DIRECTORY = FabricLoader.getInstance().getConfigDirectory();
 
     public static MestiereConfig init() {
         MestiereConfig instance = new MestiereConfig();
-
-        miningValues.put(Blocks.STONE, 1);
-        miningValues.put(Blocks.COAL_ORE, 4);
-        miningValues.put(Blocks.REDSTONE_ORE, 8);
-        miningValues.put(Blocks.IRON_ORE, 16);
-        miningValues.put(Blocks.LAPIS_ORE, 32);
-        miningValues.put(Blocks.GOLD_ORE, 64);
-        miningValues.put(Blocks.DIAMOND_ORE, 256);
-        miningValues.put(Blocks.EMERALD_ORE, 384);
-
-        messageFormatting.put(Registry.BLOCK.getId(Blocks.COAL_ORE), Formatting.DARK_GRAY);
-        messageFormatting.put(Registry.BLOCK.getId(Blocks.REDSTONE_ORE), Formatting.DARK_RED);
-        messageFormatting.put(Registry.BLOCK.getId(Blocks.IRON_ORE), Formatting.YELLOW);
-        messageFormatting.put(Registry.BLOCK.getId(Blocks.LAPIS_ORE), Formatting.DARK_BLUE);
-        messageFormatting.put(Registry.BLOCK.getId(Blocks.GOLD_ORE), Formatting.GOLD);
-        messageFormatting.put(Registry.BLOCK.getId(Blocks.DIAMOND_ORE), Formatting.AQUA);
-        messageFormatting.put(Registry.BLOCK.getId(Blocks.EMERALD_ORE), Formatting.GREEN);
-
-        messageFormatting.put(Registry.ITEM.getId(Items.GOLD_INGOT), Formatting.GOLD);
-        messageFormatting.put(Registry.ITEM.getId(Items.DIAMOND), Formatting.AQUA);
-
-        levelRequiredToDetect.put(Blocks.COAL_ORE, 10);
-        levelRequiredToDetect.put(Blocks.REDSTONE_ORE, 15);
-        levelRequiredToDetect.put(Blocks.IRON_ORE, 15);
-        levelRequiredToDetect.put(Blocks.LAPIS_ORE, 20);
-        levelRequiredToDetect.put(Blocks.GOLD_ORE, 20);
-        levelRequiredToDetect.put(Blocks.DIAMOND_ORE, 30);
-        levelRequiredToDetect.put(Blocks.EMERALD_ORE, 30);
-
-        alchemicalReagentValues.put(Items.GUNPOWDER, 1);
-        alchemicalReagentValues.put(Items.NETHER_WART, 1);
-        alchemicalReagentValues.put(Items.REDSTONE, 2);
-        alchemicalReagentValues.put(Items.GLOWSTONE, 3);
-
-        alchemicalReagentValues.put(Items.SUGAR, 1);
-        alchemicalReagentValues.put(Items.SPIDER_EYE, 1);
-        alchemicalReagentValues.put(Items.FERMENTED_SPIDER_EYE, 2);
-        alchemicalReagentValues.put(Items.RABBIT_FOOT, 2);
-        alchemicalReagentValues.put(Items.BLAZE_POWDER, 3);
-        alchemicalReagentValues.put(Items.GLISTERING_MELON_SLICE, 2);
-        alchemicalReagentValues.put(Items.GHAST_TEAR, 5);
-        alchemicalReagentValues.put(Items.MAGMA_CREAM, 5);
-        alchemicalReagentValues.put(Items.PUFFERFISH, 3);
-        alchemicalReagentValues.put(Items.GOLDEN_CARROT, 2);
-        alchemicalReagentValues.put(Items.TURTLE_HELMET, 5);
-        alchemicalReagentValues.put(Items.PHANTOM_MEMBRANE, 4);
-
 
         try {
             InputStream fi = new FileInputStream(new File(CONFIG_DIRECTORY + File.separator + Mestiere.MOD_ID + ".json"));

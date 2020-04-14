@@ -1,12 +1,14 @@
 package dev.hephaestus.mestiere.util;
 
-import dev.hephaestus.fiblib.FibLib;
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.skills.Perks;
+import dev.hephaestus.mestiere.MestiereClient;
 import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.skills.SkillPerk;
-import nerdhub.cardinal.components.api.component.Component;
-import net.minecraft.block.Block;
+import nerdhub.cardinal.components.api.ComponentType;
+import nerdhub.cardinal.components.api.util.sync.EntitySyncedComponent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.MessageType;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -17,17 +19,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.HashMap;
-import java.util.Map;
 
-interface XpComponent extends Component {
-    int getLevel(Skill skill);
-    int getXp(Skill skill);
-    void setXp(Skill skill, int xp);
-    void addXp(Skill skill, int xp);
-}
-
-public class MestiereComponent implements XpComponent {
+public class MestiereComponent implements XpComponent, EntitySyncedComponent {
     private final ServerPlayerEntity player;
+    private boolean clientHasInstalled = false;
 
     private HashMap<Skill, Integer> skills = new HashMap<>();
 
@@ -42,6 +37,16 @@ public class MestiereComponent implements XpComponent {
         for (Skill s : Mestiere.SKILLS) {
             this.skills.put(s, skillTag.getInt(s.id.toString()));
         }
+
+        this.clientHasInstalled = tag.getBoolean("client_installed");
+    }
+
+    public void clientConnect(boolean b) {
+        this.clientHasInstalled = true;
+    }
+
+    public boolean isClientConnected() {
+        return clientHasInstalled;
     }
 
     @Override
@@ -51,6 +56,8 @@ public class MestiereComponent implements XpComponent {
         for (Skill s : Mestiere.SKILLS) {
             skillTag.putInt(s.id.toString(), skills.getOrDefault(s, 0));
         }
+
+        tag.putBoolean("client_installed", clientHasInstalled);
 
         tag.put(Mestiere.MOD_ID, skillTag);
 
@@ -68,11 +75,16 @@ public class MestiereComponent implements XpComponent {
     }
 
     @Override
+    @Environment(EnvType.SERVER)
     public void setXp(Skill skill, int xp) {
         this.skills.put(skill, xp);
+
+        if (clientHasInstalled)
+            this.sync();
     }
 
     @Override
+    @Environment(EnvType.SERVER)
     public void addXp(Skill skill, int xp) {
         this.player.addExperience(xp);
 
@@ -101,6 +113,9 @@ public class MestiereComponent implements XpComponent {
             }
         }
 
+        if (clientHasInstalled)
+            this.sync();
+
         Mestiere.debug("%s has %dXP in %s. They are level %d", this.player.getName().asString(), this.skills.getOrDefault(skill, 0), skill.name, getLevel(skill));
     }
 
@@ -110,5 +125,15 @@ public class MestiereComponent implements XpComponent {
 
     public boolean hasPerk(Identifier perk) {
         return hasPerk(Mestiere.PERKS.get(perk));
+    }
+
+    @Override
+    public Entity getEntity() {
+        return this.player;
+    }
+
+    @Override
+    public ComponentType<?> getComponentType() {
+        return MestiereClient.COMPONENT;
     }
 }

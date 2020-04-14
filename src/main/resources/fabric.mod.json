@@ -20,6 +20,9 @@
     "main": [
       "dev.hephaestus.mestiere.Mestiere"
     ],
+    "client": [
+      "dev.hephaestus.mestiere.MestiereClient"
+    ],
     "modmenu": [
       "dev.hephaestus.mestiere.ModMenuIntegration"
     ]

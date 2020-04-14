@@ -2,6 +2,8 @@ package dev.hephaestus.mestiere.skills;
 
 import com.google.common.collect.ImmutableList;
 import dev.hephaestus.mestiere.Mestiere;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -26,19 +28,19 @@ public class Skills implements Iterable<Skill> {
     public static Skills init() {
         Skills instance = new Skills();
 
-        NONE = instance.register(new Skill(Mestiere.newID("none"), Formatting.BLACK));
-        ALCHEMY = instance.register(new Skill(newID("alchemy"), Formatting.LIGHT_PURPLE));
-        SMITHING = instance.register(new Skill(newID("smithing"), Formatting.DARK_RED, SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH));
-        LEATHERWORKING = instance.register(new Skill(newID("leatherworking"), Formatting.GOLD, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER));
-        FARMING = instance.register(new Skill(newID("farming"), Formatting.DARK_GREEN));
-        SLAYING = instance.register(new Skill(newID("slaying"), Formatting.RED));
-        HUNTING = instance.register(new Skill(newID("hunting"), Formatting.GREEN));
-        MINING = instance.register(new Skill(newID("mining"), Formatting.GRAY));
+        NONE = new Skill(Mestiere.newID("none"), Formatting.BLACK, ItemStack.EMPTY);
+        ALCHEMY = instance.register(new Skill(newID("alchemy"), Formatting.LIGHT_PURPLE, new ItemStack(Items.BREWING_STAND)));
+        SMITHING = instance.register(new Skill(newID("smithing"), Formatting.DARK_RED, SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH, new ItemStack(Items.SMITHING_TABLE)));
+        LEATHERWORKING = instance.register(new Skill(newID("leatherworking"), Formatting.GOLD, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER, new ItemStack(Items.LEATHER)));
+        FARMING = instance.register(new Skill(newID("farming"), Formatting.DARK_GREEN, new ItemStack(Items.IRON_HOE)));
+        SLAYING = instance.register(new Skill(newID("slaying"), Formatting.RED, new ItemStack(Items.IRON_SWORD)));
+        HUNTING = instance.register(new Skill(newID("hunting"), Formatting.GREEN, new ItemStack(Items.BOW)));
+        MINING = instance.register(new Skill(newID("mining"), Formatting.GRAY, new ItemStack(Items.IRON_PICKAXE)));
 
         return instance;
     }
 
-    private HashMap<Identifier, Skill> skills = new HashMap<>();
+    public HashMap<Identifier, Skill> skills = new HashMap<>();
 
     public Skill register(Skill skill) {
         skills.put(skill.id, skill);

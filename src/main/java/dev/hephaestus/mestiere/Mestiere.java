@@ -10,6 +10,7 @@ import nerdhub.cardinal.components.api.event.EntityComponentCallback;
 import nerdhub.cardinal.components.api.util.EntityComponents;
 import nerdhub.cardinal.components.api.util.RespawnCopyStrategy;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -29,6 +30,8 @@ public class Mestiere implements ModInitializer {
 	public static final MestiereConfig CONFIG = MestiereConfig.init();
 	public static final Recipes RECIPES = Recipes.init();
 
+	public static final Identifier CLIENT_HAS_INSTALLED_PACKET_ID = newID("client_connected");
+
 	public static final ComponentType<MestiereComponent> COMPONENT =
 		ComponentRegistry.INSTANCE.registerIfAbsent(newID("component"), MestiereComponent.class);
 
@@ -43,6 +46,10 @@ public class Mestiere implements ModInitializer {
 
 		EntityComponentCallback.event(ServerPlayerEntity.class).register((player, components) ->
 				components.put(COMPONENT, new MestiereComponent(player)));
+
+		ServerSidePacketRegistry.INSTANCE.register(CLIENT_HAS_INSTALLED_PACKET_ID, (context, data) ->
+			COMPONENT.get(context.getPlayer()).clientConnect(true)
+		);
 	}
 
 	public static void log(String msg) {

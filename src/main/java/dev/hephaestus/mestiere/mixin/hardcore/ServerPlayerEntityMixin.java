@@ -9,11 +9,12 @@ import net.minecraft.entity.ProjectileUtil;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.MessageType;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -36,6 +37,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow public abstract void addChatMessage(Text message, boolean bl);
 
     @Shadow public abstract void sendChatMessage(Text text, MessageType messageType);
+
+    @Inject(method = "<init>", at = @At("TAIL"))
+    public void isClientConnected(MinecraftServer server, ServerWorld world, GameProfile profile, ServerPlayerInteractionManager interactionManager, CallbackInfo ci) {
+        Mestiere.COMPONENT.get(this).clientConnect(false);
+    }
 
     @Inject(method = "setGameMode", at = @At("TAIL"))
     public void setGamemodeInjection(GameMode gameMode, CallbackInfo ci) {

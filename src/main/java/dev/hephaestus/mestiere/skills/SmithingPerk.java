@@ -3,6 +3,7 @@ package dev.hephaestus.mestiere.skills;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.util.MestiereConfig;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.TranslatableText;
@@ -15,6 +16,6 @@ public class SmithingPerk extends SkillPerk {
             .append(new TranslatableText(material.getTranslationKey()).setStyle(new Style().setColor(MestiereConfig.messageFormatting.getOrDefault(Registry.ITEM.getId(material), Formatting.WHITE)).setBold(true)))
             .append(new LiteralText("s").setStyle(new Style().setColor(MestiereConfig.messageFormatting.getOrDefault(Registry.ITEM.getId(material), Formatting.WHITE)).setBold(true)))
             .append(new LiteralText("!")),
-            true);
+            true, new ItemStack(material));
     }
 }
