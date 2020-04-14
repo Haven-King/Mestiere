@@ -181,7 +181,7 @@ public class MestiereConfig {
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-        ConfigCategory generalCategory = builder.getOrCreateCategory("category.mestiere.general");
+        ConfigCategory generalCategory = builder.getOrCreateCategory("mestiere.category.general");
         generalCategory.addEntry(
             entryBuilder.startFloatField("mestiere.levelModifier", Mestiere.CONFIG.levelModifier)
             .setSaveConsumer((modifier) -> Mestiere.CONFIG.levelModifier = modifier)
@@ -200,22 +200,24 @@ public class MestiereConfig {
             .build()
         );
 
-        ConfigCategory miningValuesCategory = builder.getOrCreateCategory("category.mestiere.miningLevels");
+        ConfigCategory miningValuesCategory = builder.getOrCreateCategory("mestiere.category.miningLevels");
         for (Map.Entry<Block, Integer> entry: MestiereConfig.miningValues.entrySet()) {
             miningValuesCategory.addEntry(
-                entryBuilder.startIntField("block.minecraft." + Registry.BLOCK.getId(entry.getKey()).getPath(), entry.getValue())
+                entryBuilder.startIntField(entry.getKey().getTranslationKey(), entry.getValue())
                 .setSaveConsumer((value) -> MestiereConfig.miningValues.put(entry.getKey(), value))
                 .build()
             );
         }
 
-        ConfigCategory oreColorsCategory = builder.getOrCreateCategory("category.mestiere.oreColors");
+        ConfigCategory oreColorsCategory = builder.getOrCreateCategory("mestiere.category.colors");
         for (Map.Entry<Identifier, Formatting> entry: MestiereConfig.messageFormatting.entrySet()) {
             oreColorsCategory.addEntry(
-                entryBuilder.startStringDropdownMenu("block.minecraft." + entry.getKey().getPath(), entry.getValue().name().toLowerCase())
-                    .setSelections(Formatting.getNames(true, false))
-                    .setSaveConsumer((value) -> MestiereConfig.messageFormatting.put(entry.getKey(), Formatting.byName(value) == null ? Formatting.WHITE : Formatting.byName(value)))
-                    .build()
+                entryBuilder.startStringDropdownMenu(
+                        Registry.ITEM.containsId(entry.getKey()) ? Registry.ITEM.get(entry.getKey()).getTranslationKey() : Registry.BLOCK.get(entry.getKey()).getTranslationKey(),
+                        entry.getValue().name().toLowerCase()
+                ).setSelections(Formatting.getNames(true, false))
+                 .setSaveConsumer((value) -> MestiereConfig.messageFormatting.put(entry.getKey(), Formatting.byName(value) == null ? Formatting.WHITE : Formatting.byName(value)))
+                 .build()
             );
         }
 

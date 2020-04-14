@@ -6,7 +6,7 @@ import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WPanel;
 import io.github.cottonmc.cotton.gui.widget.data.Alignment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Stack;
@@ -20,7 +20,7 @@ public class MestiereScreen extends CottonClientScreen {
     }
 
     public MestiereScreen(String title, GuiDescription description) {
-        super(new LiteralText(title), description);
+        super(new TranslatableText("mestiere." + title), description);
         isOpen = true;
     }
 

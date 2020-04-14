@@ -3,11 +3,12 @@ package dev.hephaestus.mestiere.skills;
 import dev.hephaestus.mestiere.Mestiere;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Perks {
     private HashMap<Skill, ArrayList<SkillPerk>> perksBySkill = new HashMap<>();
@@ -22,13 +23,15 @@ public class Perks {
         instance.register(new SkillPerk(Mestiere.newID("farming.sex_guru"),
                 Skills.FARMING,
                 10,
-                new LiteralText("You can now determine the sex of animals!"),
+                new TranslatableText("mestiere.perk.farming.sex_guru.message"),
+                new TranslatableText("mestiere.perk.farming.sex_guru.description"),
                 new ItemStack(Items.WHEAT)));
 
         instance.register(new SkillPerk(Mestiere.newID("farming.green_thumb"),
                 Skills.FARMING,
                 5,
-                new LiteralText("You now know how to harvest crops without damaging them."),
+                new TranslatableText("mestiere.perk.farming.green_thumb.message"),
+                new TranslatableText("mestiere.perk.farming.green_thumb.description"),
                 new ItemStack(Items.WHEAT_SEEDS)));
 
         return instance;
@@ -38,7 +41,7 @@ public class Perks {
         perksBySkill.putIfAbsent(perk.skill, new ArrayList<>());
         perksBySkill.get(perk.skill).add(perk);
         perksById.put(perk.id, perk);
-        Mestiere.debug("Registered new %s perk: %s %d", perk.skill.name, perk.id, perksBySkill.get(perk.skill).size());
+        Mestiere.debug("Registered new %s perk: %s %d", perk.skill.id, perk.id, perksBySkill.get(perk.skill).size());
     }
 
     public List<SkillPerk> get(Skill skill) {

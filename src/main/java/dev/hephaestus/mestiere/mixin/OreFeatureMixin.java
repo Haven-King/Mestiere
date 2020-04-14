@@ -1,4 +1,4 @@
-package dev.hephaestus.mestiere.mixin.hardcore;
+package dev.hephaestus.mestiere.mixin;
 
 import dev.hephaestus.fiblib.FibLib;
 import net.minecraft.server.world.ServerWorld;

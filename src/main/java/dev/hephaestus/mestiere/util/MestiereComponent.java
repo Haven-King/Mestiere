@@ -14,6 +14,7 @@ import net.minecraft.network.MessageType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -92,22 +93,19 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
         this.skills.put(skill, this.skills.getOrDefault(skill, 0) + xp);
         int newLevel = getLevel(skill);
         if (newLevel > oldLevel) {
-            LiteralText sText = new LiteralText(skill.name);
-            sText.setStyle(new Style().setColor(skill.format).setBold(true));
+            TranslatableText sText = skill.getText(Mestiere.KEY_TYPE.NAME);
+            sText.setStyle(sText.getStyle().deepCopy().setBold(true));
 
             LiteralText lText = new LiteralText(Integer.toString(newLevel));
             lText.setStyle(new Style().setColor(Formatting.GREEN));
 
             player.sendChatMessage(
-                new LiteralText("Congratulations! You have reached level ")
-                        .append(lText)
-                        .append(" in ")
-                        .append(sText).append("!"),
+                new TranslatableText("mestiere.level_up", lText, sText),
                 MessageType.CHAT);
 
             for (SkillPerk perk : Mestiere.PERKS.get(skill)) {
                 if (perk.level > oldLevel && perk.level <= newLevel) {
-                    player.sendChatMessage(perk.message, MessageType.CHAT);
+                    player.sendChatMessage(perk.getText(Mestiere.KEY_TYPE.MESSAGE), MessageType.CHAT);
                     perk.gained(player);
                 }
             }
@@ -116,7 +114,7 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
         if (clientHasInstalled)
             this.sync();
 
-        Mestiere.debug("%s has %dXP in %s. They are level %d", this.player.getName().asString(), this.skills.getOrDefault(skill, 0), skill.name, getLevel(skill));
+        Mestiere.debug("%s has %dXP in %s. They are level %d", this.player.getName().asString(), this.skills.getOrDefault(skill, 0), skill.id, getLevel(skill));
     }
 
     public boolean hasPerk(SkillPerk perk) {

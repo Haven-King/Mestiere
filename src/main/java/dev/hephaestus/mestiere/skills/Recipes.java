@@ -16,8 +16,10 @@ import net.minecraft.util.registry.Registry;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Optional;
 
 public class Recipes {
     private HashMap<Skill, ArrayList<SkillRecipe>> recipes = new HashMap<>();
@@ -38,22 +40,11 @@ public class Recipes {
         return ImmutableList.copyOf(recipes.getOrDefault(skill, new ArrayList<>()));
     }
 
-    public Iterator<SkillRecipe> getRegistered() {
-        return ImmutableList.copyOf(
-                recipes.values().stream().flatMap(List::stream).collect(Collectors.toList())
-        ).iterator();
-    }
-
-    public int recipeCount() {
-        return (int) recipes.values().stream().mapToLong(List::size).sum();
-    }
-
     public int recipeCount(Skill skill) {
         return recipes.getOrDefault(skill, new ArrayList<>()).size();
     }
 
     public static class Loader {
-        public static final Identifier ID = Mestiere.newID("skill_recipe");
 
         static class SkillRecipeJsonFormat {
             JsonObject firstIngredient;
@@ -89,7 +80,7 @@ public class Recipes {
 
                     for (Skill s : Mestiere.SKILLS) {
                         if (recipes.recipeCount(s) > 0)
-                            Mestiere.log("Registered " + recipes.recipeCount(s) + " " + s.name + " recipes");
+                            Mestiere.log("Registered " + recipes.recipeCount(s) + " " +   s.id + " recipes");
                     }
                 }
             });
@@ -124,7 +115,7 @@ public class Recipes {
                     id,
                     recipeJson.perk_required == null ? SkillPerk.NONE : Mestiere.PERKS.get(new Identifier(recipeJson.perk_required)));
 
-            Mestiere.debug("Registered a new " + recipe.skill.name + " recipe: " + recipe.id);
+            Mestiere.debug("Registered a new " + recipe.skill.id + " recipe: " + recipe.id);
 
             return recipe;
         }

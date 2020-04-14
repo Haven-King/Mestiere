@@ -7,10 +7,7 @@ import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WPanel;
 import io.github.cottonmc.cotton.gui.widget.data.Alignment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -27,7 +24,7 @@ public class PerkPanel extends WPanel {
     @Override
     public void addInformation(List<String> information) {
         super.addInformation(information);
-        information.add(this.perk.message.asFormattedString());
+        information.add(this.perk.getText(Mestiere.KEY_TYPE.DESCRIPTION).asFormattedString());
     }
 
     @Override
@@ -37,7 +34,7 @@ public class PerkPanel extends WPanel {
         assert player != null;
         boolean unlocked = MestiereClient.COMPONENT.get(player).getLevel(this.perk.skill) >= this.perk.level;
 
-        ScreenDrawing.drawStringWithShadow(new LiteralText(this.perk.id.getPath()).formatted(unlocked ? Formatting.WHITE : Formatting.DARK_GRAY).asFormattedString(),
+        ScreenDrawing.drawStringWithShadow(this.perk.getText(Mestiere.KEY_TYPE.NAME).formatted(unlocked ? Formatting.WHITE : Formatting.DARK_GRAY).asFormattedString(),
                 Alignment.LEFT,
                 x + this.height,
                 y + ((20 - 8) / 2),

@@ -14,15 +14,16 @@
     "crafters.ComposterBlockMixin",
     "crafters.MerchantContainerMixin",
     "crafters.SmithingTableMixin",
-    "hardcore.OreFeatureMixin",
-    "hardcore.ServerPlayerEntityMixin",
     "plants.CropBlockMixin",
     "plants.MelonBlockMixin",
     "BlockMixin",
     "BrewingStandBlockEntityMixin",
     "ExperienceOrbEntityMixin",
     "HostileEntityMixin",
-    "PlayerInventoryMixin"
+    "OreFeatureMixin",
+    "PlayerInventoryMixin",
+    "PlayerManagerMixin",
+    "ServerPlayerEntityMixin"
   ],
   "client": [
   ],

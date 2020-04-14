@@ -1,4 +1,4 @@
-package dev.hephaestus.mestiere.mixin.hardcore;
+package dev.hephaestus.mestiere.mixin;
 
 import com.mojang.authlib.GameProfile;
 import dev.hephaestus.fiblib.FibLib;
@@ -13,8 +13,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -37,6 +37,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow public abstract void addChatMessage(Text message, boolean bl);
 
     @Shadow public abstract void sendChatMessage(Text text, MessageType messageType);
+
+    @Shadow public abstract void sendResourcePackUrl(String url, String hash);
 
     @Inject(method = "<init>", at = @At("TAIL"))
     public void isClientConnected(MinecraftServer server, ServerWorld world, GameProfile profile, ServerPlayerInteractionManager interactionManager, CallbackInfo ci) {
@@ -78,19 +80,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             if (hit != null && hit.getEntity() instanceof AnimalEntity) {
                 if (hit.getEntity().hasCustomName()) {
                     this.sendChatMessage(
-                            hit.getEntity().getCustomName().copy().append(
-                                    new LiteralText(" is ")).append(
-                                    new LiteralText(((SexedEntity) hit.getEntity()).getSex().toString().toLowerCase())
-                            ),
+                            new TranslatableText("perk.mestiere.farming.sex_guru.tip.named." + ((SexedEntity)hit.getEntity()).getSex().toString().toLowerCase(), hit.getEntity().getCustomName()),
                             MessageType.GAME_INFO
                     );
                 } else {
                     this.sendChatMessage(
-                            new LiteralText("This ").append(
-                                    hit.getEntity().getDisplayName()).append(
-                                    new LiteralText(" is ")).append(
-                                    new LiteralText(((SexedEntity) hit.getEntity()).getSex().toString().toLowerCase())
-                            ),
+                            new TranslatableText("perk.mestiere.farming.sex_guru.tip.nameless." + ((SexedEntity)hit.getEntity()).getSex().toString().toLowerCase(), hit.getEntity().getCustomName()),
                             MessageType.GAME_INFO
                     );
                 }
