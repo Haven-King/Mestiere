@@ -77,7 +77,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     public void updatePositionAndAngles(double x, double y, double z, float yaw, float pitch) {
         super.updatePositionAndAngles(x, y, z, yaw, pitch);
 
-        if (Mestiere.COMPONENT.get(this).hasPerk(Mestiere.newID("sex_guru"))) {
+        if (Mestiere.COMPONENT.get(this).hasPerk(Mestiere.newID("farming.sex_guru"))) {
             EntityHitResult hit = traceForEntity((ServerPlayerEntity) (Object) this, 5);
             if (hit != null && hit.getEntity() instanceof AnimalEntity) {
                 if (hit.getEntity().hasCustomName()) {

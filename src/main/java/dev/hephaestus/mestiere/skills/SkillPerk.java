@@ -12,7 +12,7 @@ import java.util.HashMap;
 import static net.minecraft.util.Util.createTranslationKey;
 
 public class SkillPerk implements Comparable<SkillPerk> {
-    public static final SkillPerk NONE = new SkillPerk(Mestiere.newID("none"), Skills.NONE, 0, false, null);
+    public static final SkillPerk NONE = new SkillPerk(Mestiere.newID("none"), Skills.NONE, Integer.MAX_VALUE, false, null);
 
     public final Identifier id;
     public final Skill skill;

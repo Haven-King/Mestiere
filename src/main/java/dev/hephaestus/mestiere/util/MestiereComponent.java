@@ -6,8 +6,6 @@ import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.skills.SkillPerk;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.util.sync.EntitySyncedComponent;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.MessageType;
@@ -120,7 +118,7 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
     }
 
     public boolean hasPerk(SkillPerk perk) {
-        return skills.getOrDefault(perk.skill, 0) >= perk.level;
+        return getLevel(perk.skill) >= perk.level;
     }
 
     public boolean hasPerk(Identifier perk) {

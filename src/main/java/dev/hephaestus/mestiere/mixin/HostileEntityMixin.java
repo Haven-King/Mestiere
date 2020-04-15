@@ -21,7 +21,15 @@ public class HostileEntityMixin extends MobEntityWithAi {
     public void onDeath(DamageSource source) {
         super.onDeath(source);
         if (source.getAttacker() instanceof ServerPlayerEntity) {
-            Mestiere.COMPONENT.get(source.getAttacker()).addXp(Skills.SLAYING, this.getCurrentExperience((PlayerEntity) source.getAttacker()));
+            Mestiere.COMPONENT.get(source.getAttacker()).addXp(
+                Skills.SLAYING,
+                this.getCurrentExperience((PlayerEntity) source.getAttacker()) + (int)this.getPos().distanceTo(source.getAttacker().getPos())/10 + (int)(this.getVelocity().length()*2.5)
+            );
         }
+    }
+
+    @Override
+    protected void dropXp() {
+        // We give XP right to the player when we die, so no orbs necessary!
     }
 }
