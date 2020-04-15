@@ -19,11 +19,10 @@ public class OreVisibilityPerk extends SkillPerk {
     private final Text stext;
 
     public OreVisibilityPerk(int level, Block block) {
-        super(Mestiere.newID("mining.ore." + Registry.BLOCK.getId(block).getPath()),
-                Skills.MINING,
+        super(Skills.MINING, "ore." + Registry.BLOCK.getId(block).getPath(),
                 level,
                 true,
-                new ItemStack(block.asItem()));
+                false, 1, new ItemStack(block.asItem()));
 
         this.block = block;
         stext = new TranslatableText(block.getTranslationKey()).setStyle(new Style().setColor(MestiereConfig.messageFormatting.getOrDefault(Registry.BLOCK.getId(block), Formatting.WHITE)));

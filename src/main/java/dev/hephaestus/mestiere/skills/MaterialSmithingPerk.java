@@ -17,11 +17,10 @@ public class MaterialSmithingPerk extends SkillPerk {
     private final Item material;
 
     public MaterialSmithingPerk(int level, Item material) {
-        super(Mestiere.newID("smithing.material." + Registry.ITEM.getId(material).getPath()),
-                Skills.SMITHING,
+        super(Skills.SMITHING, "material." + Registry.ITEM.getId(material).getPath(),
                 level,
                 true,
-                new ItemStack(material));
+                false, 1, new ItemStack(material));
 
         this.material = material;
         stext = new TranslatableText(material.getTranslationKey()).setStyle(new Style().setColor(MestiereConfig.messageFormatting.getOrDefault(Registry.ITEM.getId(material), Formatting.WHITE)).setBold(true));

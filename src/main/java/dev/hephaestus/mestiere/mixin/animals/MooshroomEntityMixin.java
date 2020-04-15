@@ -1,7 +1,6 @@
 package dev.hephaestus.mestiere.mixin.animals;
 
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.util.InventoryGetter;
 import dev.hephaestus.mestiere.util.SexedEntity;
 import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.entity.EntityType;
@@ -22,8 +21,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-
 @Mixin(MooshroomEntity.class)
 public class MooshroomEntityMixin extends CowEntity {
     int timeToMilk = 0;
@@ -37,13 +34,12 @@ public class MooshroomEntityMixin extends CowEntity {
         if (((SexedEntity)this).getSex() == SexedEntity.Sex.MALE || this.timeToMilk > 0) {
             if (player instanceof ServerPlayerEntity) {
                 ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)player;
-                int s = (int) ((InventoryGetter) serverPlayerEntity.inventory).getInventory().stream()
-                        .mapToLong(List::size).sum();
+                int s = serverPlayerEntity.inventory.main.size();
                 for (int i = 0; i < s; ++i) {
-                    serverPlayerEntity.networkHandler.sendPacket(new ContainerSlotUpdateS2CPacket(-2, serverPlayerEntity.inventory.selectedSlot, serverPlayerEntity.inventory.getInvStack(serverPlayerEntity.inventory.selectedSlot)));
                     serverPlayerEntity.networkHandler.sendPacket(new ContainerSlotUpdateS2CPacket(-2, i, serverPlayerEntity.inventory.getInvStack(i)));
-                    serverPlayerEntity.networkHandler.sendPacket(new HeldItemChangeS2CPacket(serverPlayerEntity.inventory.selectedSlot));
                 }
+
+                serverPlayerEntity.networkHandler.sendPacket(new HeldItemChangeS2CPacket(serverPlayerEntity.inventory.selectedSlot));
             }
             cir.setReturnValue(false);
         } else {

@@ -3,7 +3,6 @@ package dev.hephaestus.mestiere.skills;
 import dev.hephaestus.mestiere.Mestiere;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
@@ -12,24 +11,28 @@ import java.util.HashMap;
 import static net.minecraft.util.Util.createTranslationKey;
 
 public class SkillPerk implements Comparable<SkillPerk> {
-    public static final SkillPerk NONE = new SkillPerk(Mestiere.newID("none"), Skills.NONE, Integer.MAX_VALUE, false, null);
+    public static final SkillPerk NONE = new SkillPerk(Skills.NONE, "none", Integer.MAX_VALUE, false, false, 1, null);
 
     public final Identifier id;
     public final Skill skill;
     public final int level;
     public final boolean hardcore;
+    public final boolean scalesWithLevel;
+    public final int maxLevel;
     public final ItemStack icon;
 
-    public SkillPerk(Identifier id, Skill skill, int level, boolean hardcore, ItemStack icon) {
-        this.id = id;
+    public SkillPerk(Skill skill, String id, int level, boolean hardcore, boolean scalesWithLevel, int maxLevel, ItemStack icon) {
+        this.scalesWithLevel = scalesWithLevel;
+        this.maxLevel = maxLevel;
+        this.id = Mestiere.newID(skill.id.getPath() + "." + id);
         this.skill = skill;
         this.level = level;
         this.hardcore = hardcore;
         this.icon = icon;
     }
 
-    public SkillPerk(Identifier id, Skill skill, int level, Text message, Text description, ItemStack icon) {
-        this(id, skill, level, false, icon);
+    public SkillPerk(Skill skill, String id, int level, int maxLevel, boolean scalesWithLevel, ItemStack icon) {
+        this(skill, id, level, false, scalesWithLevel, maxLevel, icon);
     }
 
     protected HashMap<Mestiere.KEY_TYPE, String> messages = new HashMap<>();

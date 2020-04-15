@@ -21,7 +21,6 @@
     "ExperienceOrbEntityMixin",
     "HostileEntityMixin",
     "OreFeatureMixin",
-    "PlayerInventoryMixin",
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin"
   ],

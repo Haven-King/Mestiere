@@ -9,6 +9,7 @@ import io.github.cottonmc.cotton.gui.widget.data.Alignment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -24,7 +25,11 @@ public class PerkPanel extends WPanel {
     @Override
     public void addInformation(List<String> information) {
         super.addInformation(information);
+        information.add(this.perk.getText(Mestiere.KEY_TYPE.NAME).formatted(this.perk.skill.format).asFormattedString());
         information.add(this.perk.getText(Mestiere.KEY_TYPE.DESCRIPTION).asFormattedString());
+        if (this.perk.scalesWithLevel) {
+            information.add(new TranslatableText("mestiere.scales").asString());
+        }
     }
 
     @Override
@@ -34,12 +39,21 @@ public class PerkPanel extends WPanel {
         assert player != null;
         boolean unlocked = MestiereClient.COMPONENT.get(player).getLevel(this.perk.skill) >= this.perk.level;
 
-        ScreenDrawing.drawStringWithShadow(this.perk.getText(Mestiere.KEY_TYPE.NAME).formatted(unlocked ? Formatting.WHITE : Formatting.DARK_GRAY).asFormattedString(),
+        if (unlocked) {
+            ScreenDrawing.drawStringWithShadow(this.perk.getText(Mestiere.KEY_TYPE.NAME).asFormattedString(),
                 Alignment.LEFT,
                 x + this.height,
                 y + ((20 - 8) / 2),
                 this.width,
                 0xFFFFFFFF);
+        } else {
+            ScreenDrawing.drawString(this.perk.getText(Mestiere.KEY_TYPE.NAME).formatted(Formatting.DARK_GRAY).asFormattedString(),
+                    Alignment.LEFT,
+                    x + this.height,
+                    y + ((20 - 8) / 2),
+                    this.width,
+                    0xFFFFFFFF);
+        }
 
         ScreenDrawing.drawStringWithShadow(new LiteralText(this.perk.level + "").formatted(unlocked ? Formatting.WHITE : Formatting.RED).asFormattedString(),
                 Alignment.RIGHT,

@@ -4,6 +4,7 @@ import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.MestiereClient;
 import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.skills.SkillPerk;
+import dev.hephaestus.mestiere.skills.Skills;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.util.sync.EntitySyncedComponent;
 import net.minecraft.entity.Entity;
@@ -18,6 +19,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class MestiereComponent implements XpComponent, EntitySyncedComponent {
     private final ServerPlayerEntity player;
@@ -81,7 +83,7 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
     public void setXp(Skill skill, int xp) {
         this.skills.put(skill, xp);
 
-        if (clientHasInstalled)
+        if (clientHasInstalled || (Objects.requireNonNull(player.getServer()).isOwner(player.getGameProfile())))
             this.sync();
     }
 
@@ -111,7 +113,7 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
             }
         }
 
-        if (clientHasInstalled)
+        if (clientHasInstalled || (Objects.requireNonNull(player.getServer()).isOwner(player.getGameProfile())))
             this.sync();
 
         Mestiere.debug("%s has %dXP in %s. They are level %d", this.player.getName().asString(), this.skills.getOrDefault(skill, 0), skill.id, getLevel(skill));
@@ -123,6 +125,10 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
 
     public boolean hasPerk(Identifier perk) {
         return hasPerk(Mestiere.PERKS.get(perk));
+    }
+
+    public float getScale(SkillPerk perk) {
+        return MathHelper.clamp(getLevel(perk.skill) - perk.level, 0, perk.maxLevel) / (float)perk.maxLevel;
     }
 
     @Override

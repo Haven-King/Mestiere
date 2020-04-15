@@ -3,7 +3,6 @@ package dev.hephaestus.mestiere.skills;
 import dev.hephaestus.mestiere.Mestiere;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -11,8 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Perks {
-    private HashMap<Skill, ArrayList<SkillPerk>> perksBySkill = new HashMap<>();
-    public HashMap<Identifier, SkillPerk> perksById = new HashMap<>();
+    private final HashMap<Skill, ArrayList<SkillPerk>> perksBySkill = new HashMap<>();
+    public final HashMap<Identifier, SkillPerk> perksById = new HashMap<>();
 
     public static Perks init() {
         Perks instance = new Perks();
@@ -20,19 +19,33 @@ public class Perks {
         instance.register(new MaterialSmithingPerk(10, Items.GOLD_INGOT));
         instance.register(new MaterialSmithingPerk(20, Items.DIAMOND));
 
-        instance.register(new SkillPerk(Mestiere.newID("farming.sex_guru"),
-                Skills.FARMING,
-                10,
-                new TranslatableText("mestiere.perk.farming.sex_guru.message"),
-                new TranslatableText("mestiere.perk.farming.sex_guru.description"),
+        instance.register(new SkillPerk(Skills.FARMING, "sex_guru",
+                10, 1, false,
                 new ItemStack(Items.WHEAT)));
 
-        instance.register(new SkillPerk(Mestiere.newID("farming.green_thumb"),
-                Skills.FARMING,
-                5,
-                new TranslatableText("mestiere.perk.farming.green_thumb.message"),
-                new TranslatableText("mestiere.perk.farming.green_thumb.description"),
+        instance.register(new SkillPerk(Skills.FARMING, "gatherer",
+                5, 15, true,
+                new ItemStack(Items.GRASS)));
+
+        instance.register(new SkillPerk(Skills.FARMING, "green_thumb",
+                15, 1, false,
                 new ItemStack(Items.WHEAT_SEEDS)));
+
+        instance.register(new SkillPerk(Skills.HUNTING, "hunter",
+                5, 30, true,
+                new ItemStack(Items.PORKCHOP)));
+
+        instance.register(new SkillPerk(Skills.HUNTING, "sharp_shooter",
+                15,  30, true,
+                new ItemStack(Items.ARROW)));
+
+        instance.register(new SkillPerk(Skills.SLAYING, "slayer",
+                15, 30, true,
+                new ItemStack(Items.ROTTEN_FLESH)));
+
+        instance.register(new SkillPerk(Skills.SLAYING, "sniper",
+                15, 30, true,
+                new ItemStack(Items.ARROW)));
 
         return instance;
     }
@@ -51,5 +64,9 @@ public class Perks {
 
     public SkillPerk get(Identifier id) {
         return perksById.getOrDefault(id, SkillPerk.NONE);
+    }
+
+    public SkillPerk get(String id) {
+        return get(Mestiere.newID(id));
     }
 }
