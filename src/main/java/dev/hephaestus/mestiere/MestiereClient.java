@@ -46,7 +46,7 @@ public class MestiereClient implements ClientModInitializer {
             if (openSkillsMenu.isPressed() && MinecraftClient.getInstance().player != null && !MestiereScreen.isOpen()) {
                 List<Identifier> data = new ArrayList<>(Mestiere.SKILLS.skills.keySet());
                 data.sort(Comparator.comparing(Identifier::getPath));
-                MestiereScreen.open(new MestiereScreen("Skills", new ScrollingGuiDescription<>(
+                MestiereScreen.open(new MestiereScreen("skills", new ScrollingGuiDescription<>(
                     data,
                     SkillButton::new,
                     (i, button) -> button.init(i)

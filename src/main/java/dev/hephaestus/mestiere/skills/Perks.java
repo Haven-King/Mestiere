@@ -17,8 +17,8 @@ public class Perks {
     public static Perks init() {
         Perks instance = new Perks();
 
-        instance.register(new SmithingPerk(10, Items.GOLD_INGOT));
-        instance.register(new SmithingPerk(20, Items.DIAMOND));
+        instance.register(new MaterialSmithingPerk(10, Items.GOLD_INGOT));
+        instance.register(new MaterialSmithingPerk(20, Items.DIAMOND));
 
         instance.register(new SkillPerk(Mestiere.newID("farming.sex_guru"),
                 Skills.FARMING,

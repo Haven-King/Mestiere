@@ -80,7 +80,6 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
     }
 
     @Override
-    @Environment(EnvType.SERVER)
     public void setXp(Skill skill, int xp) {
         this.skills.put(skill, xp);
 
@@ -89,7 +88,6 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
     }
 
     @Override
-    @Environment(EnvType.SERVER)
     public void addXp(Skill skill, int xp) {
         this.player.addExperience(xp);
 

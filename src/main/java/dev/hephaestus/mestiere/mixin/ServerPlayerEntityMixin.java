@@ -5,6 +5,8 @@ import dev.hephaestus.fiblib.FibLib;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.util.MestiereConfig;
 import dev.hephaestus.mestiere.util.SexedEntity;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.ProjectileUtil;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -80,13 +82,13 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             if (hit != null && hit.getEntity() instanceof AnimalEntity) {
                 if (hit.getEntity().hasCustomName()) {
                     this.sendChatMessage(
-                            new TranslatableText("perk.mestiere.farming.sex_guru.tip.named." + ((SexedEntity)hit.getEntity()).getSex().toString().toLowerCase(), hit.getEntity().getCustomName()),
-                            MessageType.GAME_INFO
+                        new TranslatableText("perk.mestiere.farming.sex_guru.tip.named." + ((SexedEntity)hit.getEntity()).getSex().toString().toLowerCase(), hit.getEntity().getCustomName()),
+                        MessageType.GAME_INFO
                     );
                 } else {
                     this.sendChatMessage(
-                            new TranslatableText("perk.mestiere.farming.sex_guru.tip.nameless." + ((SexedEntity)hit.getEntity()).getSex().toString().toLowerCase(), hit.getEntity().getCustomName()),
-                            MessageType.GAME_INFO
+                        new TranslatableText("perk.mestiere.farming.sex_guru.tip.nameless." + ((SexedEntity)hit.getEntity()).getSex().toString().toLowerCase(), hit.getEntity().getName()),
+                        MessageType.GAME_INFO
                     );
                 }
             }

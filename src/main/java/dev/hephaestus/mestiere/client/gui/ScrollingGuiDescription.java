@@ -11,7 +11,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class ScrollingGuiDescription<W extends WWidget> extends LightweightGuiDescription {
-    WGridPanel root = new WGridPanel() {{setSize(200, 160);}};
+    WGridPanel root = new WGridPanel() {{setSize(200, 190);}};
 
     BetterListPanel<W> listPanel;
 

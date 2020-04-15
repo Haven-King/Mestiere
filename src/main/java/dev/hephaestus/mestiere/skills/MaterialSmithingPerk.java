@@ -12,11 +12,11 @@ import net.minecraft.util.registry.Registry;
 
 import static net.minecraft.util.Util.createTranslationKey;
 
-public class SmithingPerk extends SkillPerk {
+public class MaterialSmithingPerk extends SkillPerk {
     private final Text stext;
     private final Item material;
 
-    public SmithingPerk(int level, Item material) {
+    public MaterialSmithingPerk(int level, Item material) {
         super(Mestiere.newID("smithing.material." + Registry.ITEM.getId(material).getPath()),
                 Skills.SMITHING,
                 level,

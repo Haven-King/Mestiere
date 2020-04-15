@@ -14,11 +14,11 @@ import net.minecraft.util.registry.Registry;
 
 import static net.minecraft.util.Util.createTranslationKey;
 
-public class MiningPerk extends SkillPerk {
+public class OreVisibilityPerk extends SkillPerk {
     private final Block block;
     private final Text stext;
 
-    public MiningPerk(int level, Block block) {
+    public OreVisibilityPerk(int level, Block block) {
         super(Mestiere.newID("mining.ore." + Registry.BLOCK.getId(block).getPath()),
                 Skills.MINING,
                 level,

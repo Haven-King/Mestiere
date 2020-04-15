@@ -3,7 +3,7 @@ package dev.hephaestus.mestiere.util;
 import com.google.gson.*;
 import dev.hephaestus.fiblib.FibLib;
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.skills.MiningPerk;
+import dev.hephaestus.mestiere.skills.OreVisibilityPerk;
 import dev.hephaestus.mestiere.skills.Skills;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
@@ -95,6 +95,7 @@ public class MestiereConfig {
             JsonParser jsonParser = new JsonParser();
 
             JsonObject json = (JsonObject)jsonParser.parse(new InputStreamReader(fi));
+            fi.close();
 
             instance.levelModifier = json.get("levelModifier").getAsFloat();
             instance.hardcoreProgression = json.get("hardcoreProgression").getAsBoolean();
@@ -102,6 +103,7 @@ public class MestiereConfig {
             JsonObject miningValuesJson = json.getAsJsonObject("mining_values");
 
             if (miningValuesJson != null) {
+                miningValues.clear();
                 for (Map.Entry<String, JsonElement> element : miningValuesJson.entrySet()) {
                     Identifier blockId = new Identifier(element.getKey());
                     if (Registry.BLOCK.getOrEmpty(blockId).isPresent()) {
@@ -110,10 +112,11 @@ public class MestiereConfig {
                 }
             }
 
-            JsonObject blockFormattingJson = json.getAsJsonObject("block_formatting");
+            JsonObject messageFormattingJson = json.getAsJsonObject("block_formatting");
 
-            if (blockFormattingJson != null) {
-                for (Map.Entry<String, JsonElement> element : blockFormattingJson.entrySet()) {
+            if (messageFormattingJson != null) {
+                messageFormatting.clear();
+                for (Map.Entry<String, JsonElement> element : messageFormattingJson.entrySet()) {
                     Identifier blockId = new Identifier(element.getKey());
                     if (Registry.BLOCK.getOrEmpty(blockId).isPresent()) {
                         String value = element.getValue().getAsString();
@@ -122,7 +125,17 @@ public class MestiereConfig {
                 }
             }
 
-            fi.close();
+            JsonObject alchemicalReagentsJson = json.getAsJsonObject("alchemical_reagents");
+
+            if (alchemicalReagentsJson != null) {
+                alchemicalReagentValues.clear();
+                for (Map.Entry<String, JsonElement> element : alchemicalReagentsJson.entrySet()) {
+                    Identifier itemId = new Identifier(element.getKey());
+                    if (Registry.ITEM.getOrEmpty(itemId).isPresent()) {
+                        alchemicalReagentValues.put(Registry.ITEM.get(itemId), element.getValue().getAsInt());
+                    }
+                }
+            }
         } catch (FileNotFoundException e) {
             Mestiere.log("No user config found; creating default user config");
             instance.writeConfig();
@@ -132,12 +145,12 @@ public class MestiereConfig {
 
         for (Map.Entry<Block, Integer> e : levelRequiredToDetect.entrySet()) {
             FibLib.Blocks.register(DimensionType.OVERWORLD, e.getKey(), (state, player) ->
-                    Mestiere.COMPONENT.get(player).getLevel(Skills.MINING) >= e.getValue() || !instance.hardcoreProgression || player.isCreative() ?
-                            state :
-                            Blocks.STONE.getDefaultState()
+                Mestiere.COMPONENT.get(player).getLevel(Skills.MINING) >= e.getValue() || !instance.hardcoreProgression || player.isCreative() ?
+                    state :
+                    Blocks.STONE.getDefaultState()
             );
 
-            Mestiere.PERKS.register(new MiningPerk(e.getValue(), e.getKey()));
+            Mestiere.PERKS.register(new OreVisibilityPerk(e.getValue(), e.getKey()));
         }
 
         return instance;
@@ -159,12 +172,20 @@ public class MestiereConfig {
 
             config.add("mining_values", miningValuesJson);
 
-            JsonObject blockFormattingJson = new JsonObject();
+            JsonObject messageFormattingJson = new JsonObject();
             for (Map.Entry<Identifier, Formatting> entry : messageFormatting.entrySet()) {
-                blockFormattingJson.addProperty(entry.getKey().toString(), entry.getValue().name());
+                messageFormattingJson.addProperty(entry.getKey().toString(), entry.getValue().name());
             }
 
-            config.add("block_formatting", blockFormattingJson);
+            config.add("block_formatting", messageFormattingJson);
+
+            JsonObject alchemicalReagentsJson = new JsonObject();
+            for (Map.Entry<Item, Integer> entry : alchemicalReagentValues.entrySet()) {
+                alchemicalReagentsJson.addProperty(Registry.ITEM.getId(entry.getKey()).toString(), entry.getValue());
+            }
+
+            config.add("alchemical_reagents", alchemicalReagentsJson);
+
 
             writer.write(gson.toJson(config));
             writer.close();
