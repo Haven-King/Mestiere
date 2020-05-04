@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ExperienceOrbEntityMixin {
     @Shadow private int amount;
 
+    @SuppressWarnings("ConstantConditions")
     @Inject(method = "onPlayerCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addExperience(I)V"))
     public void addSkillXP(PlayerEntity player, CallbackInfo ci) {
         if ((Object)this instanceof SkilledExperienceOrbEntity) {

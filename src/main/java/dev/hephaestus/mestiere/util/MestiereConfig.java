@@ -2,6 +2,7 @@ package dev.hephaestus.mestiere.util;
 
 import com.google.gson.*;
 import dev.hephaestus.fiblib.FibLib;
+import dev.hephaestus.fiblib.blocks.BlockFib;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.OreVisibilityPerk;
 import dev.hephaestus.mestiere.skills.Skills;
@@ -16,10 +17,10 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.dimension.DimensionType;
 
 import java.io.*;
 import java.util.HashMap;
@@ -144,10 +145,13 @@ public class MestiereConfig {
         }
 
         for (Map.Entry<Block, Integer> e : levelRequiredToDetect.entrySet()) {
-            FibLib.Blocks.register(DimensionType.OVERWORLD, e.getKey(), (state, player) ->
-                Mestiere.COMPONENT.get(player).getLevel(Skills.MINING) >= e.getValue() || !instance.hardcoreProgression || player.isCreative() ?
-                    state :
-                    Blocks.STONE.getDefaultState()
+            FibLib.Blocks.register(
+                new BlockFib(e.getKey(), Blocks.STONE) {
+                   @Override
+                   protected boolean condition(ServerPlayerEntity player) {
+                       return Mestiere.COMPONENT.get(player).getLevel(Skills.MINING) < e.getValue() && instance.hardcoreProgression;
+                   }
+               }
             );
 
             Mestiere.PERKS.register(new OreVisibilityPerk(e.getValue(), e.getKey()));
@@ -206,18 +210,6 @@ public class MestiereConfig {
         generalCategory.addEntry(
             entryBuilder.startFloatField("mestiere.levelModifier", Mestiere.CONFIG.levelModifier)
             .setSaveConsumer((modifier) -> Mestiere.CONFIG.levelModifier = modifier)
-            .build()
-        );
-
-        generalCategory.addEntry(
-            entryBuilder.startBooleanToggle("mestiere.hardcoreProgression", Mestiere.CONFIG.hardcoreProgression)
-            .setSaveConsumer((bool) -> {
-                Mestiere.CONFIG.hardcoreProgression = bool;
-                if (MinecraftClient.getInstance().getServer() != null)
-                    FibLib.Blocks.update(MinecraftClient.getInstance().getServer().getWorld(DimensionType.OVERWORLD),
-                        MestiereConfig.levelRequiredToDetect.keySet()
-                    );
-            })
             .build()
         );
 

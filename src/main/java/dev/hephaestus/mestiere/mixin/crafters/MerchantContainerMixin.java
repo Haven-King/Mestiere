@@ -18,6 +18,6 @@ public class MerchantContainerMixin {
 
     @Inject(method="playYesSound()V", at=@At("HEAD"), cancellable = true)
     private void playYesSound(CallbackInfo info) {
-        if (! (this.trader instanceof Entity)) info.cancel();
+        if (!(this.trader instanceof Entity)) info.cancel();
     }
 }

@@ -8,6 +8,8 @@ import nerdhub.cardinal.components.api.ComponentRegistry;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.EntityComponentCallback;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
@@ -31,6 +33,7 @@ public class MestiereClient implements ClientModInitializer {
             ComponentRegistry.INSTANCE.registerIfAbsent(newID("component.client"), MestiereClientComponent.class);
 
     @Override
+    @Environment(EnvType.CLIENT)
     public void onInitializeClient() {
         KeyBindingRegistry.INSTANCE.addCategory(Mestiere.MOD_NAME);
 

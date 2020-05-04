@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Optional;
 
 public class Recipes {
-    private HashMap<Skill, ArrayList<SkillRecipe>> recipes = new HashMap<>();
+    private final HashMap<Skill, ArrayList<SkillRecipe>> recipes = new HashMap<>();
 
     public void register(Skill skill, SkillRecipe recipe) {
         recipes.putIfAbsent(skill, new ArrayList<>());
@@ -106,7 +106,7 @@ public class Recipes {
             ItemStack secondIngredient = fromJson(recipeJson.secondIngredient);
             ItemStack outputItem = fromJson(recipeJson.outputItem);
 
-            SkillRecipe recipe = new SkillRecipe(
+            return new SkillRecipe(
                     recipeJson.value,   // This *can* be zero, so we don't need to do any validation
                     Mestiere.SKILLS.get(Mestiere.newID(recipeJson.skill)),
                     firstIngredient == null ? secondIngredient : firstIngredient,   // If the first ingredient doesn't exist, use the second
@@ -114,10 +114,6 @@ public class Recipes {
                     outputItem,
                     id,
                     recipeJson.perk_required == null ? SkillPerk.NONE : Mestiere.PERKS.get(new Identifier(recipeJson.perk_required)));
-
-            Mestiere.debug("Registered a new " + recipe.skill.id + " recipe: " + recipe.id);
-
-            return recipe;
         }
     }
 }

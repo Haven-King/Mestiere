@@ -20,8 +20,6 @@
     "BrewingStandBlockEntityMixin",
     "ExperienceOrbEntityMixin",
     "HostileEntityMixin",
-    "OreFeatureMixin",
-    "PlayerManagerMixin",
     "ServerPlayerEntityMixin"
   ],
   "client": [

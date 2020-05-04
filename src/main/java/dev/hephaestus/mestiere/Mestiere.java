@@ -3,7 +3,9 @@ package dev.hephaestus.mestiere;
 import dev.hephaestus.mestiere.skills.Perks;
 import dev.hephaestus.mestiere.skills.Recipes;
 import dev.hephaestus.mestiere.skills.Skills;
-import dev.hephaestus.mestiere.util.*;
+import dev.hephaestus.mestiere.util.Commands;
+import dev.hephaestus.mestiere.util.MestiereComponent;
+import dev.hephaestus.mestiere.util.MestiereConfig;
 import nerdhub.cardinal.components.api.ComponentRegistry;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.EntityComponentCallback;
@@ -17,8 +19,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import static org.apache.commons.lang3.reflect.FieldUtils.getField;
 
 public class Mestiere implements ModInitializer {
 	public static final String MOD_ID = "mestiere";
@@ -46,10 +46,6 @@ public class Mestiere implements ModInitializer {
 
 		EntityComponentCallback.event(ServerPlayerEntity.class).register((player, components) ->
 				components.put(COMPONENT, new MestiereComponent(player)));
-
-		ServerSidePacketRegistry.INSTANCE.register(CLIENT_HAS_INSTALLED_PACKET_ID, (context, data) ->
-			COMPONENT.get(context.getPlayer()).clientConnect(true)
-		);
 	}
 
 	public static void log(String msg) {

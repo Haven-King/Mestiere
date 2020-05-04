@@ -42,40 +42,6 @@ public class Commands {
                         .executes(ctx -> execute(ctx.getSource(), getString(ctx, "action").toLowerCase(), getPlayers(ctx, "players"), getString(ctx, "skill_id"), 0)))
                 ))
         );
-
-        dispatcher.register(CommandManager.literal("skill")
-            .then(CommandManager.argument("skill_id", string()).suggests(CompletionProvider.SKILLS)
-                .executes(ctx -> info(ctx, getString(ctx, "skill_id")))
-        ));
-    }
-
-    private static int info(CommandContext<ServerCommandSource> source, String skill) throws CommandSyntaxException {
-        Skill s = Mestiere.SKILLS.get(skill.contains(":") ? new Identifier(skill) : Mestiere.newID(skill));
-
-        if (s == Skills.NONE) {
-            throw new SimpleCommandExceptionType(new LiteralText("Invalid skill: " + skill)).create();
-        }
-
-        List<SkillPerk> data = Mestiere.PERKS.get(s);
-        data.sort(Comparator.comparing((p) -> p.level));
-
-        ServerPlayerEntity player = source.getSource().getPlayer();
-
-        MestiereComponent component = Mestiere.COMPONENT.get(player);
-
-        LiteralText progress = new LiteralText(" - " + component.getLevel(s) + " (" + component.getXp(s) + "/" + component.getXp(component.getLevel(s)+1) + ")");
-        progress.setStyle(new Style().setColor(Formatting.WHITE).setBold(false));
-
-        player.sendChatMessage(s.getText(Mestiere.KEY_TYPE.NAME).setStyle(s.getText(Mestiere.KEY_TYPE.NAME).getStyle().deepCopy().setBold(true)).append(progress), MessageType.CHAT);
-
-        for (SkillPerk p : data) {
-            boolean unlocked = component.getLevel(p.skill) >= p.level;
-            player.sendChatMessage(p.getText(Mestiere.KEY_TYPE.NAME).formatted(unlocked ? Formatting.WHITE : Formatting.DARK_GRAY).append(" - ").append(new LiteralText(p.level + "").formatted(unlocked ? Formatting.WHITE : Formatting.RED)), MessageType.CHAT);
-            player.sendChatMessage(p.getText(Mestiere.KEY_TYPE.DESCRIPTION), MessageType.CHAT);
-            player.sendChatMessage(new LiteralText(""), MessageType.CHAT);
-        }
-
-        return 1;
     }
 
     private static int execute(ServerCommandSource source, String cmd, Collection<ServerPlayerEntity> targets, String skill, int amount) throws CommandSyntaxException {

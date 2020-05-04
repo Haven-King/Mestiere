@@ -1,11 +1,9 @@
 package dev.hephaestus.mestiere.skills;
 
-import dev.hephaestus.fiblib.FibLib;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.util.MestiereConfig;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -26,11 +24,6 @@ public class OreVisibilityPerk extends SkillPerk {
 
         this.block = block;
         stext = new TranslatableText(block.getTranslationKey()).setStyle(new Style().setColor(MestiereConfig.messageFormatting.getOrDefault(Registry.BLOCK.getId(block), Formatting.WHITE)));
-    }
-
-    @Override
-    public void gained(ServerPlayerEntity player) {
-        FibLib.Blocks.update(player.getServerWorld(), block);
     }
 
     @Override

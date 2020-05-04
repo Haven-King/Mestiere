@@ -1,9 +1,9 @@
 package dev.hephaestus.mestiere.mixin.animals;
 
 import dev.hephaestus.mestiere.Mestiere;
+import dev.hephaestus.mestiere.skills.Skills;
 import dev.hephaestus.mestiere.util.MestiereComponent;
 import dev.hephaestus.mestiere.util.SexedEntity;
-import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -12,7 +12,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

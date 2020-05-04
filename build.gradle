@@ -20,6 +20,10 @@ repositories {
 		url = uri("https://jitpack.io")
 	}
 	maven {
+		name = "Ladysnake Libs"
+		url = 'https://dl.bintray.com/ladysnake/libs'
+	}
+	maven {
 		name = "CottonMC"
 		url = "http://server.bbkr.space:8081/artifactory/libs-release"
 	}
