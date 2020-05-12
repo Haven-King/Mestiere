@@ -1,19 +1,23 @@
 package dev.hephaestus.mestiere.client.gui;
 
+import dev.hephaestus.mestiere.client.gui.widgets.BetterListPanel;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WListPanel;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-public class ScrollingGuiDescription<W extends WWidget> extends LightweightGuiDescription {
+@Environment(EnvType.CLIENT)
+public class ScrollingGuiDescription<W extends WWidget> extends LightweightGuiDescription implements ScrollingGui {
     WGridPanel root = new WGridPanel() {{setSize(200, 190);}};
 
-    BetterListPanel<W> listPanel;
+    BetterListPanel<Identifier, W> listPanel;
 
     public ScrollingGuiDescription(List<Identifier> data, Supplier<W> supplier, BiConsumer<Identifier, W> configurator) {
         setRootPanel(root);
@@ -26,18 +30,5 @@ public class ScrollingGuiDescription<W extends WWidget> extends LightweightGuiDe
 
     public void scroll(int x, int y, double amount) {
         this.listPanel.onMouseScroll(x, y, amount);
-    }
-
-    public static class BetterListPanel<W extends WWidget> extends WListPanel<Identifier, W> {
-
-        public BetterListPanel(List<Identifier> data, Supplier<W> supplier, BiConsumer<Identifier, W> configurator) {
-            super(data, supplier, configurator);
-        }
-
-        @Override
-        public void onMouseScroll(int x, int y, double amount) {
-            super.onMouseScroll(x, y, amount);
-            this.scrollBar.setValue((int) (this.scrollBar.getValue()-amount));
-        }
     }
 }

@@ -1,5 +1,8 @@
 package dev.hephaestus.mestiere;
 
+import dev.hephaestus.mestiere.crafting.SkillCraftingController;
+import dev.hephaestus.mestiere.crafting.SkillRecipe;
+import dev.hephaestus.mestiere.crafting.SkillRecipeSerializer;
 import dev.hephaestus.mestiere.skills.Perks;
 import dev.hephaestus.mestiere.skills.Recipes;
 import dev.hephaestus.mestiere.skills.Skills;
@@ -11,12 +14,19 @@ import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.EntityComponentCallback;
 import nerdhub.cardinal.components.api.util.EntityComponents;
 import nerdhub.cardinal.components.api.util.RespawnCopyStrategy;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.Blocks;
+import net.minecraft.container.BlockContext;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.recipe.RecipeManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,9 +38,9 @@ public class Mestiere implements ModInitializer {
 	public static final Skills SKILLS = Skills.init();
 	public static final Perks PERKS = Perks.init();
 	public static final MestiereConfig CONFIG = MestiereConfig.init();
-	public static final Recipes RECIPES = Recipes.init();
+	public static final Recipes RECIPES = new Recipes();
 
-	public static final Identifier CLIENT_HAS_INSTALLED_PACKET_ID = newID("client_connected");
+	public static final Identifier SELECT_RECIPE_ID = newID("select_recipe");
 
 	public static final ComponentType<MestiereComponent> COMPONENT =
 		ComponentRegistry.INSTANCE.registerIfAbsent(newID("component"), MestiereComponent.class);
@@ -46,6 +56,22 @@ public class Mestiere implements ModInitializer {
 
 		EntityComponentCallback.event(ServerPlayerEntity.class).register((player, components) ->
 				components.put(COMPONENT, new MestiereComponent(player)));
+
+		Registry.register(Registry.RECIPE_SERIALIZER, SkillRecipeSerializer.ID, SkillRecipeSerializer.INSTANCE);
+		Registry.register(Registry.RECIPE_TYPE, SkillRecipe.Type.ID, SkillRecipe.Type.INSTANCE);
+
+		ServerSidePacketRegistry.INSTANCE.register(SELECT_RECIPE_ID, ((packetContext, packetByteBuf) -> {
+			int syncId = packetByteBuf.readByte();
+			Identifier recipeId = packetByteBuf.readIdentifier();
+			packetContext.getTaskQueue().execute(() -> {
+					SkillCraftingController controller = SkillCraftingController.getInstance(syncId);
+					Mestiere.debug("Trying to sync [%d, %s]", syncId, controller.toString().split("@")[1]);
+					controller.setRecipe(recipeId);
+			});
+		}));
+
+		ContainerProviderRegistry.INSTANCE.registerFactory(Registry.BLOCK.getId(Blocks.SMITHING_TABLE),
+			(syncId, id, player, buf) -> new SkillCraftingController(syncId, Skills.SMITHING, player.inventory, BlockContext.create(player.world, buf.readBlockPos())));
 	}
 
 	public static void log(String msg) {

@@ -54,7 +54,7 @@ public class Perks {
         perksBySkill.putIfAbsent(perk.skill, new ArrayList<>());
         perksBySkill.get(perk.skill).add(perk);
         perksById.put(perk.id, perk);
-        Mestiere.debug("Registered new %s perk: %s %d", perk.skill.id, perk.id, perksBySkill.get(perk.skill).size());
+        Mestiere.debug("Registered new %s perk: %s", perk.skill.id, perk.id, perksBySkill.get(perk.skill).size());
     }
 
     public List<SkillPerk> get(Skill skill) {

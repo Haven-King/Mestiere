@@ -1,18 +1,18 @@
 {
   "type": "mestiere:skill_recipe",
   "firstIngredient": {
-    "item": "minecraft:diamond",
-    "amount": 2
+    "item": "minecraft:gold_ingot",
+    "amount": 3
   },
   "secondIngredient": {
     "item": "minecraft:stick",
     "amount": 2
   },
   "outputItem": {
-    "item": "minecraft:diamond_hoe",
+    "item": "minecraft:golden_pickaxe",
     "amount": 1
   },
   "skill": "smithing",
-  "value": 32,
-  "perk_required": "mestiere:smithing.diamond"
+  "value": 12,
+  "perk_required": "mestiere:smithing.material.gold_ingot"
 }

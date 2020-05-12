@@ -1,7 +1,7 @@
 {
   "type": "mestiere:skill_recipe",
   "firstIngredient": {
-    "item": "minecraft:diamond",
+    "item": "minecraft:gold_ingot",
     "amount": 7
   },
   "secondIngredient": {
@@ -9,10 +9,10 @@
     "amount": 1
   },
   "outputItem": {
-    "item": "minecraft:diamond_leggings",
+    "item": "minecraft:golden_leggings",
     "amount": 1
   },
   "skill": "smithing",
-  "value": 112,
-  "perk_required": "mestiere:smithing.diamond"
+  "value": 28,
+  "perk_required": "mestiere:smithing.material.gold_ingot"
 }

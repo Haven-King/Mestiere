@@ -2,17 +2,17 @@
   "type": "mestiere:skill_recipe",
   "firstIngredient": {
     "item": "minecraft:gold_ingot",
-    "amount": 7
+    "amount": 8
   },
   "secondIngredient": {
-    "item": "minecraft:leather_leggings",
+    "item": "minecraft:leather_chestplate",
     "amount": 1
   },
   "outputItem": {
-    "item": "minecraft:golden_leggings",
+    "item": "minecraft:golden_chestplate",
     "amount": 1
   },
   "skill": "smithing",
-  "value": 28,
-  "perk_required": "mestiere:smithing.gold_ingot"
+  "value": 32,
+  "perk_required": "mestiere:smithing.material.gold_ingot"
 }

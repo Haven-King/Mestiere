@@ -1,11 +1,8 @@
 package dev.hephaestus.mestiere.util;
 
 import com.google.gson.*;
-import dev.hephaestus.fiblib.FibLib;
-import dev.hephaestus.fiblib.blocks.BlockFib;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.OreVisibilityPerk;
-import dev.hephaestus.mestiere.skills.Skills;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -17,7 +14,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -83,10 +79,9 @@ public class MestiereConfig {
         put(Items.GOLDEN_CARROT, 2);
         put(Items.TURTLE_HELMET, 5);
         put(Items.PHANTOM_MEMBRANE, 4);
-
     }};
 
-    private static File CONFIG_DIRECTORY = FabricLoader.getInstance().getConfigDirectory();
+    private static final File CONFIG_DIRECTORY = FabricLoader.getInstance().getConfigDirectory();
 
     public static MestiereConfig init() {
         MestiereConfig instance = new MestiereConfig();
@@ -113,7 +108,7 @@ public class MestiereConfig {
                 }
             }
 
-            JsonObject messageFormattingJson = json.getAsJsonObject("block_formatting");
+            JsonObject messageFormattingJson = json.getAsJsonObject("formatting");
 
             if (messageFormattingJson != null) {
                 messageFormatting.clear();
@@ -145,15 +140,6 @@ public class MestiereConfig {
         }
 
         for (Map.Entry<Block, Integer> e : levelRequiredToDetect.entrySet()) {
-            FibLib.Blocks.register(
-                new BlockFib(e.getKey(), Blocks.STONE) {
-                   @Override
-                   protected boolean condition(ServerPlayerEntity player) {
-                       return Mestiere.COMPONENT.get(player).getLevel(Skills.MINING) < e.getValue() && instance.hardcoreProgression;
-                   }
-               }
-            );
-
             Mestiere.PERKS.register(new OreVisibilityPerk(e.getValue(), e.getKey()));
         }
 

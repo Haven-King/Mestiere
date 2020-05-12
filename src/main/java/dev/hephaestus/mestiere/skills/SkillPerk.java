@@ -11,7 +11,7 @@ import java.util.HashMap;
 import static net.minecraft.util.Util.createTranslationKey;
 
 public class SkillPerk implements Comparable<SkillPerk> {
-    public static final SkillPerk NONE = new SkillPerk(Skills.NONE, "none", Integer.MAX_VALUE, false, false, 1, null);
+    public static final SkillPerk NONE = new SkillPerk(Skills.NONE, "none", Integer.MIN_VALUE, false, false, 1, null);
 
     public final Identifier id;
     public final Skill skill;
@@ -53,6 +53,4 @@ public class SkillPerk implements Comparable<SkillPerk> {
     public int compareTo(SkillPerk perk) {
         return Integer.compare(this.level, perk.level);
     }
-
-    public void gained(ServerPlayerEntity player) {}
 }

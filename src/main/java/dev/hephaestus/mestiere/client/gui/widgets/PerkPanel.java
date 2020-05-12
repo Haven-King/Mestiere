@@ -6,6 +6,8 @@ import dev.hephaestus.mestiere.skills.SkillPerk;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WPanel;
 import io.github.cottonmc.cotton.gui.widget.data.Alignment;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.LiteralText;
@@ -15,6 +17,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.List;
 
+@Environment(EnvType.CLIENT)
 public class PerkPanel extends WPanel {
     private SkillPerk perk;
 
@@ -37,7 +40,7 @@ public class PerkPanel extends WPanel {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
         assert player != null;
-        boolean unlocked = MestiereClient.COMPONENT.get(player).getLevel(this.perk.skill) >= this.perk.level;
+        boolean unlocked = Mestiere.COMPONENT.get(player).getLevel(this.perk.skill) >= this.perk.level;
 
         if (unlocked) {
             ScreenDrawing.drawStringWithShadow(this.perk.getText(Mestiere.KEY_TYPE.NAME).asFormattedString(),

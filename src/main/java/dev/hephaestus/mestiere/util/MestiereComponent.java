@@ -7,6 +7,7 @@ import dev.hephaestus.mestiere.skills.SkillPerk;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.util.sync.EntitySyncedComponent;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.MessageType;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -20,11 +21,11 @@ import net.minecraft.util.math.MathHelper;
 import java.util.HashMap;
 
 public class MestiereComponent implements XpComponent, EntitySyncedComponent {
-    private final ServerPlayerEntity player;
+    private final PlayerEntity player;
 
     private final HashMap<Skill, Integer> skills = new HashMap<>();
 
-    public MestiereComponent(ServerPlayerEntity player) {
+    public MestiereComponent(PlayerEntity player) {
         this.player = player;
     }
 
@@ -73,33 +74,34 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
 
     @Override
     public void addXp(Skill skill, int xp) {
-        this.player.addExperience(xp);
+        if (player instanceof ServerPlayerEntity) {
+            this.player.addExperience(xp);
 
-        int oldLevel = getLevel(skill);
-        this.skills.put(skill, this.skills.getOrDefault(skill, 0) + xp);
-        int newLevel = getLevel(skill);
-        if (newLevel > oldLevel) {
-            TranslatableText sText = skill.getText(Mestiere.KEY_TYPE.NAME);
-            sText.setStyle(sText.getStyle().deepCopy().setBold(true));
+            int oldLevel = getLevel(skill);
+            this.skills.put(skill, this.skills.getOrDefault(skill, 0) + xp);
+            int newLevel = getLevel(skill);
+            if (newLevel > oldLevel) {
+                TranslatableText sText = skill.getText(Mestiere.KEY_TYPE.NAME);
+                sText.setStyle(sText.getStyle().deepCopy().setBold(true));
 
-            LiteralText lText = new LiteralText(Integer.toString(newLevel));
-            lText.setStyle(new Style().setColor(Formatting.GREEN));
+                LiteralText lText = new LiteralText(Integer.toString(newLevel));
+                lText.setStyle(new Style().setColor(Formatting.GREEN));
 
-            player.sendChatMessage(
-                new TranslatableText("mestiere.level_up", lText, sText),
-                MessageType.CHAT);
+                ((ServerPlayerEntity)player).sendChatMessage(
+                        new TranslatableText("mestiere.level_up", lText, sText),
+                        MessageType.CHAT);
 
-            for (SkillPerk perk : Mestiere.PERKS.get(skill)) {
-                if (perk.level > oldLevel && perk.level <= newLevel) {
-                    player.sendChatMessage(perk.getText(Mestiere.KEY_TYPE.MESSAGE), MessageType.CHAT);
-                    perk.gained(player);
+                for (SkillPerk perk : Mestiere.PERKS.get(skill)) {
+                    if (perk.level > oldLevel && perk.level <= newLevel) {
+                        ((ServerPlayerEntity)player).sendChatMessage(perk.getText(Mestiere.KEY_TYPE.MESSAGE), MessageType.CHAT);
+                    }
                 }
             }
+
+            this.sync();
+
+            Mestiere.debug("%s has %dXP in %s. They are level %d", this.player.getName().asString(), this.skills.getOrDefault(skill, 0), skill.id, getLevel(skill));
         }
-
-        this.sync();
-
-        Mestiere.debug("%s has %dXP in %s. They are level %d", this.player.getName().asString(), this.skills.getOrDefault(skill, 0), skill.id, getLevel(skill));
     }
 
     public boolean hasPerk(SkillPerk perk) {
@@ -121,6 +123,6 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
 
     @Override
     public ComponentType<?> getComponentType() {
-        return MestiereClient.COMPONENT;
+        return Mestiere.COMPONENT;
     }
 }

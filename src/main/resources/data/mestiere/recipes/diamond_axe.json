@@ -9,10 +9,10 @@
     "amount": 2
   },
   "outputItem": {
-    "item": "minecraft:diamond_pickaxe",
+    "item": "minecraft:diamond_axe",
     "amount": 1
   },
   "skill": "smithing",
   "value": 48,
-  "perk_required": "mestiere:smithing.diamond"
+  "perk_required": "mestiere:smithing.material.diamond"
 }

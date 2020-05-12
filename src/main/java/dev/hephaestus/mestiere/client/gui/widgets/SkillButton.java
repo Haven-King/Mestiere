@@ -9,6 +9,8 @@ import dev.hephaestus.mestiere.skills.SkillPerk;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.data.Alignment;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 
@@ -16,6 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Environment(EnvType.CLIENT)
 public class SkillButton extends WButton {
     private Skill skill;
 
@@ -46,6 +49,6 @@ public class SkillButton extends WButton {
         ScreenDrawing.drawStringWithShadow(this.skill.getText(Mestiere.KEY_TYPE.NAME).asFormattedString(), Alignment.LEFT, x + this.height, y + ((20 - 8) / 2), this.width, 0xFFFFFFFF);
 
         assert MinecraftClient.getInstance().player != null;
-        ScreenDrawing.drawStringWithShadow(MestiereClient.COMPONENT.get(MinecraftClient.getInstance().player).getLevel(skill) + "", Alignment.RIGHT, x, y + ((20 - 8) / 2), this.width - 4, 0xFFFFFFFF);
+        ScreenDrawing.drawStringWithShadow(Mestiere.COMPONENT.get(MinecraftClient.getInstance().player).getLevel(skill) + "", Alignment.RIGHT, x, y + ((20 - 8) / 2), this.width - 4, 0xFFFFFFFF);
     }
 }

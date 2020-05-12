@@ -4,6 +4,12 @@
   "package": "dev.hephaestus.mestiere.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BlockMixin",
+    "BrewingStandBlockEntityMixin",
+    "ExperienceOrbEntityMixin",
+    "HostileEntityMixin",
+    "RecipeManagerMixin",
+    "ServerPlayerEntityMixin",
     "animals.AnimalEntityMixin",
     "animals.AnimalMateGoalMixin",
     "animals.CowEntityMixin",
@@ -15,12 +21,7 @@
     "crafters.MerchantContainerMixin",
     "crafters.SmithingTableMixin",
     "plants.CropBlockMixin",
-    "plants.MelonBlockMixin",
-    "BlockMixin",
-    "BrewingStandBlockEntityMixin",
-    "ExperienceOrbEntityMixin",
-    "HostileEntityMixin",
-    "ServerPlayerEntityMixin"
+    "plants.MelonBlockMixin"
   ],
   "client": [
   ],

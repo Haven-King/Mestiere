@@ -2,17 +2,17 @@
   "type": "mestiere:skill_recipe",
   "firstIngredient": {
     "item": "minecraft:gold_ingot",
-    "amount": 1
+    "amount": 3
   },
   "secondIngredient": {
     "item": "minecraft:stick",
     "amount": 2
   },
   "outputItem": {
-    "item": "minecraft:golden_shovel",
+    "item": "minecraft:golden_axe",
     "amount": 1
   },
   "skill": "smithing",
-  "value": 4,
-  "perk_required": "mestiere:smithing.gold_ingot"
+  "value": 12,
+  "perk_required": "mestiere:smithing.material.gold_ingot"
 }

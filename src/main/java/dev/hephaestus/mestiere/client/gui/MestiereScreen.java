@@ -5,6 +5,8 @@ import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WPanel;
 import io.github.cottonmc.cotton.gui.widget.data.Alignment;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -12,6 +14,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.Stack;
 
+@Environment(EnvType.CLIENT)
 public class MestiereScreen extends CottonClientScreen {
     private static boolean isOpen = false;
     private static Stack<MestiereScreen> stack = new Stack<>();
@@ -38,7 +41,7 @@ public class MestiereScreen extends CottonClientScreen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        ((ScrollingGuiDescription)description).scroll((int)mouseX, (int)mouseY, amount);
+        ((ScrollingGui)description).scroll((int)mouseX, (int)mouseY, amount);
         return true;
     }
 
