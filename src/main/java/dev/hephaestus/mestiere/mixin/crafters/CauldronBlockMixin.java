@@ -1,21 +1,19 @@
 package dev.hephaestus.mestiere.mixin.crafters;
 
-import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.skills.SkillCrafter;
-import dev.hephaestus.mestiere.skills.SkillRecipe;
-import dev.hephaestus.mestiere.skills.Skills;
+import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.CauldronBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,18 +28,15 @@ public class CauldronBlockMixin extends Block {
     }
 
     @Inject(at = @At("HEAD"), method = "onUse", cancellable = true)
-    public void activateInjection(BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<ActionResult> info) {
+    public void activateInjection(BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<ActionResult> ci) {
         ItemStack itemStack_1 = player.getStackInHand(hand);
-        if (itemStack_1.getItem() == Items.LEATHER && blockState.get(Properties.LEVEL_3) == 3 && !world.isClient()) {
+        if (itemStack_1.getItem() == Items.LEATHER && blockState.get(Properties.LEVEL_3) > 0 && !world.isClient()) {
+            if (!world.isClient)
+                ContainerProviderRegistry.INSTANCE.openContainer(
+                        Registry.BLOCK.getId(Blocks.CAULDRON), player, (packetByteBuf -> packetByteBuf.writeBlockPos(blockPos))
+                );
 
-            SkillCrafter crafter = new SkillCrafter(player, Skills.LEATHERWORKING, this, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER);
-
-            for (SkillRecipe r : Mestiere.RECIPES.getRegistered(Skills.LEATHERWORKING)) {
-                crafter.addRecipe(r);
-            }
-
-            crafter.show();
-            info.setReturnValue(ActionResult.SUCCESS);
+            ci.setReturnValue(ActionResult.SUCCESS);
         }
     }
 }

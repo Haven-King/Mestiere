@@ -4,7 +4,7 @@ import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.client.gui.ScrollingGui;
 import dev.hephaestus.mestiere.client.gui.widgets.BetterListPanel;
 import dev.hephaestus.mestiere.client.gui.widgets.RecipeButton;
-import dev.hephaestus.mestiere.mixin.RecipeManagerMixin;
+import dev.hephaestus.mestiere.mixin.RecipeManagerInvoker;
 import dev.hephaestus.mestiere.skills.Skill;
 import io.github.cottonmc.cotton.gui.CottonCraftingController;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
@@ -51,7 +51,7 @@ public class SkillCraftingController extends CottonCraftingController implements
         setRootPanel(root);
 
         SortedSet<SkillRecipe> recipes = new TreeSet<>();
-        for (Recipe recipe : ((RecipeManagerMixin)getPlayer().getEntityWorld().getRecipeManager()).getAllOfTypeAccessor(SkillRecipe.Type.INSTANCE).values())
+        for (Recipe recipe : ((RecipeManagerInvoker)getPlayer().getEntityWorld().getRecipeManager()).getAllOfTypeAccessor(SkillRecipe.Type.INSTANCE).values())
             if (recipe instanceof SkillRecipe && ((SkillRecipe) recipe).getSkill() == skill && Mestiere.COMPONENT.get(getPlayer()).hasPerk(((SkillRecipe) recipe).getPerk())) {
                 recipeMap.put(recipe.getId(), (SkillRecipe) recipe);
                 recipes.add(((SkillRecipe) recipe).withPlayer(playerInventory.player));

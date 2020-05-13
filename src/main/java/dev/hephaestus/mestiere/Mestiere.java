@@ -4,7 +4,6 @@ import dev.hephaestus.mestiere.crafting.SkillCraftingController;
 import dev.hephaestus.mestiere.crafting.SkillRecipe;
 import dev.hephaestus.mestiere.crafting.SkillRecipeSerializer;
 import dev.hephaestus.mestiere.skills.Perks;
-import dev.hephaestus.mestiere.skills.Recipes;
 import dev.hephaestus.mestiere.skills.Skills;
 import dev.hephaestus.mestiere.util.Commands;
 import dev.hephaestus.mestiere.util.MestiereComponent;
@@ -14,7 +13,6 @@ import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.EntityComponentCallback;
 import nerdhub.cardinal.components.api.util.EntityComponents;
 import nerdhub.cardinal.components.api.util.RespawnCopyStrategy;
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -24,10 +22,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.container.BlockContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.ContainerSlotUpdateS2CPacket;
-import net.minecraft.recipe.RecipeManager;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
@@ -41,7 +36,6 @@ public class Mestiere implements ModInitializer {
 	public static final Skills SKILLS = Skills.init();
 	public static final Perks PERKS = Perks.init();
 	public static final MestiereConfig CONFIG = MestiereConfig.init();
-	public static final Recipes RECIPES = new Recipes();
 
 	public static final Identifier SELECT_RECIPE_ID = newID("select_recipe");
 
