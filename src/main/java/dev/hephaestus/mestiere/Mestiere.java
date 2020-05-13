@@ -23,8 +23,11 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
 import net.minecraft.container.BlockContext;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.s2c.play.ContainerSlotUpdateS2CPacket;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
@@ -63,11 +66,19 @@ public class Mestiere implements ModInitializer {
 		ServerSidePacketRegistry.INSTANCE.register(SELECT_RECIPE_ID, ((packetContext, packetByteBuf) -> {
 			int syncId = packetByteBuf.readByte();
 			Identifier recipeId = packetByteBuf.readIdentifier();
-			packetContext.getTaskQueue().execute(() -> {
+			PlayerEntity player = packetContext.getPlayer();
+			if (player instanceof ServerPlayerEntity)
+				packetContext.getTaskQueue().execute(() -> {
 					SkillCraftingController controller = SkillCraftingController.getInstance(syncId);
-					Mestiere.debug("Trying to sync [%d, %s]", syncId, controller.toString().split("@")[1]);
-					controller.setRecipe(recipeId);
-			});
+					ItemStack output = controller.setRecipe(recipeId);
+					Mestiere.debug("Trying to sync [%d, %s]: %s, %s", syncId, controller.toString().split("@")[1], output.toString(), player.toString());
+					controller.dumpInventory();
+//					if (!output.isEmpty()) {
+//						((ServerPlayerEntity)player).networkHandler.sendPacket(new ContainerSlotUpdateS2CPacket(syncId, 0, output));
+//					}
+				});
+			else
+				Mestiere.debug("fuck");
 		}));
 
 		ContainerProviderRegistry.INSTANCE.registerFactory(Registry.BLOCK.getId(Blocks.SMITHING_TABLE),

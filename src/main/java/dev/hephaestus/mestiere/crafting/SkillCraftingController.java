@@ -12,15 +12,17 @@ import io.github.cottonmc.cotton.gui.widget.WItemSlot;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.container.BlockContext;
+import net.minecraft.container.Slot;
+import net.minecraft.container.SlotActionType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.BasicInventory;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.ContainerSlotUpdateS2CPacket;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 
@@ -32,24 +34,29 @@ import java.util.stream.Collectors;
 public class SkillCraftingController extends CottonCraftingController implements ScrollingGui {
     private static final WSprite ARROW = new WSprite(new Identifier("textures/gui/container/villager2.png"), 179f / 512f, 38f / 256f, 215f / 512f, 56f / 256f);
     private BetterListPanel<SkillRecipe, RecipeButton> listPanel;
-    public final SkillCrafterInventory inventory;
     private final BlockContext context;
+
 
     private final List<SkillRecipe> recipes;
 
     private static final HashMap<Integer, SkillCraftingController> INSTANCES = new HashMap<>();
+
+    private SkillRecipe recipe;
 
     public static SkillCraftingController getInstance(int syncId) {
         return INSTANCES.get(syncId);
     }
 
     public SkillCraftingController(int syncId, Skill skill, PlayerInventory playerInventory, BlockContext context) {
-        super(SkillRecipe.Type.INSTANCE, syncId, playerInventory, new SkillCrafterInventory(2), null);
+        super(SkillRecipe.Type.INSTANCE, syncId, playerInventory, new BasicInventory(3), null);
+        Mestiere.debug("Player (init): %s", this.playerInventory.player.toString());
         INSTANCES.put(syncId, this);
         this.context = context;
 
-        this.inventory = ((SkillCrafterInventory)blockInventory);
-        this.inventory.setContainer(this);
+//        this.addSlot(new CraftingResultSlot(playerInventory.player, (CraftingInventory) this.blockInventory, this.result, 0, -1000000, -1000000));
+//        this.addSlot(new Slot(blockInventory, 0, -1000000, -1000000));
+//        this.addSlot(new Slot(blockInventory, 1, -1000000, -1000000));
+
 
         WGridPanel root = new WGridPanel(9);
         setRootPanel(root);
@@ -94,54 +101,62 @@ public class SkillCraftingController extends CottonCraftingController implements
         root.validate(this);
     }
 
-    public PlayerEntity getPlayer() {
-        return playerInventory.player;
+    public void dumpInventory() {
+        String s = blockInventory.getInvStack(0).toString();
+        for (int i = 1; i < blockInventory.getInvSize(); ++i)
+            s = s.concat(String.format(", %s", blockInventory.getInvStack(i).toString()));
+
+        Mestiere.debug("Inventory: [%s]", s);
     }
 
-    public void setRecipe(Identifier id) {
-        for (SkillRecipe recipe : recipes) {
-            if (recipe.getId().equals(id) && setRecipe(recipe).isAccepted()) {
-                break;
-            }
-        }
-    }
+    @Override
+    public ItemStack onSlotClick(int slotNumber, int button, SlotActionType action, PlayerEntity player) {
+        dumpInventory();
+        Mestiere.debug("Slot: %d, Action: %s", slotNumber, action);
 
-    private void update(int slot, ItemStack stack) {
-        inventory.setInvStack(slot, stack);
-        if (getPlayer() instanceof ServerPlayerEntity)
-            ((ServerPlayerEntity)playerInventory.player).networkHandler.sendPacket(new ContainerSlotUpdateS2CPacket(syncId, slot, stack));
-    }
-
-    private ActionResult takeIngredient(SkillRecipe recipe, int slot) {
-        Ingredient ingredient = slot == 1 ? recipe.getFirstIngredient() : recipe.getSecondIngredient();
-        int ingredientCount = slot == 1 ? recipe.getFirstIngredientCount() : recipe.getSecondIngredientCount();
-
-        ItemStack stack1 = inventory.getInvStack(slot);
-        if (!ingredient.test(stack1) || stack1.getCount() < ingredientCount) {
-            for (int i = 0; i < playerInventory.main.size(); ++i) {
-                ItemStack stack = playerInventory.main.get(i);
-                boolean bl1 = ingredient.test(stack);
-                Mestiere.debug("%b, %d, %d", bl1, stack.getCount(), ingredientCount);
-                if (bl1 && stack.getCount() >= ingredientCount) {
-                    Mestiere.debug("Putting %s in slot %d", stack.getItem().toString(), slot);
-                    playerInventory.main.set(i, stack1);
-                    update(slot, stack);
-                    return ActionResult.SUCCESS;
+        if (slotNumber == 36 && action == SlotActionType.PICKUP && recipe != null) {
+            if (recipe.matches((BasicInventory) blockInventory, null)) {
+                if (player.inventory.getCursorStack().isEmpty()) {
+                    player.inventory.setCursorStack(recipe.craft((BasicInventory) blockInventory));
+                    slots.get(slotNumber).markDirty();
+                    return player.inventory.getCursorStack();
                 }
             }
         }
 
-        return ActionResult.FAIL;
+        return super.onSlotClick(slotNumber, button, action, player);
     }
 
-    public ActionResult setRecipe(SkillRecipe recipe) {
-        if (inventory.validateRecipe(recipe).isAccepted()) return ActionResult.SUCCESS;
+    public PlayerEntity getPlayer() {
+        return playerInventory.player;
+    }
 
-        if (!takeIngredient(recipe, 1).isAccepted()) return ActionResult.FAIL;
-        if (!takeIngredient(recipe, 2).isAccepted()) return ActionResult.FAIL;
+    public CraftingInventory getInventory() {
+        return (CraftingInventory) blockInventory;
+    }
 
-        if (inventory.validateRecipe(recipe).isAccepted()) return ActionResult.SUCCESS;
-        else return ActionResult.FAIL;
+    public ItemStack setRecipe(Identifier id) {
+        ItemStack result = ItemStack.EMPTY;
+
+        for (SkillRecipe recipe : recipes) {
+            if (recipe.getId().equals(id)) {
+                result = setRecipe(recipe);
+                break;
+            }
+        }
+
+        dumpInventory();
+        return result;
+    }
+
+    public ItemStack setRecipe(SkillRecipe recipe) {
+        if (recipe.matches((BasicInventory) blockInventory, null)) {
+            ItemStack output = recipe.getOutput();
+            blockInventory.setInvStack(0, output);
+            this.recipe = recipe;
+            return output;
+        }
+        else return ItemStack.EMPTY;
     }
 
     @Override
@@ -150,11 +165,12 @@ public class SkillCraftingController extends CottonCraftingController implements
         this.context.run((world, blockPos) -> {
             boolean playerAvailable = player.isAlive() || player instanceof ServerPlayerEntity && !((ServerPlayerEntity)player).method_14239();
 
-            for(int i = 1; i < inventory.getInvSize(); ++i) {
+            for(int i = 0; i < blockInventory.getInvSize(); ++i) {
+                dumpInventory();
                 if (playerAvailable)
-                    player.inventory.offerOrDrop(world, inventory.removeInvStack(i));
+                    player.inventory.offerOrDrop(world, blockInventory.removeInvStack(i));
                 else
-                    player.dropItem(inventory.removeInvStack(i), false);
+                    player.dropItem(blockInventory.removeInvStack(i), false);
             }
         });
 

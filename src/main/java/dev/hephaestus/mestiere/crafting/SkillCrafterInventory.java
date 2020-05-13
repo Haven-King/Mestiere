@@ -6,23 +6,21 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.ContainerSlotUpdateS2CPacket;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.DefaultedList;
 
 public class SkillCrafterInventory implements Inventory {
-    private final DefaultedList<ItemStack> slots;
+    private final DefaultedList<ItemStack> stacks;
+    private final int width;
     private Container container;
 
-    private SkillRecipe recipe;
-
     public SkillCrafterInventory(int numberOfInputs) {
-        this.slots = DefaultedList.ofSize(numberOfInputs + 1, ItemStack.EMPTY);
+        this.width = numberOfInputs;
+        this.stacks = DefaultedList.ofSize(width, ItemStack.EMPTY);
     }
 
     @Override
     public int getInvSize() {
-        return slots.size() - 1;
+        return width;
     }
 
     public void setContainer(Container container) {
@@ -31,8 +29,8 @@ public class SkillCrafterInventory implements Inventory {
 
     @Override
     public boolean isInvEmpty() {
-        for (int i = 1; i < slots.size(); ++i) {
-            if (!slots.get(i).isEmpty())
+        for (ItemStack stack : this.stacks) {
+            if (!stack.isEmpty())
                 return false;
         }
 
@@ -41,33 +39,28 @@ public class SkillCrafterInventory implements Inventory {
 
     @Override
     public ItemStack getInvStack(int slot) {
-        return slot >= this.getInvSize() ? ItemStack.EMPTY : this.slots.get(slot);
+        return slot >= this.getInvSize() ? ItemStack.EMPTY : this.stacks.get(slot);
     }
 
     @Override
     public ItemStack takeInvStack(int slot, int amount) {
-        if (slot == 0) {
-            takeInvStack(1, this.recipe.getFirstIngredientCount());
-            takeInvStack(2, this.recipe.getSecondIngredientCount());
-            return Inventories.removeStack(this.slots, 0);
-        } else {
-            ItemStack itemStack = Inventories.splitStack(this.slots, slot, amount);
-            if (!itemStack.isEmpty()) {
-                this.container.onContentChanged(this);
-            }
-
-            return itemStack;
+        ItemStack itemStack = Inventories.splitStack(this.stacks, slot, amount);
+        if (!itemStack.isEmpty()) {
+            this.container.onContentChanged(this);
         }
+
+        return itemStack;
     }
 
     @Override
     public ItemStack removeInvStack(int slot) {
-        return Inventories.removeStack(this.slots, slot);
+        return Inventories.removeStack(this.stacks, slot);
     }
 
     @Override
     public void setInvStack(int slot, ItemStack stack) {
-        this.slots.set(slot, stack);
+        Mestiere.debug("Set slot %d to %s", slot, stack.toString());
+        this.stacks.set(slot, stack);
         this.container.onContentChanged(this);
     }
 
@@ -83,17 +76,6 @@ public class SkillCrafterInventory implements Inventory {
 
     @Override
     public void clear() {
-        this.slots.clear();
-    }
-
-    public ActionResult validateRecipe(SkillRecipe recipe) {
-        if (recipe.matches(this, null)) {
-            this.recipe = recipe;
-            ItemStack stack = recipe.getOutput();
-            setInvStack(0, stack);
-            return ActionResult.SUCCESS;
-        } else {
-            return ActionResult.PASS;
-        }
+        this.stacks.clear();
     }
 }

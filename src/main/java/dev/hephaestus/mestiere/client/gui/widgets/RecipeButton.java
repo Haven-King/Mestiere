@@ -59,30 +59,20 @@ public class RecipeButton extends WButton {
             );
         }
 
+        this.setEnabled(recipe.canCraft(controller.getPlayer()));
+
         this.controller = controller;
     }
 
 
-    private final static int ANIM_SPEED = 20;
-
     @Override
     @Environment(EnvType.CLIENT)
     public void paintBackground(int x, int y, int mouseX, int mouseY) {
-        if (animCounter % ANIM_SPEED == 0) {
-            this.ingredient1 = new ItemStack(
-                    Registry.ITEM.get(stacks1.getInt((animCounter / ANIM_SPEED) % stacks1.size())),
-                    recipe.getFirstIngredientCount()
-            );
+        this.ingredient1 = recipe.getFirstItem(animCounter);
 
-            if (!recipe.getSecondIngredient().isEmpty()) {
-                this.ingredient2 = new ItemStack(
-                        Registry.ITEM.get(stacks2.getInt((animCounter / ANIM_SPEED) % stacks2.size())),
-                        recipe.getFirstIngredientCount()
-                );
-            }
+        if (!recipe.getSecondIngredient().isEmpty()) {
+            this.ingredient2 = recipe.getSecondItem(animCounter);
         }
-
-        this.setEnabled(recipe.canCraft(controller.getPlayer()) || recipe.matches(controller.inventory, null));
 
         ++animCounter;
 
@@ -115,9 +105,12 @@ public class RecipeButton extends WButton {
 
     @Override
     public void onClick(int x, int y, int button) {
-        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeByte(controller.syncId);
-        buf.writeIdentifier(recipe.getId());
-        ClientSidePacketRegistry.INSTANCE.sendToServer(Mestiere.SELECT_RECIPE_ID, buf);
+        if (this.isEnabled()) {
+            controller.setRecipe(recipe);
+            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+            buf.writeByte(controller.syncId);
+            buf.writeIdentifier(recipe.getId());
+            ClientSidePacketRegistry.INSTANCE.sendToServer(Mestiere.SELECT_RECIPE_ID, buf);
+        }
     }
 }

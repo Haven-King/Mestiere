@@ -3,16 +3,22 @@ package dev.hephaestus.mestiere.crafting;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.skills.SkillPerk;
+import it.unimi.dsi.fastutil.ints.IntList;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.BasicInventory;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-public class SkillRecipe implements Recipe<SkillCrafterInventory> {
+public class SkillRecipe implements Recipe<BasicInventory> {
     private final Ingredient firstIngredient;
     private final int firstIngredientCount;
     private final Ingredient secondIngredient;
@@ -22,6 +28,9 @@ public class SkillRecipe implements Recipe<SkillCrafterInventory> {
     private final int value;
     private final SkillPerk perk;
     private final Identifier id;
+
+    private IntList stacks1;
+    private IntList stacks2;
 
     public SkillRecipe(Ingredient firstIngredient, int firstIngredientCount, Ingredient secondIngredient, int secondIngredientCount, ItemStack outputItem, Skill skill, int value, SkillPerk perk, Identifier id) {
         this.firstIngredient = firstIngredient;
@@ -47,15 +56,15 @@ public class SkillRecipe implements Recipe<SkillCrafterInventory> {
 
 
     @Override
-    public boolean matches(SkillCrafterInventory inv, World world) {
+    public boolean matches(BasicInventory inv, World world) {
         if (inv.getInvSize() < 2) return false;
         return  firstIngredient.test(inv.getInvStack(1)) && secondIngredient.test(inv.getInvStack(2)) &&
-                inv.getInvStack(1).getCount() > firstIngredientCount &&
-                inv.getInvStack(2).getCount() > secondIngredientCount;
+                inv.getInvStack(1).getCount() >= firstIngredientCount &&
+                inv.getInvStack(2).getCount() >= secondIngredientCount;
     }
 
     @Override
-    public ItemStack craft(SkillCrafterInventory inv) {
+    public ItemStack craft(BasicInventory inv) {
         inv.getInvStack(1).decrement(firstIngredientCount);
         inv.getInvStack(2).decrement(secondIngredientCount);
         return this.getOutput().copy();
@@ -115,5 +124,23 @@ public class SkillRecipe implements Recipe<SkillCrafterInventory> {
     public static class Type implements RecipeType<SkillRecipe> {
         public static final Type INSTANCE = new Type();
         public static final Identifier ID = Mestiere.newID("skill_recipe");
+    }
+
+    @Environment(EnvType.CLIENT)
+    public ItemStack getFirstItem(long deltaTick) {
+        if (stacks1 == null && !firstIngredient.isEmpty())
+            this.stacks1 = firstIngredient.getIds();
+
+        return new ItemStack(Registry.ITEM.get(stacks1.getInt((int) ((deltaTick / 20) % stacks1.size()))),
+                firstIngredientCount);
+    }
+
+    @Environment(EnvType.CLIENT)
+    public ItemStack getSecondItem(long deltaTick) {
+        if (stacks2 == null && !secondIngredient.isEmpty())
+            this.stacks2 = secondIngredient.getIds();
+
+        return new ItemStack(Registry.ITEM.get(stacks2.getInt((int) ((deltaTick / 20) % stacks2.size()))),
+                secondIngredientCount);
     }
 }
