@@ -18,7 +18,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-public class SkillRecipe implements Recipe<BasicInventory> {
+public class SkillRecipe implements Recipe<BasicInventory>, Comparable {
     private final Ingredient firstIngredient;
     private final int firstIngredientCount;
     private final Ingredient secondIngredient;
@@ -28,6 +28,8 @@ public class SkillRecipe implements Recipe<BasicInventory> {
     private final int value;
     private final SkillPerk perk;
     private final Identifier id;
+
+    private PlayerEntity player;
 
     private IntList stacks1;
     private IntList stacks2;
@@ -42,6 +44,23 @@ public class SkillRecipe implements Recipe<BasicInventory> {
         this.value = value;
         this.perk = perk;
         this.id = id;
+    }
+
+    private SkillRecipe(SkillRecipe recipe, PlayerEntity player) {
+        this.firstIngredient = recipe.firstIngredient;
+        this.firstIngredientCount = recipe.firstIngredientCount;
+        this.secondIngredient = recipe.secondIngredient;
+        this.secondIngredientCount = recipe.secondIngredientCount;
+        this.outputItem = recipe.outputItem;
+        this.skill = recipe.skill;
+        this.value = recipe.value;
+        this.perk = recipe.perk;
+        this.id = recipe.id;
+        this.player = player;
+    }
+
+    public SkillRecipe withPlayer(PlayerEntity player) {
+        return new SkillRecipe(this, player);
     }
 
     public Ingredient getFirstIngredient() {
@@ -119,6 +138,18 @@ public class SkillRecipe implements Recipe<BasicInventory> {
         }
 
         return has1 && has2;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        int result = 0;
+
+        if (o instanceof SkillRecipe) {
+            result = -Boolean.compare(canCraft(player), ((SkillRecipe) o).canCraft(player));
+            result = result == 0 ? Integer.compare(this.value, ((SkillRecipe)o).getValue()) : result;
+            result = result == 0 ? id.compareTo(((SkillRecipe) o).id) : result;
+        }
+        return result;
     }
 
     public static class Type implements RecipeType<SkillRecipe> {

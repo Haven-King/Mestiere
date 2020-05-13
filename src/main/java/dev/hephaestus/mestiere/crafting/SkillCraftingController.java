@@ -12,9 +12,7 @@ import io.github.cottonmc.cotton.gui.widget.WItemSlot;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.container.BlockContext;
-import net.minecraft.container.Slot;
 import net.minecraft.container.SlotActionType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -24,12 +22,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class SkillCraftingController extends CottonCraftingController implements ScrollingGui {
     private static final WSprite ARROW = new WSprite(new Identifier("textures/gui/container/villager2.png"), 179f / 512f, 38f / 256f, 215f / 512f, 56f / 256f);
@@ -37,10 +31,10 @@ public class SkillCraftingController extends CottonCraftingController implements
     private final BlockContext context;
 
 
-    private final List<SkillRecipe> recipes;
 
     private static final HashMap<Integer, SkillCraftingController> INSTANCES = new HashMap<>();
 
+    private final HashMap<Identifier, SkillRecipe> recipeMap = new HashMap<>();
     private SkillRecipe recipe;
 
     public static SkillCraftingController getInstance(int syncId) {
@@ -53,33 +47,19 @@ public class SkillCraftingController extends CottonCraftingController implements
         INSTANCES.put(syncId, this);
         this.context = context;
 
-//        this.addSlot(new CraftingResultSlot(playerInventory.player, (CraftingInventory) this.blockInventory, this.result, 0, -1000000, -1000000));
-//        this.addSlot(new Slot(blockInventory, 0, -1000000, -1000000));
-//        this.addSlot(new Slot(blockInventory, 1, -1000000, -1000000));
-
-
         WGridPanel root = new WGridPanel(9);
         setRootPanel(root);
 
-        List<SkillRecipe> recipeList = new ArrayList<>();
-
-        for (Recipe recipe : ((RecipeManagerMixin)getPlayer().getEntityWorld().getRecipeManager()).getAllOfTypeAccessor(
-                SkillRecipe.Type.INSTANCE
-        ).values()) if (recipe instanceof SkillRecipe) recipeList.add((SkillRecipe) recipe);
-
-        recipes = recipeList.stream()
-                .filter(recipe -> recipe.getSkill() == skill && Mestiere.COMPONENT.get(getPlayer()).hasPerk(recipe.getPerk()))
-                .map((recipe -> new Pair<>(recipe, recipe.canCraft(getPlayer()))))
-                .sorted((pair1, pair2) -> {
-                    int c = -Boolean.compare(pair1.getRight(), pair2.getRight());
-                    return c == 0 ? Integer.compare(pair1.getLeft().getValue(), pair2.getLeft().getValue()) : c;
-                })
-                .map(Pair::getLeft)
-                .collect(Collectors.toList());
+        SortedSet<SkillRecipe> recipes = new TreeSet<>();
+        for (Recipe recipe : ((RecipeManagerMixin)getPlayer().getEntityWorld().getRecipeManager()).getAllOfTypeAccessor(SkillRecipe.Type.INSTANCE).values())
+            if (recipe instanceof SkillRecipe && ((SkillRecipe) recipe).getSkill() == skill && Mestiere.COMPONENT.get(getPlayer()).hasPerk(((SkillRecipe) recipe).getPerk())) {
+                recipeMap.put(recipe.getId(), (SkillRecipe) recipe);
+                recipes.add(((SkillRecipe) recipe).withPlayer(playerInventory.player));
+            }
 
         if (!(playerInventory.player instanceof ServerPlayerEntity)) {
             listPanel = new BetterListPanel<>(
-                    recipes,
+                    new ArrayList<>(recipes),
                     RecipeButton::new,
                     (recipe, button) -> button.init(recipe, this)
             );
@@ -114,12 +94,21 @@ public class SkillCraftingController extends CottonCraftingController implements
         dumpInventory();
         Mestiere.debug("Slot: %d, Action: %s", slotNumber, action);
 
-        if (slotNumber == 36 && action == SlotActionType.PICKUP && recipe != null) {
+        if (slotNumber == 36 && recipe != null) {
             if (recipe.matches((BasicInventory) blockInventory, null)) {
-                if (player.inventory.getCursorStack().isEmpty()) {
-                    player.inventory.setCursorStack(recipe.craft((BasicInventory) blockInventory));
-                    slots.get(slotNumber).markDirty();
-                    return player.inventory.getCursorStack();
+                if (action == SlotActionType.PICKUP) {
+                    if (player.inventory.getCursorStack().isEmpty()) {
+                        player.inventory.setCursorStack(recipe.craft((BasicInventory) blockInventory));
+                        if (!recipe.matches((BasicInventory)blockInventory, null))
+                            blockInventory.setInvStack(0, ItemStack.EMPTY);
+                        return player.inventory.getCursorStack();
+                    }
+                } else if (action == SlotActionType.QUICK_MOVE) {
+                    ItemStack stack = recipe.craft((BasicInventory) blockInventory);
+                    player.inventory.offerOrDrop(player.world, stack);
+                    if (!recipe.matches((BasicInventory)blockInventory, null))
+                        blockInventory.setInvStack(0, ItemStack.EMPTY);
+                    return stack;
                 }
             }
         }
@@ -136,15 +125,7 @@ public class SkillCraftingController extends CottonCraftingController implements
     }
 
     public ItemStack setRecipe(Identifier id) {
-        ItemStack result = ItemStack.EMPTY;
-
-        for (SkillRecipe recipe : recipes) {
-            if (recipe.getId().equals(id)) {
-                result = setRecipe(recipe);
-                break;
-            }
-        }
-
+        ItemStack result = setRecipe(recipeMap.get(id));
         dumpInventory();
         return result;
     }
@@ -165,7 +146,7 @@ public class SkillCraftingController extends CottonCraftingController implements
         this.context.run((world, blockPos) -> {
             boolean playerAvailable = player.isAlive() || player instanceof ServerPlayerEntity && !((ServerPlayerEntity)player).method_14239();
 
-            for(int i = 0; i < blockInventory.getInvSize(); ++i) {
+            for(int i = 1; i < blockInventory.getInvSize(); ++i) {
                 dumpInventory();
                 if (playerAvailable)
                     player.inventory.offerOrDrop(world, blockInventory.removeInvStack(i));
