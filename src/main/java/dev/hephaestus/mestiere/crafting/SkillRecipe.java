@@ -158,7 +158,7 @@ public class SkillRecipe implements Recipe<BasicInventory>, Comparable {
     }
 
     @Environment(EnvType.CLIENT)
-    public ItemStack getFirstItem(long deltaTick) {
+    public ItemStack getFirstItem(float deltaTick) {
         if (stacks1 == null && !firstIngredient.isEmpty())
             this.stacks1 = firstIngredient.getIds();
 
