@@ -46,9 +46,6 @@ public class RecipeButton extends WButton {
     @Override
     @Environment(EnvType.CLIENT)
     public void paintBackground(int x, int y, int mouseX, int mouseY) {
-        ItemStack ingredient1 = recipe.getFirstItem(animCounter);
-        ItemStack ingredient2 = recipe.getSecondItem(animCounter);
-
         ++animCounter;
 
         super.paintBackground(x, y, mouseX, mouseY);
@@ -61,16 +58,14 @@ public class RecipeButton extends WButton {
         ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
-        itemRenderer.renderGuiItem(ingredient1, x+2, y+2);
-        itemRenderer.renderGuiItemOverlay(textRenderer, ingredient1, x+2, y+2);
-
-        if (!ingredient2.isEmpty()) {
-            itemRenderer.renderGuiItem(ingredient2, x+20, y+2);
-            itemRenderer.renderGuiItemOverlay(textRenderer, ingredient2, x+20, y+2);
+        for (int i = 0; i < recipe.numberOfComponents(); ++i) {
+            ItemStack itemStack = recipe.getItem(i, animCounter);
+            itemRenderer.renderGuiItem(itemStack, x+2 + 18*i, y+2);
+            itemRenderer.renderGuiItemOverlay(textRenderer, itemStack, x+2 + 18*i, y+2);
         }
 
-        itemRenderer.renderGuiItem(recipe.getOutput(), x+63, y+2);
-        itemRenderer.renderGuiItemOverlay(textRenderer, recipe.getOutput(), x+63, y+2);
+        itemRenderer.renderGuiItem(recipe.getOutput(), x+45 + 18*(recipe.numberOfComponents()-1), y+2);
+        itemRenderer.renderGuiItemOverlay(textRenderer, recipe.getOutput(), x+45 + 18*(recipe.numberOfComponents()-1), y+2);
     }
 
     @Override

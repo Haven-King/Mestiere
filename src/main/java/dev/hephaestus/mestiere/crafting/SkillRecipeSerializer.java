@@ -3,6 +3,7 @@ package dev.hephaestus.mestiere.crafting;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dev.hephaestus.mestiere.Mestiere;
+import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.skills.SkillPerk;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -45,38 +46,51 @@ public class SkillRecipeSerializer implements RecipeSerializer<SkillRecipe> {
         ItemStack output = new ItemStack(outputItem, recipeJson.outputItem.amount);
 
         return new SkillRecipe(
-                firstIngredient,
-                firstIngredientCount, secondIngredient,
-                secondIngredientCount, output,
+                id,
                 Mestiere.SKILLS.get(Mestiere.newID(recipeJson.skill)),
-                recipeJson.value,   // This *can* be zero, so we don't need to do any validation
                 recipeJson.perk_required == null ? SkillPerk.NONE : Mestiere.PERKS.get(new Identifier(recipeJson.perk_required)),
-                id);
+                output,
+                recipeJson.value,   // This *can* be zero, so we don't need to do any validation,
+                new SkillRecipe.Component[] {
+                    new SkillRecipe.Component(firstIngredient, firstIngredientCount),
+                    new SkillRecipe.Component(secondIngredient, secondIngredientCount)
+                });
 
     }
 
     @Override
     public SkillRecipe read(Identifier id, PacketByteBuf buf) {
+        Skill skill = Mestiere.SKILLS.get(buf.readIdentifier());
+        SkillPerk perk = Mestiere.PERKS.get(buf.readIdentifier());
+        ItemStack output = buf.readItemStack();
+        int value = buf.readInt();
+
+        SkillRecipe.Component[] components = new SkillRecipe.Component[buf.readInt()];
+        for (int i = 0; i < components.length; ++i) {
+            components[i] = new SkillRecipe.Component(Ingredient.fromPacket(buf), buf.readInt());
+        }
+
         return new SkillRecipe(
-                Ingredient.fromPacket(buf),
-                buf.readInt(), Ingredient.fromPacket(buf),
-                buf.readInt(), buf.readItemStack(),
-                Mestiere.SKILLS.get(buf.readIdentifier()),
-                buf.readInt(),
-                Mestiere.PERKS.get(buf.readIdentifier()),
-                id
+            id,
+            skill,
+            perk,
+            output,
+            value,
+            components
         );
     }
 
     @Override
     public void write(PacketByteBuf buf, SkillRecipe recipe) {
-        recipe.getFirstIngredient().write(buf);
-        buf.writeInt(recipe.getFirstIngredientCount());
-        recipe.getSecondIngredient().write(buf);
-        buf.writeInt(recipe.getSecondIngredientCount());
-        buf.writeItemStack(recipe.getOutput());
         buf.writeIdentifier(recipe.getSkill().id);
-        buf.writeInt(recipe.getValue());
         buf.writeIdentifier(recipe.getPerk().id);
+        buf.writeItemStack(recipe.getOutput());
+        buf.writeInt(recipe.getValue());
+        buf.writeInt(recipe.numberOfComponents());
+
+        for(SkillRecipe.Component component : recipe.getComponents()) {
+            component.ingredient.write(buf);
+            buf.writeInt(component.count);
+        }
     }
 }

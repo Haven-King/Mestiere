@@ -17,20 +17,20 @@ import net.minecraft.container.SlotActionType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.BasicInventory;
-import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class SkillCraftingController extends CottonCraftingController implements ScrollingGui {
     private static final WSprite ARROW = new WSprite(new Identifier("textures/gui/container/villager2.png"), 179f / 512f, 38f / 256f, 215f / 512f, 56f / 256f);
     private BetterListPanel<SkillRecipe, RecipeButton> listPanel;
     private final BlockContext context;
-
-
 
     private static final HashMap<Integer, SkillCraftingController> INSTANCES = new HashMap<>();
 
@@ -44,17 +44,20 @@ public class SkillCraftingController extends CottonCraftingController implements
     public SkillCraftingController(int syncId, Skill skill, PlayerInventory playerInventory, BlockContext context) {
         super(SkillRecipe.Type.INSTANCE, syncId, playerInventory, new BasicInventory(3), null);
         Mestiere.debug("Player (init): %s", this.playerInventory.player.toString());
-        INSTANCES.put(syncId, this);
+        if (playerInventory.player instanceof ServerPlayerEntity)
+            INSTANCES.put(syncId, this);
         this.context = context;
 
         WGridPanel root = new WGridPanel(9);
         setRootPanel(root);
 
+        int maxNumberOfInputs = 0;
         SortedSet<SkillRecipe> recipes = new TreeSet<>();
         for (Recipe recipe : ((RecipeManagerInvoker)getPlayer().getEntityWorld().getRecipeManager()).getAllOfTypeAccessor(SkillRecipe.Type.INSTANCE).values())
             if (recipe instanceof SkillRecipe && ((SkillRecipe) recipe).getSkill() == skill && Mestiere.COMPONENT.get(getPlayer()).hasPerk(((SkillRecipe) recipe).getPerk())) {
                 recipeMap.put(recipe.getId(), (SkillRecipe) recipe);
                 recipes.add(((SkillRecipe) recipe).withPlayer(playerInventory.player));
+                maxNumberOfInputs = Math.max(maxNumberOfInputs, ((SkillRecipe) recipe).numberOfComponents());
             }
 
         if (!(playerInventory.player instanceof ServerPlayerEntity)) {
@@ -64,7 +67,7 @@ public class SkillCraftingController extends CottonCraftingController implements
                     (recipe, button) -> button.init(recipe, this)
             );
 
-            root.add(listPanel, 0, 0, 10, 16);
+            root.add(listPanel, 0, 0, 6 + maxNumberOfInputs * 2, 16);
             listPanel.setMargin(0);
 
             root.add(ARROW, 19, 2, 4, 2);
@@ -91,7 +94,6 @@ public class SkillCraftingController extends CottonCraftingController implements
 
     @Override
     public ItemStack onSlotClick(int slotNumber, int button, SlotActionType action, PlayerEntity player) {
-        dumpInventory();
         Mestiere.debug("Slot: %d, Action: %s", slotNumber, action);
 
         if (slotNumber == 36 && recipe != null) {
@@ -118,10 +120,6 @@ public class SkillCraftingController extends CottonCraftingController implements
 
     public PlayerEntity getPlayer() {
         return playerInventory.player;
-    }
-
-    public CraftingInventory getInventory() {
-        return (CraftingInventory) blockInventory;
     }
 
     public ItemStack setRecipe(Identifier id) {

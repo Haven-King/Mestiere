@@ -8,7 +8,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.BasicInventory;
-import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
@@ -19,10 +18,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public class SkillRecipe implements Recipe<BasicInventory>, Comparable {
-    private final Ingredient firstIngredient;
-    private final int firstIngredientCount;
-    private final Ingredient secondIngredient;
-    private final int secondIngredientCount;
+    private final Component[] components;
     private final ItemStack outputItem;
     private final Skill skill;
     private final int value;
@@ -31,61 +27,55 @@ public class SkillRecipe implements Recipe<BasicInventory>, Comparable {
 
     private PlayerEntity player;
 
-    private IntList stacks1;
-    private IntList stacks2;
+    private final IntList[] stacks;
 
-    public SkillRecipe(Ingredient firstIngredient, int firstIngredientCount, Ingredient secondIngredient, int secondIngredientCount, ItemStack outputItem, Skill skill, int value, SkillPerk perk, Identifier id) {
-        this.firstIngredient = firstIngredient;
-        this.firstIngredientCount = firstIngredientCount;
-        this.secondIngredient = secondIngredient;
-        this.secondIngredientCount = secondIngredientCount;
+    public SkillRecipe(Identifier id, Skill skill, SkillPerk perk, ItemStack outputItem, int value, Component[] components) {
+        this.components = components;
         this.outputItem = outputItem;
         this.skill = skill;
         this.value = value;
         this.perk = perk;
         this.id = id;
+
+        this.stacks = new IntList[components.length];
     }
 
     private SkillRecipe(SkillRecipe recipe, PlayerEntity player) {
-        this.firstIngredient = recipe.firstIngredient;
-        this.firstIngredientCount = recipe.firstIngredientCount;
-        this.secondIngredient = recipe.secondIngredient;
-        this.secondIngredientCount = recipe.secondIngredientCount;
+        this.components = recipe.components;
         this.outputItem = recipe.outputItem;
         this.skill = recipe.skill;
         this.value = recipe.value;
         this.perk = recipe.perk;
         this.id = recipe.id;
         this.player = player;
+
+        this.stacks = new IntList[components.length];
     }
 
     public SkillRecipe withPlayer(PlayerEntity player) {
         return new SkillRecipe(this, player);
     }
 
-    public Ingredient getFirstIngredient() {
-        return firstIngredient;
-    }
-    public int getFirstIngredientCount() { return firstIngredientCount; }
-
-    public Ingredient getSecondIngredient() {
-        return secondIngredient;
-    }
-    public int getSecondIngredientCount() { return secondIngredientCount; }
-
-
     @Override
     public boolean matches(BasicInventory inv, World world) {
-        if (inv.getInvSize() < 2) return false;
-        return  firstIngredient.test(inv.getInvStack(1)) && secondIngredient.test(inv.getInvStack(2)) &&
-                inv.getInvStack(1).getCount() >= firstIngredientCount &&
-                inv.getInvStack(2).getCount() >= secondIngredientCount;
+        if (inv.getInvSize() <= components.length) return false;
+
+        for (int i = 0; i < components.length; ++i) {
+            ItemStack stack = inv.getInvStack(i+1);
+            if (!components[i].ingredient.test(stack) ||
+                stack.getCount() < components[i].count)
+                return false;
+        }
+
+        return true;
     }
 
     @Override
     public ItemStack craft(BasicInventory inv) {
-        inv.getInvStack(1).decrement(firstIngredientCount);
-        inv.getInvStack(2).decrement(secondIngredientCount);
+        for (int i = 0; i < components.length; ++i) {
+            inv.getInvStack(i).decrement(components[i].count);
+        }
+
         return this.getOutput().copy();
     }
 
@@ -126,18 +116,31 @@ public class SkillRecipe implements Recipe<BasicInventory>, Comparable {
         return skill;
     }
 
+    public int numberOfComponents() {
+        return components.length;
+    }
+
+    public Component[] getComponents() {
+        return components;
+    }
+
     public boolean canCraft(PlayerEntity player) {
         if (!Mestiere.COMPONENT.get(player).hasPerk(perk) && Mestiere.CONFIG.hardcoreProgression && this.perk.hardcore)
             return false;
 
-        boolean has1 = false;
-        boolean has2 = false;
+        boolean[] canCraft = new boolean[components.length];
+
         for (ItemStack stack : player.inventory.main) {
-            if (firstIngredient.test(stack) && stack.getCount() >= firstIngredientCount) has1 = true;
-            if (secondIngredient.test(stack) && stack.getCount() >= secondIngredientCount) has2 = true;
+            for (int i = 0; i < components.length; ++i) {
+                if (components[i].ingredient.test(stack) && stack.getCount() >= components[i].count)
+                    canCraft[i] = true;
+            }
         }
 
-        return has1 && has2;
+        for (boolean b : canCraft)
+            if (!b) return false;
+
+        return true;
     }
 
     @Override
@@ -158,20 +161,21 @@ public class SkillRecipe implements Recipe<BasicInventory>, Comparable {
     }
 
     @Environment(EnvType.CLIENT)
-    public ItemStack getFirstItem(float deltaTick) {
-        if (stacks1 == null && !firstIngredient.isEmpty())
-            this.stacks1 = firstIngredient.getIds();
+    public ItemStack getItem(int i, float deltaTick) {
+        if (stacks[i] == null && !components[i].ingredient.isEmpty())
+            this.stacks[i] = components[i].ingredient.getIds();
 
-        return new ItemStack(Registry.ITEM.get(stacks1.getInt((int) ((deltaTick / 20) % stacks1.size()))),
-                firstIngredientCount);
+        return new ItemStack(Registry.ITEM.get(stacks[i].getInt((int) ((deltaTick / 20) % stacks[i].size()))),
+                components[i].count);
     }
 
-    @Environment(EnvType.CLIENT)
-    public ItemStack getSecondItem(long deltaTick) {
-        if (stacks2 == null && !secondIngredient.isEmpty())
-            this.stacks2 = secondIngredient.getIds();
+    public static class Component {
+        public final Ingredient ingredient;
+        public final int count;
 
-        return new ItemStack(Registry.ITEM.get(stacks2.getInt((int) ((deltaTick / 20) % stacks2.size()))),
-                secondIngredientCount);
+        public Component(Ingredient ingredient, int count) {
+            this.ingredient = ingredient;
+            this.count = count;
+        }
     }
 }
