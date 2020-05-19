@@ -1,9 +1,7 @@
-package dev.hephaestus.mestiere.client.gui;
+package dev.hephaestus.mestiere.client.gui.widgets;
 
-import dev.hephaestus.mestiere.client.gui.widgets.BetterListPanel;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
-import io.github.cottonmc.cotton.gui.widget.WListPanel;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

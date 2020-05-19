@@ -1,5 +1,6 @@
-package dev.hephaestus.mestiere.client.gui;
+package dev.hephaestus.mestiere.client.gui.screens;
 
+import dev.hephaestus.mestiere.client.gui.widgets.ScrollingGui;
 import io.github.cottonmc.cotton.gui.GuiDescription;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;

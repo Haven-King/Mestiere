@@ -1,7 +1,8 @@
 package dev.hephaestus.mestiere.crafting;
 
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.client.gui.ScrollingGui;
+import dev.hephaestus.mestiere.client.gui.widgets.ScrollingGui;
+import dev.hephaestus.mestiere.client.gui.screens.SkillCraftingScreen;
 import dev.hephaestus.mestiere.client.gui.widgets.BetterListPanel;
 import dev.hephaestus.mestiere.client.gui.widgets.RecipeButton;
 import dev.hephaestus.mestiere.mixin.RecipeManagerInvoker;
@@ -14,10 +15,14 @@ import io.github.cottonmc.cotton.gui.widget.WSprite;
 import io.github.cottonmc.cotton.gui.widget.data.Alignment;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
+import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.BasicInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.SlotActionType;
@@ -25,16 +30,15 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
-public class SkillCraftingController extends CottonCraftingController implements ScrollingGui {
+public class SkillCrafter extends CottonCraftingController implements ScrollingGui {
     private static final WSprite ARROW = new WSprite(new Identifier("textures/gui/container/villager2.png"), 179f / 512f, 38f / 256f, 215f / 512f, 56f / 256f);
-    private static final HashMap<Integer, SkillCraftingController> INSTANCES = new HashMap<>();
-    public static SkillCraftingController getInstance(int syncId) {
+    private static final HashMap<Integer, SkillCrafter> INSTANCES = new HashMap<>();
+    public static SkillCrafter getInstance(int syncId) {
         return INSTANCES.get(syncId);
     }
 
@@ -43,13 +47,12 @@ public class SkillCraftingController extends CottonCraftingController implements
     private final SortedSet<SkillRecipe> recipes = new TreeSet<>();
     private final ScreenHandlerContext context;
     private final Skill skill;
-    private final RecipeType[] types;
+    private final Collection<RecipeType> types;
 
     private BetterListPanel<SkillRecipe, RecipeButton> listPanel;
     private SkillRecipe recipe;
 
-
-    public SkillCraftingController(int syncId, Skill skill, RecipeType[] types, PlayerInventory playerInventory, ScreenHandlerContext screenHandlerContext) {
+    public SkillCrafter(int syncId, Skill skill, Collection<RecipeType> types, PlayerInventory playerInventory, ScreenHandlerContext screenHandlerContext) {
         super(null, syncId, playerInventory, new BasicInventory(3), null);
         this.context = screenHandlerContext;
         this.skill = skill;
@@ -94,12 +97,13 @@ public class SkillCraftingController extends CottonCraftingController implements
     private int initializeRecipes() {
         int r = 0;
         for (RecipeType type : types) {
-            for (Object recipe : ((RecipeManagerInvoker) getPlayer().getEntityWorld().getRecipeManager()).getAllOfTypeAccessor(type).values())
+            for (Object recipe : ((RecipeManagerInvoker) getPlayer().getEntityWorld().getRecipeManager()).getAllOfTypeAccessor(type).values()) {
                 if (recipe instanceof SkillRecipe && ((SkillRecipe) recipe).getSkill() == skill && Mestiere.COMPONENT.get(getPlayer()).hasPerk(((SkillRecipe) recipe).getPerk())) {
                     this.recipeMap.put(((SkillRecipe) recipe).getId(), (SkillRecipe) recipe);
                     this.recipes.add(((SkillRecipe) recipe).withPlayer(playerInventory.player));
                     r = Math.max(r, ((SkillRecipe) recipe).numberOfInputs());
                 }
+            }
         }
 
         return r;
@@ -198,5 +202,62 @@ public class SkillCraftingController extends CottonCraftingController implements
     @Environment(EnvType.CLIENT)
     public void scroll(int x, int y, double amount) {
         this.listPanel.onMouseScroll(x, y, amount);
+    }
+
+    public static class Builder {
+        public final static SimpleRegistry<Builder> PROVIDERS = new SimpleRegistry<>();
+        public static Builder registerContainer(Block block, Skill skill) {
+            return Registry.register(PROVIDERS, Mestiere.newID(Registry.BLOCK.getId(block).getPath()), new Builder(block, skill));
+        }
+
+        public static void registerAllContainers() {
+            for (Builder provider : PROVIDERS) {
+                provider.registerContainer();
+            }
+        }
+
+        @Environment(EnvType.CLIENT)
+        public static void registerAllScreenProviders() {
+            for (Builder provider : PROVIDERS) {
+                provider.registerScreenProvider();
+            }
+        }
+
+        public final Block block;
+        private final Skill skill;
+        private final ArrayList<RecipeType> types;
+
+        public Builder(Block block, Skill skill) {
+            this.block = block;
+            this.skill = skill;
+            this.types = new ArrayList<>();
+        }
+
+        public void addTypes(RecipeType... types) {
+            this.types.addAll(Arrays.asList(types));
+        }
+
+        private SkillCrafter buildContainer(int syncId, Identifier id, PlayerEntity player, PacketByteBuf buf) {
+            return new SkillCrafter(syncId,
+                    this.skill,
+                    this.types,
+                    player.inventory,
+                    ScreenHandlerContext.create(player.world, buf.readBlockPos()));
+        }
+
+
+        public void registerContainer() {
+            ContainerProviderRegistry.INSTANCE.registerFactory(Registry.BLOCK.getId(this.block), this::buildContainer);
+        }
+
+        @Environment(EnvType.CLIENT)
+        private SkillCraftingScreen buildScreen(int syncId, Identifier id, PlayerEntity player, PacketByteBuf buf) {
+            return new SkillCraftingScreen(buildContainer(syncId, id, player, buf));
+        }
+
+        @Environment(EnvType.CLIENT)
+        public void registerScreenProvider() {
+            ScreenProviderRegistry.INSTANCE.registerFactory(Registry.BLOCK.getId(block), this::buildScreen);
+        }
     }
 }

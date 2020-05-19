@@ -1,12 +1,17 @@
 package dev.hephaestus.mestiere.crafting;
 
 import dev.hephaestus.mestiere.Mestiere;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import java.util.HashMap;
+
 public class RecipeTypes {
+    public final HashMap<Block, RecipeType []> collections = new HashMap<>();
     public final RecipeType netherite;// = Registry.register(Registry.RECIPE_TYPE, IDENTIFIERS.NETHERITE, new RecipeType<NetheriteRecipe>() {});
     public final RecipeType leatherworking;// = Registry.register(Registry.RECIPE_TYPE, IDENTIFIERS.LEATHERWORKING, new RecipeType<SimpleSkillRecipe>() {});
     public final RecipeType armor;// = Registry.register(Registry.RECIPE_TYPE, IDENTIFIERS.ARMOR, new RecipeType<SimpleSkillRecipe>() {});
@@ -17,6 +22,8 @@ public class RecipeTypes {
         leatherworking = register(Mestiere.newID("leatherworking"), new RecipeType<SimpleSkillRecipe>() {}, new SimpleSkillRecipe.Serializer());
         armor = register(Mestiere.newID("smithing.armor"), new RecipeType<SimpleSkillRecipe>() {}, new SimpleSkillRecipe.Serializer());
         tools = register(Mestiere.newID("smithing.tools"), new RecipeType<SimpleSkillRecipe>() {}, new SimpleSkillRecipe.Serializer());
+
+        collections.put(Blocks.SMITHING_TABLE, new RecipeType[] {netherite, tools});
     }
 
     public static RecipeTypes init() {

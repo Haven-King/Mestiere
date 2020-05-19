@@ -12,18 +12,14 @@ import nerdhub.cardinal.components.api.event.EntityComponentCallback;
 import nerdhub.cardinal.components.api.util.EntityComponents;
 import nerdhub.cardinal.components.api.util.RespawnCopyStrategy;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,9 +33,6 @@ public class Mestiere implements ModInitializer {
 	public static final MestiereConfig CONFIG = MestiereConfig.init();
 
 	public static final Identifier SELECT_RECIPE_ID = newID("select_recipe");
-
-//	public static final SkillRecipe.Type SMITHING = SkillRecipe.Type.register(new SimpleSkillRecipe.Type(Skills.SMITHING), SimpleSkillRecipe.SERIALIZER);
-//	public static final SkillRecipe.Type NETHERITE = SkillRecipe.Type.register(new NetheriteRecipe.Type(), NetheriteRecipe.SERIALIZER);
 
 	public static RecipeTypes TYPES;
 
@@ -66,16 +59,14 @@ public class Mestiere implements ModInitializer {
 			PlayerEntity player = packetContext.getPlayer();
 			if (player instanceof ServerPlayerEntity)
 				packetContext.getTaskQueue().execute(() -> {
-					SkillCraftingController controller = SkillCraftingController.getInstance(syncId);
+					dev.hephaestus.mestiere.crafting.SkillCrafter controller = dev.hephaestus.mestiere.crafting.SkillCrafter.getInstance(syncId);
 					if (controller.setRecipe(recipeId) == ActionResult.PASS)
 						controller.fillInputSlots();
 				});
 		}));
 
-		ContainerProviderRegistry.INSTANCE.registerFactory(Registry.BLOCK.getId(Blocks.SMITHING_TABLE),
-			(syncId, id, player, buf) -> new SkillCraftingController(syncId, Skills.SMITHING,
-					new RecipeType[] {TYPES.netherite, TYPES.tools},
-					player.inventory, ScreenHandlerContext.create(player.world, buf.readBlockPos())));
+		SkillCrafter.Builder.registerContainer(Blocks.SMITHING_TABLE, Skills.SMITHING).addTypes(TYPES.netherite, TYPES.tools);
+		SkillCrafter.Builder.registerAllContainers();
 	}
 
 	public static void log(String msg) {

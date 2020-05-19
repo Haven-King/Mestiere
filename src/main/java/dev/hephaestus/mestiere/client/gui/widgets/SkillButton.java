@@ -1,9 +1,7 @@
 package dev.hephaestus.mestiere.client.gui.widgets;
 
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.MestiereClient;
-import dev.hephaestus.mestiere.client.gui.MestiereScreen;
-import dev.hephaestus.mestiere.client.gui.ScrollingGuiDescription;
+import dev.hephaestus.mestiere.client.gui.screens.MestiereScreen;
 import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.skills.SkillPerk;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;

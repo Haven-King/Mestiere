@@ -1,7 +1,7 @@
 package dev.hephaestus.mestiere.client.gui.widgets;
 
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.crafting.SkillCraftingController;
+import dev.hephaestus.mestiere.crafting.SkillCrafter;
 import dev.hephaestus.mestiere.crafting.SkillRecipe;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
@@ -33,10 +33,10 @@ public class RecipeButton extends WButton {
     }
 
     private int animCounter = 0;
-    private SkillCraftingController controller;
+    private SkillCrafter controller;
     private int maxNumberOfInputs = 1;
 
-    public void init(SkillRecipe recipe, SkillCraftingController controller, int maxNumberOfInputs) {
+    public void init(SkillRecipe recipe, SkillCrafter controller, int maxNumberOfInputs) {
         this.recipe = recipe;
         this.setEnabled(recipe.canCraft(controller.getPlayer()));
 

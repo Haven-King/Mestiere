@@ -1,13 +1,14 @@
-package dev.hephaestus.mestiere.client.gui;
+package dev.hephaestus.mestiere.client.gui.screens;
 
-import dev.hephaestus.mestiere.crafting.SkillCraftingController;
+import dev.hephaestus.mestiere.client.gui.widgets.ScrollingGui;
+import dev.hephaestus.mestiere.crafting.SkillCrafter;
 import io.github.cottonmc.cotton.gui.client.CottonInventoryScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
-public class SkillCraftingScreen extends CottonInventoryScreen<SkillCraftingController> {
-    public SkillCraftingScreen(SkillCraftingController container) {
+public class SkillCraftingScreen extends CottonInventoryScreen<SkillCrafter> {
+    public SkillCraftingScreen(SkillCrafter container) {
         super(container, container.getPlayer());
     }
 
