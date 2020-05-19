@@ -23,6 +23,7 @@ public class OreVisibilityPerk extends Skill.Perk {
 
         setName(new TranslatableText(createTranslationKey("perk", Mestiere.newID("mining." + Registry.BLOCK.getId(block).getPath() + ".name")), blockText));
         setDescription(new TranslatableText(createTranslationKey("perk", Mestiere.newID("mining.ore.description")), blockText));
+        setMessage(new TranslatableText("perk.mestiere.mining.ore.message", blockText));
 
         FibLib.Blocks.register(
                 new BlockFib(block, Blocks.STONE) {

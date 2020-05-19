@@ -18,7 +18,7 @@ public class ExperienceOrbEntityMixin {
     @Inject(method = "onPlayerCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addExperience(I)V"))
     public void addSkillXP(PlayerEntity player, CallbackInfo ci) {
         if ((Object)this instanceof SkilledExperienceOrbEntity) {
-            Mestiere.COMPONENT.get(player).addXp(((SkilledExperienceOrbEntity)(Object)(this)).skill, this.amount);
+            Mestiere.COMPONENT.get(player).addXp(((SkilledExperienceOrbEntity)(Object)(this)).skill, this.amount, true);
         }
     }
 }

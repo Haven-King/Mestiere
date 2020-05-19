@@ -23,7 +23,7 @@ import static dev.hephaestus.mestiere.Mestiere.newID;
 import static net.minecraft.command.arguments.EntityArgumentType.getPlayers;
 
 public class Commands {
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
         dispatcher.register(CommandManager.literal(Mestiere.MOD_ID)
             .requires(source -> source.hasPermissionLevel(2))
             .then(CommandManager.argument("action", word()).suggests(CompletionProvider.CMDS)
@@ -50,7 +50,7 @@ public class Commands {
                     break;
 
                 case "add":
-                    Mestiere.COMPONENT.get(p).addXp(skill, amount);
+                    Mestiere.COMPONENT.get(p).addXp(skill, amount, false);
                     break;
 
                 case "clear":

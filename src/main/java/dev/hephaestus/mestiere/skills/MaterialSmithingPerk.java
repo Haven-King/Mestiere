@@ -18,5 +18,6 @@ public class MaterialSmithingPerk extends Skill.Perk {
         MutableText materialText = new TranslatableText(material.getTranslationKey()).styled((style) -> style.withColor(MestiereConfig.messageFormatting.getOrDefault(Registry.ITEM.getId(material), Formatting.WHITE)).withBold(true));
         setName(new TranslatableText(createTranslationKey("perk", Mestiere.newID("smithing.material." + Registry.ITEM.getId(material).getPath() + ".name")), materialText));
         setDescription(new TranslatableText(createTranslationKey("perk", Mestiere.newID("smithing.material.description")), materialText));
+        setMessage(new TranslatableText(createTranslationKey("perk", Mestiere.newID("smithing.material.message")), materialText));
     }
 }

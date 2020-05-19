@@ -26,7 +26,8 @@ public class BlockMixin {
     @Inject(method = "afterBreak", at = @At("HEAD"))
     public void addXP(World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack, CallbackInfo ci) {
         if (!world.isClient() && EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, stack) == 0 && Mestiere.CONFIG.getMiningValue(state.getBlock()) > 0) {
-            Mestiere.COMPONENT.get(player).addXp(Skill.MINING, Mestiere.CONFIG.getMiningValue(state.getBlock()));
+            int value = Mestiere.CONFIG.getMiningValue(state.getBlock());
+            Mestiere.COMPONENT.get(player).addXp(Skill.MINING, value, value > 1);
         }
 
         if (state.getBlock() instanceof FernBlock || state.getBlock() instanceof TallPlantBlock) {

@@ -31,7 +31,7 @@ import static net.minecraft.util.Util.createTranslationKey;
 public class Skill {
     private static final SimpleRegistry<Skill> REGISTRY = new SimpleRegistry<>();
     public static Skill NONE;
-    public static Skill ALCHEMY;
+    public static Skill CLERGY;
     public static Skill SMITHING;
     public static Skill LEATHERWORKING;
     public static Skill FARMING;
@@ -79,9 +79,18 @@ public class Skill {
     public static class Perk implements Comparable<Perk> {
         public static Perk NONE;
         public static Perk INVALID;
+
+        public static Skill.Perk GOLD_INGOT_SMITH;
+        public static Skill.Perk DIAMOND_SMITH;
+        public static Skill.Perk NETHERITE_SMITH;
+
         public static Skill.Perk HUNTER;
         public static Skill.Perk SHARP_SHOOTER;
+
         public static Skill.Perk GATHERER;
+        public static Skill.Perk SEX_GURU;
+        public static Skill.Perk GREEN_THUMB;
+
         public static Skill.Perk SLAYER;
         public static Skill.Perk SNIPER;
 
@@ -108,10 +117,10 @@ public class Skill {
         public final Skill skill;
         public final int level;
         public final ItemStack icon;
-        private final Text message;
 
         private Text name;
         private Text description;
+        private Text message;
 
         private boolean hardcore = false;
         private boolean scalesWithLevel = false;
@@ -129,8 +138,8 @@ public class Skill {
             this.message = new TranslatableText(createTranslationKey("perk", Mestiere.newID(this.id.getPath() + ".message")));
         }
 
-        public Perk isHardcore(boolean bool) {
-            this.hardcore = bool;
+        public Perk isHardcore(boolean hardcore) {
+            this.hardcore = hardcore;
             return this;
         }
 
@@ -148,6 +157,10 @@ public class Skill {
 
         public void setDescription(Text text) {
             this.description = text;
+        }
+
+        public void setMessage(Text text) {
+            this.message = text;
         }
 
         public MutableText getName() {

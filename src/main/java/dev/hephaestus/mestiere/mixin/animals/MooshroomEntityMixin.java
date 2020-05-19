@@ -44,7 +44,7 @@ public class MooshroomEntityMixin extends CowEntity {
             cir.setReturnValue(false);
         } else {
             if (player instanceof ServerPlayerEntity)
-                Mestiere.COMPONENT.get(player).addXp(Skill.FARMING, 4);
+                Mestiere.COMPONENT.get(player).addXp(Skill.FARMING, 4, false);
 
             this.timeToMilk = 14000;
         }

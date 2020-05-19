@@ -40,7 +40,7 @@ public class AnimalEntityMixin extends PassiveEntity implements SexedEntity {
         if (source.getAttacker() instanceof ServerPlayerEntity && !this.isBaby()) {
             Mestiere.COMPONENT.get(source.getAttacker()).addXp(
                     Skill.HUNTING,
-                    this.getCurrentExperience((PlayerEntity) source.getAttacker()) + (int)this.getPos().distanceTo(source.getAttacker().getPos())/10 + (int)(this.getVelocity().length()*2.5)
+                    this.getCurrentExperience((PlayerEntity) source.getAttacker()) + (int)this.getPos().distanceTo(source.getAttacker().getPos())/10 + (int)(this.getVelocity().length()*2.5), true
             );
         }
     }

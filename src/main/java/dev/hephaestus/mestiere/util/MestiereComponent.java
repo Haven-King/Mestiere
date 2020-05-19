@@ -69,9 +69,10 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
     }
 
     @Override
-    public void addXp(Skill skill, int xp) {
+    public void addXp(Skill skill, int xp, boolean addEnchantmentXp) {
         if (player instanceof ServerPlayerEntity) {
-            this.player.addExperience(xp);
+            if (addEnchantmentXp)
+                this.player.addExperience(xp);
 
             int oldLevel = getLevel(skill);
             this.skills.put(skill, this.skills.getOrDefault(skill, 0) + xp);

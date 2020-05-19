@@ -1,6 +1,6 @@
 package dev.hephaestus.mestiere;
 
-import dev.hephaestus.mestiere.crafting.*;
+import dev.hephaestus.mestiere.crafting.SkillCrafter;
 import dev.hephaestus.mestiere.crafting.recipes.NetheriteRecipe;
 import dev.hephaestus.mestiere.crafting.recipes.SimpleSkillRecipe;
 import dev.hephaestus.mestiere.skills.MaterialSmithingPerk;
@@ -14,8 +14,8 @@ import nerdhub.cardinal.components.api.event.EntityComponentCallback;
 import nerdhub.cardinal.components.api.util.EntityComponents;
 import nerdhub.cardinal.components.api.util.RespawnCopyStrategy;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,7 +48,7 @@ public class Mestiere implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		CommandRegistry.INSTANCE.register(false, Commands::register);
+		CommandRegistrationCallback.EVENT.register(Commands::register);
 
 		EntityComponentCallback.event(ServerPlayerEntity.class).register((player, components) ->
 				components.put(COMPONENT, new MestiereComponent(player)));
@@ -68,28 +68,28 @@ public class Mestiere implements ModInitializer {
 
 		// Register Skills
 		Skill.NONE = new Skill(Mestiere.newID("none"), Formatting.BLACK, ItemStack.EMPTY);
-		Skill.ALCHEMY = Skill.register(new Skill(newID("alchemy"), Formatting.LIGHT_PURPLE, new ItemStack(Items.BREWING_STAND)));
+		Skill.CLERGY = Skill.register(new Skill(newID("clergy"), Formatting.LIGHT_PURPLE, new ItemStack(Items.BREWING_STAND)));
 		Skill.FARMING = Skill.register(new Skill(newID("farming"), Formatting.DARK_GREEN, new ItemStack(Items.IRON_HOE)));
 		Skill.HUNTING = Skill.register(new Skill(newID("hunting"), Formatting.GREEN, new ItemStack(Items.BOW)));
 		Skill.LEATHERWORKING = Skill.register(new Skill(newID("leatherworking"), Formatting.GOLD, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER, new ItemStack(Items.LEATHER)));
 		Skill.MINING = Skill.register(new Skill(newID("mining"), Formatting.DARK_GRAY, new ItemStack(Items.IRON_PICKAXE)));
 		Skill.SMITHING = Skill.register(new Skill(newID("smithing"), Formatting.DARK_RED, SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH, new ItemStack(Items.SMITHING_TABLE)));
-		Skill.SLAYING = Skill.register(new Skill(newID("slaying"), Formatting.RED, new ItemStack(Items.IRON_SWORD)));
+		Skill.SLAYING = Skill.register(new Skill(newID("slaying"), Formatting.RED, new ItemStack(Items.ZOMBIE_HEAD)));
 
 		// Register Skill.Perks
 		Skill.Perk.NONE = new Skill.Perk(Skill.NONE, "none", Integer.MIN_VALUE, null);
 		Skill.Perk.INVALID = new Skill.Perk(Skill.NONE, "invalid", Integer.MAX_VALUE, null);
 
-		Skill.Perk.register(new MaterialSmithingPerk(10, Items.GOLD_INGOT));
-		Skill.Perk.register(new MaterialSmithingPerk(20, Items.DIAMOND));
-		Skill.Perk.register(new MaterialSmithingPerk(25, Items.NETHERITE_INGOT));
+		Skill.Perk.GOLD_INGOT_SMITH = Skill.Perk.register(new MaterialSmithingPerk(10, Items.GOLD_INGOT));
+		Skill.Perk.DIAMOND_SMITH = Skill.Perk.register(new MaterialSmithingPerk(20, Items.DIAMOND));
+		Skill.Perk.NETHERITE_SMITH = Skill.Perk.register(new MaterialSmithingPerk(25, Items.NETHERITE_INGOT));
 
 		Skill.Perk.HUNTER = Skill.Perk.register(new Skill.Perk(Skill.HUNTING, "hunter", 5, Items.PORKCHOP)).scales(30);
 		Skill.Perk.SHARP_SHOOTER = Skill.Perk.register(new Skill.Perk(Skill.HUNTING, "sharp_shooter", 15, Items.ARROW)).scales(30);
 
 		Skill.Perk.GATHERER = Skill.Perk.register(new Skill.Perk(Skill.FARMING, "gatherer", 5, Items.GRASS).scales(15));
-		Skill.Perk.register(new Skill.Perk(Skill.FARMING, "sex_guru", 10, Items.WHEAT));
-		Skill.Perk.register(new Skill.Perk(Skill.FARMING, "green_thumb", 15, Items.WHEAT_SEEDS));
+		Skill.Perk.SEX_GURU = Skill.Perk.register(new Skill.Perk(Skill.FARMING, "sex_guru", 10, Items.WHEAT));
+		Skill.Perk.GREEN_THUMB = Skill.Perk.register(new Skill.Perk(Skill.FARMING, "green_thumb", 15, Items.WHEAT_SEEDS));
 
 		Skill.Perk.SLAYER = Skill.Perk.register(new Skill.Perk(Skill.SLAYING, "slayer", 15, Items.ROTTEN_FLESH)).scales(30);
 		Skill.Perk.SNIPER = Skill.Perk.register(new Skill.Perk(Skill.SLAYING, "sniper", 20, Items.ARROW)).scales(30);

@@ -40,7 +40,7 @@ public abstract class CropBlockMixin extends PlantBlock {
                     Block.dropStack(world, pos, stack);
                 });
 
-                Mestiere.COMPONENT.get(player).addXp(Skill.FARMING, 1);
+                Mestiere.COMPONENT.get(player).addXp(Skill.FARMING, 1, true);
                 world.setBlockState(pos, this.withAge(0));
             }
 
@@ -53,6 +53,6 @@ public abstract class CropBlockMixin extends PlantBlock {
     @Override
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         super.onBreak(world, pos, state, player);
-        Mestiere.COMPONENT.get(player).addXp(Skill.FARMING, 1);
+        Mestiere.COMPONENT.get(player).addXp(Skill.FARMING, 1, true);
     }
 }

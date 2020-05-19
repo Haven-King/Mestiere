@@ -24,6 +24,6 @@ public class MushroomPlantBlockMixin extends PlantBlock {
     @Override
     public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
         super.afterBreak(world, player, pos, state, blockEntity, stack);
-        Mestiere.COMPONENT.get(player).addXp(Skill.FARMING, 1);
+        Mestiere.COMPONENT.get(player).addXp(Skill.FARMING, 1, false);
     }
 }
