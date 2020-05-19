@@ -1,0 +1,6 @@
+{
+  "type": "mestiere:netherite",
+  "inputItem": "minecraft:diamond_pickaxe",
+  "outputItem": "minecraft:netherite_pickaxe",
+  "value": 192
+}

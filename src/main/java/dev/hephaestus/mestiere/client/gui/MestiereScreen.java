@@ -17,7 +17,7 @@ import java.util.Stack;
 @Environment(EnvType.CLIENT)
 public class MestiereScreen extends CottonClientScreen {
     private static boolean isOpen = false;
-    private static Stack<MestiereScreen> stack = new Stack<>();
+    private static final Stack<MestiereScreen> stack = new Stack<>();
 
     public static boolean isOpen() {
         return isOpen;
@@ -60,7 +60,7 @@ public class MestiereScreen extends CottonClientScreen {
 
     @Override
     public void paint(int mouseX, int mouseY) {
-        super.renderBackground();
+        super.renderBackground(ScreenDrawing.getMatrices());
 
         if (description!=null) {
             WPanel root = description.getRootPanel();
@@ -70,7 +70,7 @@ public class MestiereScreen extends CottonClientScreen {
         }
 
         if (getTitle() != null) {
-            ScreenDrawing.drawString(getTitle().asFormattedString(), Alignment.CENTER, left, top, containerWidth, description.getTitleColor());
+            ScreenDrawing.drawString(getTitle(), Alignment.CENTER, left, top, containerWidth, description.getTitleColor());
         }
     }
 }

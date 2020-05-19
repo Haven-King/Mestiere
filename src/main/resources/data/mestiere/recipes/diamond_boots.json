@@ -1,18 +1,19 @@
 {
-  "type": "mestiere:skill_recipe",
-  "firstIngredient": {
-    "item": "minecraft:diamond",
-    "amount": 4
-  },
-  "secondIngredient": {
-    "item": "minecraft:leather_boots",
-    "amount": 1
-  },
+  "type": "mestiere:smithing.armor",
+  "ingredients": [
+    {
+      "item": "minecraft:diamond",
+      "amount": 4
+    },
+    {
+      "item": "minecraft:leather_boots",
+      "amount": 1
+    }
+  ],
   "outputItem": {
     "item": "minecraft:diamond_boots",
     "amount": 1
   },
-  "skill": "smithing",
   "value": 64,
   "perk_required": "mestiere:smithing.material.diamond"
 }

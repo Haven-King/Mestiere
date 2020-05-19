@@ -13,8 +13,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
 
 public class RecipeButton extends WButton {
     private static final WSprite ARROW = new WSprite(new Identifier("textures/gui/container/villager2.png"), 15f / 512f, 171f / 256f, 25f / 512f, 180f / 256f);
@@ -34,12 +34,14 @@ public class RecipeButton extends WButton {
 
     private int animCounter = 0;
     private SkillCraftingController controller;
+    private int maxNumberOfInputs = 1;
 
-    public void init(SkillRecipe recipe, SkillCraftingController controller) {
+    public void init(SkillRecipe recipe, SkillCraftingController controller, int maxNumberOfInputs) {
         this.recipe = recipe;
         this.setEnabled(recipe.canCraft(controller.getPlayer()));
 
         this.controller = controller;
+        this.maxNumberOfInputs = maxNumberOfInputs;
     }
 
 
@@ -51,21 +53,21 @@ public class RecipeButton extends WButton {
         super.paintBackground(x, y, mouseX, mouseY);
 
         if (this.isEnabled())
-            ARROW.paintBackground(x + 48, y + 6);
+            ARROW.paintBackground(x + 9 + 18*(maxNumberOfInputs), y + 6);
         else
-            CROSSED_ARROW.paintBackground(x + 48, y + 6);
+            CROSSED_ARROW.paintBackground(x + 9 + 18*(maxNumberOfInputs), y + 6);
 
         ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
-        for (int i = 0; i < recipe.numberOfComponents(); ++i) {
+        for (int i = 0; i < recipe.numberOfInputs(); ++i) {
             ItemStack itemStack = recipe.getItem(i, animCounter);
             itemRenderer.renderGuiItem(itemStack, x+2 + 18*i, y+2);
             itemRenderer.renderGuiItemOverlay(textRenderer, itemStack, x+2 + 18*i, y+2);
         }
 
-        itemRenderer.renderGuiItem(recipe.getOutput(), x+45 + 18*(recipe.numberOfComponents()-1), y+2);
-        itemRenderer.renderGuiItemOverlay(textRenderer, recipe.getOutput(), x+45 + 18*(recipe.numberOfComponents()-1), y+2);
+        itemRenderer.renderGuiItem(recipe.getOutput(), x+45 + 18*(maxNumberOfInputs-1), y+2);
+        itemRenderer.renderGuiItemOverlay(textRenderer, recipe.getOutput(), x+45 + 18*(maxNumberOfInputs-1), y+2);
     }
 
     @Override

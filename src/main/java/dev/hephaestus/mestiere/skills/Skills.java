@@ -33,7 +33,7 @@ public class Skills implements Iterable<Skill> {
         FARMING = instance.register(new Skill(newID("farming"), Formatting.DARK_GREEN, new ItemStack(Items.IRON_HOE)));
         HUNTING = instance.register(new Skill(newID("hunting"), Formatting.GREEN, new ItemStack(Items.BOW)));
         LEATHERWORKING = instance.register(new Skill(newID("leatherworking"), Formatting.GOLD, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER, new ItemStack(Items.LEATHER)));
-        MINING = instance.register(new Skill(newID("mining"), Formatting.GRAY, new ItemStack(Items.IRON_PICKAXE)));
+        MINING = instance.register(new Skill(newID("mining"), Formatting.DARK_GRAY, new ItemStack(Items.IRON_PICKAXE)));
         SMITHING = instance.register(new Skill(newID("smithing"), Formatting.DARK_RED, SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH, new ItemStack(Items.SMITHING_TABLE)));
         SLAYING = instance.register(new Skill(newID("slaying"), Formatting.RED, new ItemStack(Items.IRON_SWORD)));
 

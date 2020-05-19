@@ -1,17 +1,18 @@
 {
-  "type": "mestiere:skill_recipe",
-  "firstIngredient": {
-    "item": "minecraft:iron_ingot",
-    "amount": 3
-  },
-  "secondIngredient": {
-    "item": "minecraft:stick",
-    "amount": 2
-  },
+  "type": "mestiere:smithing.tools",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "amount": 3
+    },
+    {
+      "item": "minecraft:stick",
+      "amount": 2
+    }
+  ],
   "outputItem": {
     "item": "minecraft:iron_axe",
     "amount": 1
   },
-  "skill": "smithing",
   "value": 3
 }

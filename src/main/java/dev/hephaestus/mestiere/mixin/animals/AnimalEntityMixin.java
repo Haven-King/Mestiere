@@ -1,10 +1,12 @@
 package dev.hephaestus.mestiere.mixin.animals;
 
 import dev.hephaestus.mestiere.Mestiere;
+import dev.hephaestus.mestiere.SkilledExperienceOrbEntity;
 import dev.hephaestus.mestiere.skills.Skills;
 import dev.hephaestus.mestiere.util.MestiereComponent;
 import dev.hephaestus.mestiere.util.SexedEntity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
@@ -103,6 +105,11 @@ public class AnimalEntityMixin extends PassiveEntity implements SexedEntity {
             this.sex = Sex.valueOf(tag.getString(Mestiere.MOD_ID + ".sex"));
         else
             this.sex = this.random.nextBoolean() ? Sex.FEMALE : Sex.MALE;
+    }
+
+    @Redirect(method = "breed", at = @At(value = "NEW", target = "net/minecraft/entity/ExperienceOrbEntity"))
+    public ExperienceOrbEntity thing(World world, double x, double y, double z, int amount) {
+        return new SkilledExperienceOrbEntity(world, x, y, z, world.getRandom().nextInt(7) + 1, Skills.FARMING);
     }
 
     private Sex sex;

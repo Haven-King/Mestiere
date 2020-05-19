@@ -1,8 +1,6 @@
 package dev.hephaestus.mestiere;
 
-import dev.hephaestus.mestiere.crafting.SkillCraftingController;
-import dev.hephaestus.mestiere.crafting.SkillRecipe;
-import dev.hephaestus.mestiere.crafting.SkillRecipeSerializer;
+import dev.hephaestus.mestiere.crafting.*;
 import dev.hephaestus.mestiere.skills.Perks;
 import dev.hephaestus.mestiere.skills.Skills;
 import dev.hephaestus.mestiere.util.Commands;
@@ -19,10 +17,11 @@ import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
-import net.minecraft.container.BlockContext;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
@@ -39,6 +38,11 @@ public class Mestiere implements ModInitializer {
 
 	public static final Identifier SELECT_RECIPE_ID = newID("select_recipe");
 
+//	public static final SkillRecipe.Type SMITHING = SkillRecipe.Type.register(new SimpleSkillRecipe.Type(Skills.SMITHING), SimpleSkillRecipe.SERIALIZER);
+//	public static final SkillRecipe.Type NETHERITE = SkillRecipe.Type.register(new NetheriteRecipe.Type(), NetheriteRecipe.SERIALIZER);
+
+	public static RecipeTypes TYPES;
+
 	public static final ComponentType<MestiereComponent> COMPONENT =
 		ComponentRegistry.INSTANCE.registerIfAbsent(newID("component"), MestiereComponent.class);
 
@@ -51,11 +55,10 @@ public class Mestiere implements ModInitializer {
 	public void onInitialize() {
 		CommandRegistry.INSTANCE.register(false, Commands::register);
 
+		TYPES = RecipeTypes.init();
+
 		EntityComponentCallback.event(ServerPlayerEntity.class).register((player, components) ->
 				components.put(COMPONENT, new MestiereComponent(player)));
-
-		Registry.register(Registry.RECIPE_SERIALIZER, SkillRecipeSerializer.ID, SkillRecipeSerializer.INSTANCE);
-		Registry.register(Registry.RECIPE_TYPE, SkillRecipe.Type.ID, SkillRecipe.Type.INSTANCE);
 
 		ServerSidePacketRegistry.INSTANCE.register(SELECT_RECIPE_ID, ((packetContext, packetByteBuf) -> {
 			int syncId = packetByteBuf.readByte();
@@ -64,19 +67,15 @@ public class Mestiere implements ModInitializer {
 			if (player instanceof ServerPlayerEntity)
 				packetContext.getTaskQueue().execute(() -> {
 					SkillCraftingController controller = SkillCraftingController.getInstance(syncId);
-					ItemStack output = controller.setRecipe(recipeId);
-					Mestiere.debug("Trying to sync [%d, %s]: %s, %s", syncId, controller.toString().split("@")[1], output.toString(), player.toString());
-					controller.dumpInventory();
-//					if (!output.isEmpty()) {
-//						((ServerPlayerEntity)player).networkHandler.sendPacket(new ContainerSlotUpdateS2CPacket(syncId, 0, output));
-//					}
+					if (controller.setRecipe(recipeId) == ActionResult.PASS)
+						controller.fillInputSlots();
 				});
-			else
-				Mestiere.debug("fuck");
 		}));
 
 		ContainerProviderRegistry.INSTANCE.registerFactory(Registry.BLOCK.getId(Blocks.SMITHING_TABLE),
-			(syncId, id, player, buf) -> new SkillCraftingController(syncId, Skills.SMITHING, player.inventory, BlockContext.create(player.world, buf.readBlockPos())));
+			(syncId, id, player, buf) -> new SkillCraftingController(syncId, Skills.SMITHING,
+					new RecipeType[] {TYPES.netherite, TYPES.tools},
+					player.inventory, ScreenHandlerContext.create(player.world, buf.readBlockPos())));
 	}
 
 	public static void log(String msg) {

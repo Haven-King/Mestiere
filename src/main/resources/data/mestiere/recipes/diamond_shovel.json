@@ -1,18 +1,19 @@
 {
-  "type": "mestiere:skill_recipe",
-  "firstIngredient": {
-    "item": "minecraft:diamond",
-    "amount": 1
-  },
-  "secondIngredient": {
-    "item": "minecraft:stick",
-    "amount": 2
-  },
+  "type": "mestiere:smithing.tools",
+  "ingredients": [
+    {
+      "item": "minecraft:diamond",
+      "amount": 1
+    },
+    {
+      "item": "minecraft:stick",
+      "amount": 2
+    }
+  ],
   "outputItem": {
     "item": "minecraft:diamond_shovel",
     "amount": 1
   },
-  "skill": "smithing",
   "value": 16,
   "perk_required": "mestiere:smithing.material.diamond"
 }

@@ -82,18 +82,18 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
             int newLevel = getLevel(skill);
             if (newLevel > oldLevel) {
                 TranslatableText sText = skill.getText(Mestiere.KEY_TYPE.NAME);
-                sText.setStyle(sText.getStyle().deepCopy().setBold(true));
+                sText.setStyle(sText.getStyle().withBold(true));
 
                 LiteralText lText = new LiteralText(Integer.toString(newLevel));
-                lText.setStyle(new Style().setColor(Formatting.GREEN));
+                lText.styled((style) -> style.withColor(Formatting.GREEN));
 
-                ((ServerPlayerEntity)player).sendChatMessage(
+                ((ServerPlayerEntity)player).sendMessage(
                         new TranslatableText("mestiere.level_up", lText, sText),
                         MessageType.CHAT);
 
                 for (SkillPerk perk : Mestiere.PERKS.get(skill)) {
                     if (perk.level > oldLevel && perk.level <= newLevel) {
-                        ((ServerPlayerEntity)player).sendChatMessage(perk.getText(Mestiere.KEY_TYPE.MESSAGE), MessageType.CHAT);
+                        ((ServerPlayerEntity)player).sendMessage(perk.getText(Mestiere.KEY_TYPE.MESSAGE), MessageType.CHAT);
                     }
                 }
             }

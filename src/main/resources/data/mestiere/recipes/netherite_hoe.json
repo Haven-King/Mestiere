@@ -1,0 +1,6 @@
+{
+  "type": "mestiere:netherite",
+  "inputItem": "minecraft:diamond_hoe",
+  "outputItem": "minecraft:netherite_hoe",
+  "value": 128
+}

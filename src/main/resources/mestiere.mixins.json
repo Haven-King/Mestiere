@@ -11,7 +11,6 @@
     "RecipeManagerInvoker",
     "ServerPlayerEntityMixin",
     "animals.AnimalEntityMixin",
-    "animals.AnimalMateGoalMixin",
     "animals.CowEntityMixin",
     "animals.MooshroomEntityMixin",
     "animals.SheepEntityMixin",

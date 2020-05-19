@@ -1,0 +1,6 @@
+{
+  "type": "mestiere:netherite",
+  "inputItem": "minecraft:diamond_boots",
+  "outputItem": "minecraft:netherite_boots",
+  "value": 256
+}

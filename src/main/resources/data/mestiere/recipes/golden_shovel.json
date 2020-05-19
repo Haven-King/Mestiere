@@ -1,18 +1,19 @@
 {
-  "type": "mestiere:skill_recipe",
-  "firstIngredient": {
-    "item": "minecraft:gold_ingot",
-    "amount": 1
-  },
-  "secondIngredient": {
-    "item": "minecraft:stick",
-    "amount": 2
-  },
+  "type": "mestiere:smithing.tools",
+  "ingredients": [
+    {
+      "item": "minecraft:gold_ingot",
+      "amount": 1
+    },
+    {
+      "item": "minecraft:stick",
+      "amount": 2
+    }
+  ],
   "outputItem": {
     "item": "minecraft:golden_shovel",
     "amount": 1
   },
-  "skill": "smithing",
   "value": 4,
   "perk_required": "mestiere:smithing.material.gold_ingot"
 }

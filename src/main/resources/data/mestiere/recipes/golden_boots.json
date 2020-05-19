@@ -1,18 +1,19 @@
 {
-  "type": "mestiere:skill_recipe",
-  "firstIngredient": {
-    "item": "minecraft:gold_ingot",
-    "amount": 4
-  },
-  "secondIngredient": {
-    "item": "minecraft:leather_boots",
-    "amount": 1
-  },
+  "type": "mestiere:smithing.armor",
+  "ingredients": [
+    {
+      "item": "minecraft:gold_ingot",
+      "amount": 4
+    },
+    {
+      "item": "minecraft:leather_boots",
+      "amount": 1
+    }
+  ],
   "outputItem": {
     "item": "minecraft:golden_boots",
     "amount": 1
   },
-  "skill": "smithing",
   "value": 16,
   "perk_required": "mestiere:smithing.material.gold_ingot"
 }

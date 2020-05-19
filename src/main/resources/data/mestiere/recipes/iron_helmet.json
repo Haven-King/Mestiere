@@ -1,17 +1,18 @@
 {
-  "type": "mestiere:skill_recipe",
-  "firstIngredient": {
-    "item": "minecraft:iron_ingot",
-    "amount": 5
-  },
-  "secondIngredient": {
-    "item": "minecraft:leather_helmet",
-    "amount": 1
-  },
+  "type": "mestiere:smithing.armor",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "amount": 5
+    },
+    {
+      "item": "minecraft:leather_helmet",
+      "amount": 1
+    }
+  ],
   "outputItem": {
     "item": "minecraft:iron_helmet",
     "amount": 1
   },
-  "skill": "smithing",
   "value": 5
 }

@@ -11,6 +11,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -26,12 +27,12 @@ public class PerkPanel extends WPanel {
     }
 
     @Override
-    public void addInformation(List<String> information) {
-        super.addInformation(information);
-        information.add(this.perk.getText(Mestiere.KEY_TYPE.NAME).formatted(this.perk.skill.format).asFormattedString());
-        information.add(this.perk.getText(Mestiere.KEY_TYPE.DESCRIPTION).asFormattedString());
+    public void addTooltip(List<Text> tooltips) {
+        super.addTooltip(tooltips);
+        tooltips.add(this.perk.getText(Mestiere.KEY_TYPE.NAME).formatted(this.perk.skill.format));
+        tooltips.add(this.perk.getText(Mestiere.KEY_TYPE.DESCRIPTION));
         if (this.perk.scalesWithLevel) {
-            information.add(new TranslatableText("mestiere.scales").asString());
+            tooltips.add(new TranslatableText("mestiere.scales"));
         }
     }
 
@@ -43,14 +44,14 @@ public class PerkPanel extends WPanel {
         boolean unlocked = Mestiere.COMPONENT.get(player).getLevel(this.perk.skill) >= this.perk.level;
 
         if (unlocked) {
-            ScreenDrawing.drawStringWithShadow(this.perk.getText(Mestiere.KEY_TYPE.NAME).asFormattedString(),
+            ScreenDrawing.drawStringWithShadow(this.perk.getText(Mestiere.KEY_TYPE.NAME),
                 Alignment.LEFT,
                 x + this.height,
                 y + ((20 - 8) / 2),
                 this.width,
                 0xFFFFFFFF);
         } else {
-            ScreenDrawing.drawString(this.perk.getText(Mestiere.KEY_TYPE.NAME).formatted(Formatting.DARK_GRAY).asFormattedString(),
+            ScreenDrawing.drawString(this.perk.getText(Mestiere.KEY_TYPE.NAME).formatted(Formatting.DARK_GRAY),
                     Alignment.LEFT,
                     x + this.height,
                     y + ((20 - 8) / 2),
@@ -58,7 +59,7 @@ public class PerkPanel extends WPanel {
                     0xFFFFFFFF);
         }
 
-        ScreenDrawing.drawStringWithShadow(new LiteralText(this.perk.level + "").formatted(unlocked ? Formatting.WHITE : Formatting.RED).asFormattedString(),
+        ScreenDrawing.drawStringWithShadow(new LiteralText(this.perk.level + "").formatted(unlocked ? Formatting.WHITE : Formatting.RED),
                 Alignment.RIGHT,
                 x,
                 y + ((20 - 8) / 2),

@@ -46,7 +46,7 @@ public class SkillButton extends WButton {
 
         MinecraftClient.getInstance().getItemRenderer().renderGuiItem(skill.icon, x+2, y+2);
 
-        ScreenDrawing.drawStringWithShadow(this.skill.getText(Mestiere.KEY_TYPE.NAME).asFormattedString(), Alignment.LEFT, x + this.height, y + ((20 - 8) / 2), this.width, 0xFFFFFFFF);
+        ScreenDrawing.drawStringWithShadow(this.skill.getText(Mestiere.KEY_TYPE.NAME), Alignment.LEFT, x + this.height, y + ((20 - 8) / 2), this.width, 0xFFFFFFFF);
 
         assert MinecraftClient.getInstance().player != null;
         ScreenDrawing.drawStringWithShadow(Mestiere.COMPONENT.get(MinecraftClient.getInstance().player).getLevel(skill) + "", Alignment.RIGHT, x, y + ((20 - 8) / 2), this.width - 4, 0xFFFFFFFF);

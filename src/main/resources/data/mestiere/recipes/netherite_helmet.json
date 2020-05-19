@@ -1,0 +1,6 @@
+{
+  "type": "mestiere:netherite",
+  "inputItem": "minecraft:diamond_helmet",
+  "outputItem": "minecraft:netherite_helmet",
+  "value": 320
+}

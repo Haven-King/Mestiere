@@ -9,8 +9,8 @@ import net.minecraft.entity.passive.MooshroomEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.packet.s2c.play.ContainerSlotUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.HeldItemChangeS2CPacket;
+import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
@@ -36,7 +36,7 @@ public class MooshroomEntityMixin extends CowEntity {
                 ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)player;
                 int s = serverPlayerEntity.inventory.main.size();
                 for (int i = 0; i < s; ++i) {
-                    serverPlayerEntity.networkHandler.sendPacket(new ContainerSlotUpdateS2CPacket(-2, i, serverPlayerEntity.inventory.getInvStack(i)));
+                    serverPlayerEntity.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(-2, i, serverPlayerEntity.inventory.getStack(i)));
                 }
 
                 serverPlayerEntity.networkHandler.sendPacket(new HeldItemChangeS2CPacket(serverPlayerEntity.inventory.selectedSlot));

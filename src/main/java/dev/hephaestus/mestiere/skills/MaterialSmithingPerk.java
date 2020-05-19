@@ -23,7 +23,7 @@ public class MaterialSmithingPerk extends SkillPerk {
                 false, 1, new ItemStack(material));
 
         this.material = material;
-        stext = new TranslatableText(material.getTranslationKey()).setStyle(new Style().setColor(MestiereConfig.messageFormatting.getOrDefault(Registry.ITEM.getId(material), Formatting.WHITE)).setBold(true));
+        stext = new TranslatableText(material.getTranslationKey()).styled((style) -> style.withColor(MestiereConfig.messageFormatting.getOrDefault(Registry.ITEM.getId(material), Formatting.WHITE)).withBold(true));
     }
 
     @Override

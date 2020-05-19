@@ -19,7 +19,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.container.BlockContext;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -65,7 +66,8 @@ public class MestiereClient implements ClientModInitializer {
 
         ScreenProviderRegistry.INSTANCE.registerFactory(
                 Registry.BLOCK.getId(Blocks.SMITHING_TABLE), (syncId, identifier, player, buf) ->
-                        new SkillCraftingScreen(new SkillCraftingController(syncId, Skills.SMITHING, player.inventory, BlockContext.create(player.world, buf.readBlockPos())))
+                        new SkillCraftingScreen(new SkillCraftingController(syncId, Skills.SMITHING,
+                                new RecipeType[] {Mestiere.TYPES.netherite, Mestiere.TYPES.tools}, player.inventory, ScreenHandlerContext.create(player.world, buf.readBlockPos())))
         );
     }
 }

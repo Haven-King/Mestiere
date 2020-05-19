@@ -23,8 +23,8 @@ public class BlastFurnaceMixin extends Block {
         super(block$Settings_1);
     }
 
-    @Inject(method="openContainer", at=@At("HEAD"), cancellable = true)
-    public void openContainer(World world, BlockPos blockPos, PlayerEntity player, CallbackInfo ci) {
+    @Inject(method="openScreen", at=@At("HEAD"), cancellable = true)
+    public void openScreen(World world, BlockPos blockPos, PlayerEntity player, CallbackInfo ci) {
         Item mainHand = player.getMainHandStack().getItem();
         if ( mainHand == Items.LEATHER_HELMET || mainHand == Items.LEATHER_CHESTPLATE || mainHand == Items.LEATHER_LEGGINGS || mainHand == Items.LEATHER_BOOTS || mainHand == Items.LEATHER_HORSE_ARMOR) {
             if (!world.isClient)

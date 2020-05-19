@@ -1,0 +1,6 @@
+{
+  "type": "mestiere:netherite",
+  "inputItem": "minecraft:diamond_leggings",
+  "outputItem": "minecraft:netherite_leggings",
+  "value": 448
+}

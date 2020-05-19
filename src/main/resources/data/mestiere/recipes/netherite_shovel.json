@@ -1,0 +1,6 @@
+{
+  "type": "mestiere:netherite",
+  "inputItem": "minecraft:diamond_shovel",
+  "outputItem": "minecraft:netherite_shovel",
+  "value": 64
+}

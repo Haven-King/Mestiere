@@ -1,0 +1,6 @@
+{
+  "type": "mestiere:netherite",
+  "inputItem": "minecraft:diamond_axe",
+  "outputItem": "minecraft:netherite_axe",
+  "value": 192
+}

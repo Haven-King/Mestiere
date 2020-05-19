@@ -16,6 +16,7 @@ public class BetterListPanel<D, W extends WWidget> extends WListPanel<D, W> {
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public void onMouseScroll(int x, int y, double amount) {
         super.onMouseScroll(x, y, amount);
         this.scrollBar.setValue((int) (this.scrollBar.getValue()-amount));

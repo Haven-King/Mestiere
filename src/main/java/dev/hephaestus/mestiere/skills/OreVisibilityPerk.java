@@ -27,7 +27,7 @@ public class OreVisibilityPerk extends SkillPerk {
                 false, 1, new ItemStack(block.asItem()));
 
         this.block = block;
-        stext = new TranslatableText(block.getTranslationKey()).setStyle(new Style().setColor(MestiereConfig.messageFormatting.getOrDefault(Registry.BLOCK.getId(block), Formatting.WHITE)));
+        stext = new TranslatableText(block.getTranslationKey()).styled((style) -> style.withColor(MestiereConfig.messageFormatting.getOrDefault(Registry.BLOCK.getId(block), Formatting.WHITE)));
 
         FibLib.Blocks.register(
                 new BlockFib(block, Blocks.STONE) {

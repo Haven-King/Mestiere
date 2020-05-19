@@ -14,6 +14,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -186,33 +188,33 @@ public class MestiereConfig {
 
     @Environment(EnvType.CLIENT)
     public static ConfigBuilder getConfigScreen() {
-        ConfigBuilder builder = ConfigBuilder.create().setTitle("Mestiere");
+        ConfigBuilder builder = ConfigBuilder.create().setTitle(new LiteralText("Mestiere"));
         builder.setParentScreen(MinecraftClient.getInstance().currentScreen);
         builder.setDefaultBackgroundTexture(new Identifier("minecraft:textures/block/oak_planks.png"));
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-        ConfigCategory generalCategory = builder.getOrCreateCategory("mestiere.category.general");
+        ConfigCategory generalCategory = builder.getOrCreateCategory(new TranslatableText("mestiere.category.general"));
         generalCategory.addEntry(
-            entryBuilder.startFloatField("mestiere.levelModifier", Mestiere.CONFIG.levelModifier)
+            entryBuilder.startFloatField(new TranslatableText("mestiere.levelModifier"), Mestiere.CONFIG.levelModifier)
             .setSaveConsumer((modifier) -> Mestiere.CONFIG.levelModifier = modifier)
             .build()
         );
 
-        ConfigCategory miningValuesCategory = builder.getOrCreateCategory("mestiere.category.miningLevels");
+        ConfigCategory miningValuesCategory = builder.getOrCreateCategory(new TranslatableText("mestiere.category.miningLevels"));
         for (Map.Entry<Block, Integer> entry: MestiereConfig.miningValues.entrySet()) {
             miningValuesCategory.addEntry(
-                entryBuilder.startIntField(entry.getKey().getTranslationKey(), entry.getValue())
+                entryBuilder.startIntField(new TranslatableText(entry.getKey().getTranslationKey()), entry.getValue())
                 .setSaveConsumer((value) -> MestiereConfig.miningValues.put(entry.getKey(), value))
                 .build()
             );
         }
 
-        ConfigCategory oreColorsCategory = builder.getOrCreateCategory("mestiere.category.colors");
+        ConfigCategory oreColorsCategory = builder.getOrCreateCategory(new TranslatableText("mestiere.category.colors"));
         for (Map.Entry<Identifier, Formatting> entry: MestiereConfig.messageFormatting.entrySet()) {
             oreColorsCategory.addEntry(
                 entryBuilder.startStringDropdownMenu(
-                        Registry.ITEM.containsId(entry.getKey()) ? Registry.ITEM.get(entry.getKey()).getTranslationKey() : Registry.BLOCK.get(entry.getKey()).getTranslationKey(),
+                        new TranslatableText(Registry.ITEM.containsId(entry.getKey()) ? Registry.ITEM.get(entry.getKey()).getTranslationKey() : Registry.BLOCK.get(entry.getKey()).getTranslationKey()),
                         entry.getValue().name().toLowerCase()
                 ).setSelections(Formatting.getNames(true, false))
                  .setSaveConsumer((value) -> MestiereConfig.messageFormatting.put(entry.getKey(), Formatting.byName(value) == null ? Formatting.WHITE : Formatting.byName(value)))

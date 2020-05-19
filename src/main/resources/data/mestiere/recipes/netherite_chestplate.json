@@ -1,0 +1,6 @@
+{
+  "type": "mestiere:netherite",
+  "inputItem": "minecraft:diamond_chestplate",
+  "outputItem": "minecraft:netherite_chestplate",
+  "value": 512
+}

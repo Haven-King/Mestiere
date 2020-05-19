@@ -1,13 +1,16 @@
 {
-  "type": "mestiere:skill_recipe",
-  "firstIngredient": {
-    "item": "minecraft:leather",
-    "amount": 1
-  },
-  "secondIngredient": {
-    "item": "minecraft:paper",
-    "amount": 3
-  },
+  "type": "mestiere:leatherworking",
+  "kind": "ingredient_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:leather",
+      "amount": 1
+    },
+    {
+      "item": "minecraft:paper",
+      "amount": 3
+    }
+  ],
   "outputItem": {
     "item": "minecraft:book",
     "amount": 1
