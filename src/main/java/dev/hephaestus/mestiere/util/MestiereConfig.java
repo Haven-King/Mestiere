@@ -191,7 +191,7 @@ public class MestiereConfig {
     public static ConfigBuilder getConfigScreen() {
         ConfigBuilder builder = ConfigBuilder.create().setTitle(new LiteralText("Mestiere"));
         builder.setParentScreen(MinecraftClient.getInstance().currentScreen);
-        builder.setDefaultBackgroundTexture(new Identifier("minecraft:textures/block/oak_planks.png"));
+        builder.setTransparentBackground(true);
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 

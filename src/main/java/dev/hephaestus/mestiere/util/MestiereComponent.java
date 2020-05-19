@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.MessageType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -78,8 +79,8 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
             this.skills.put(skill, this.skills.getOrDefault(skill, 0) + xp);
             int newLevel = getLevel(skill);
             if (newLevel > oldLevel) {
-                TranslatableText sText = skill.getText(Mestiere.KEY_TYPE.NAME);
-                sText.setStyle(sText.getStyle().withBold(true));
+                MutableText sText = skill.getName();
+                sText.styled((style) -> style.withBold(true));
 
                 LiteralText lText = new LiteralText(Integer.toString(newLevel));
                 lText.styled((style) -> style.withColor(Formatting.GREEN));

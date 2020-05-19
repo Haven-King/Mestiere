@@ -113,12 +113,4 @@ public class Mestiere implements ModInitializer {
 	public static Identifier newID(String id) {
 		return new Identifier(MOD_ID, id);
 	}
-
-    public enum KEY_TYPE {
-        MESSAGE,
-        DESCRIPTION,
-        NAME
-    }
-
-
 }

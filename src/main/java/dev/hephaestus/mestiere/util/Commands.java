@@ -68,7 +68,7 @@ public class Commands {
 
     private static class CompletionProvider {
         public static final SuggestionProvider<ServerCommandSource> SKILLS = SuggestionProviders.register(newID("skills"), (ctx, builder) -> {
-            Mestiere.SKILLS.forEach(skill -> builder.suggest(skill.id.getPath(), skill.getText(Mestiere.KEY_TYPE.NAME)));
+            Mestiere.SKILLS.forEach(skill -> builder.suggest(skill.id.getPath(), skill.getName()));
             return builder.buildFuture();
         });
 

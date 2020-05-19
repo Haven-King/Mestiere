@@ -24,29 +24,24 @@ public class Skill {
     public final SoundEvent sound;
     public final ItemStack icon;
 
+    private final Text name;
+
+
     public Skill(Identifier id, Formatting format, SoundEvent sound, ItemStack icon) {
         this.id = id;
         this.format = format;
         this.sound = sound;
         this.icon = icon;
+
+        this.name = new TranslatableText(createTranslationKey("skill", Mestiere.newID(this.id.getPath() + ".name"))).formatted(format);
     }
 
     public Skill(Identifier id, Formatting format, ItemStack icon) {
         this(id, format, null, icon);
     }
 
-    protected HashMap<Mestiere.KEY_TYPE, String> messages = new HashMap<>();
-
-    public String getOrCreateTranslationKey(Mestiere.KEY_TYPE type) {
-        if (messages.get(type) == null) {
-            messages.put(type, createTranslationKey("skill", Mestiere.newID(this.id.getPath() + "." + type.toString().toLowerCase())));
-        }
-
-        return messages.get(type);
-    }
-
-    public TranslatableText getText(Mestiere.KEY_TYPE type) {
-        return (TranslatableText) new TranslatableText(getOrCreateTranslationKey(type)).formatted(format);
+    public MutableText getName() {
+        return this.name.copy();
     }
 
     public static class Perk implements Comparable<Perk> {
