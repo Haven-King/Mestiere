@@ -1,28 +1,21 @@
 package dev.hephaestus.mestiere.util;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.Skill;
-import dev.hephaestus.mestiere.skills.SkillPerk;
 import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.command.arguments.EntityArgumentType;
 import net.minecraft.command.suggestion.SuggestionProviders;
-import net.minecraft.network.MessageType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.Style;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;

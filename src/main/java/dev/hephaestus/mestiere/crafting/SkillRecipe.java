@@ -2,7 +2,6 @@ package dev.hephaestus.mestiere.crafting;
 
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.Skill;
-import dev.hephaestus.mestiere.skills.SkillPerk;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,13 +19,13 @@ import net.minecraft.world.World;
 public abstract class SkillRecipe implements Recipe<BasicInventory>, Comparable {
     private final Identifier id;
     private final Skill skill;
-    private final SkillPerk perk;
+    private final Skill.Perk perk;
     private final int value;
 
     private PlayerEntity player;
 
 
-    public SkillRecipe(Identifier id, Skill skill, SkillPerk perk, int value) {
+    public SkillRecipe(Identifier id, Skill skill, Skill.Perk perk, int value) {
         this.id = id;
         this.skill = skill;
         this.perk = perk;
@@ -75,7 +74,7 @@ public abstract class SkillRecipe implements Recipe<BasicInventory>, Comparable 
     public abstract ItemStack getOutput(BasicInventory inv);
 
     public int getValue() {return this.value;}
-    public SkillPerk getPerk() {return this.perk;}
+    public Skill.Perk getPerk() {return this.perk;}
     public Skill getSkill() {return this.skill;}
 
     public SkillRecipe withPlayer(PlayerEntity player) {

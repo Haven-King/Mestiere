@@ -3,7 +3,6 @@ package dev.hephaestus.mestiere.client.gui.widgets;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.client.gui.screens.MestiereScreen;
 import dev.hephaestus.mestiere.skills.Skill;
-import dev.hephaestus.mestiere.skills.SkillPerk;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.data.Alignment;
@@ -22,7 +21,7 @@ public class SkillButton extends WButton {
 
     public SkillButton() {
         setOnClick(() -> {
-            List<SkillPerk> data = Mestiere.PERKS.get(this.skill);
+            List<Skill.Perk> data = Mestiere.PERKS.get(this.skill);
             data.sort(Comparator.comparing((p) -> p.level));
             MestiereScreen.open(new MestiereScreen(this.skill.getText(Mestiere.KEY_TYPE.NAME),
                 new ScrollingGuiDescription<>(

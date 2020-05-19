@@ -5,7 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.Skill;
-import dev.hephaestus.mestiere.skills.SkillPerk;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.api.EnvType;
@@ -31,7 +30,7 @@ public class SimpleSkillRecipe extends SkillRecipe {
     private final Component[] components;
 
 
-    public SimpleSkillRecipe(Identifier id, Identifier recipeType, Skill skill, SkillPerk perk, ItemStack outputItem, int value, Component[] components) {
+    public SimpleSkillRecipe(Identifier id, Identifier recipeType, Skill skill, Skill.Perk perk, ItemStack outputItem, int value, Component[] components) {
         super(id, skill, perk, value);
         this.recipeType = recipeType;
         this.outputItem = outputItem;
@@ -212,7 +211,7 @@ public class SimpleSkillRecipe extends SkillRecipe {
                     id,
                     new Identifier(ingredientRecipe.type),
                     Mestiere.SKILLS.get(new Identifier(ingredientRecipe.type.split("\\.")[0])),
-                    ingredientRecipe.perk_required == null ? SkillPerk.NONE : Mestiere.PERKS.get(new Identifier(ingredientRecipe.perk_required)),
+                    ingredientRecipe.perk_required == null ? Skill.Perk.NONE : Mestiere.PERKS.get(new Identifier(ingredientRecipe.perk_required)),
                     output,
                     ingredientRecipe.value,   // This *can* be zero, so we don't need to do any validation,
                     components
@@ -228,7 +227,7 @@ public class SimpleSkillRecipe extends SkillRecipe {
         public void write(PacketByteBuf buf, SimpleSkillRecipe recipe) {
             recipe.write(buf);
         }
-    };
+    }
 
     public static class Component extends SkillRecipe.Component {
         public final Ingredient ingredient;

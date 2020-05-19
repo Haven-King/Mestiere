@@ -53,17 +53,18 @@ public class Mestiere implements ModInitializer {
 		EntityComponentCallback.event(ServerPlayerEntity.class).register((player, components) ->
 				components.put(COMPONENT, new MestiereComponent(player)));
 
-		ServerSidePacketRegistry.INSTANCE.register(SELECT_RECIPE_ID, ((packetContext, packetByteBuf) -> {
+		ServerSidePacketRegistry.INSTANCE.register(SELECT_RECIPE_ID, (packetContext, packetByteBuf) -> {
 			int syncId = packetByteBuf.readByte();
 			Identifier recipeId = packetByteBuf.readIdentifier();
 			PlayerEntity player = packetContext.getPlayer();
+
 			if (player instanceof ServerPlayerEntity)
 				packetContext.getTaskQueue().execute(() -> {
 					dev.hephaestus.mestiere.crafting.SkillCrafter controller = dev.hephaestus.mestiere.crafting.SkillCrafter.getInstance(syncId);
 					if (controller.setRecipe(recipeId) == ActionResult.PASS)
 						controller.fillInputSlots();
 				});
-		}));
+		});
 
 		SkillCrafter.Builder.registerContainer(Blocks.SMITHING_TABLE, Skills.SMITHING).addTypes(TYPES.netherite, TYPES.tools);
 		SkillCrafter.Builder.registerAllContainers();
@@ -95,4 +96,6 @@ public class Mestiere implements ModInitializer {
         DESCRIPTION,
         NAME
     }
+
+
 }

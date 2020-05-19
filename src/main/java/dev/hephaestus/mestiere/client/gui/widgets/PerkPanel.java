@@ -1,8 +1,7 @@
 package dev.hephaestus.mestiere.client.gui.widgets;
 
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.MestiereClient;
-import dev.hephaestus.mestiere.skills.SkillPerk;
+import dev.hephaestus.mestiere.skills.Skill;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WPanel;
 import io.github.cottonmc.cotton.gui.widget.data.Alignment;
@@ -20,7 +19,7 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class PerkPanel extends WPanel {
-    private SkillPerk perk;
+    private Skill.Perk perk;
 
     public void init(Identifier skill) {
         this.perk = Mestiere.PERKS.get(skill);
@@ -29,8 +28,8 @@ public class PerkPanel extends WPanel {
     @Override
     public void addTooltip(List<Text> tooltips) {
         super.addTooltip(tooltips);
-        tooltips.add(this.perk.getText(Mestiere.KEY_TYPE.NAME).formatted(this.perk.skill.format));
-        tooltips.add(this.perk.getText(Mestiere.KEY_TYPE.DESCRIPTION));
+        tooltips.add(this.perk.getName().formatted(this.perk.skill.format));
+        tooltips.add(this.perk.getDescription());
         if (this.perk.scalesWithLevel) {
             tooltips.add(new TranslatableText("mestiere.scales"));
         }
@@ -44,14 +43,14 @@ public class PerkPanel extends WPanel {
         boolean unlocked = Mestiere.COMPONENT.get(player).getLevel(this.perk.skill) >= this.perk.level;
 
         if (unlocked) {
-            ScreenDrawing.drawStringWithShadow(this.perk.getText(Mestiere.KEY_TYPE.NAME),
+            ScreenDrawing.drawStringWithShadow(this.perk.getName(),
                 Alignment.LEFT,
                 x + this.height,
                 y + ((20 - 8) / 2),
                 this.width,
                 0xFFFFFFFF);
         } else {
-            ScreenDrawing.drawString(this.perk.getText(Mestiere.KEY_TYPE.NAME).formatted(Formatting.DARK_GRAY),
+            ScreenDrawing.drawString(this.perk.getName().formatted(Formatting.DARK_GRAY),
                     Alignment.LEFT,
                     x + this.height,
                     y + ((20 - 8) / 2),

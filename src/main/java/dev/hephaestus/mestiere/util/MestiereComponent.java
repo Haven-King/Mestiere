@@ -1,9 +1,7 @@
 package dev.hephaestus.mestiere.util;
 
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.MestiereClient;
 import dev.hephaestus.mestiere.skills.Skill;
-import dev.hephaestus.mestiere.skills.SkillPerk;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.util.sync.EntitySyncedComponent;
 import net.minecraft.entity.Entity;
@@ -12,7 +10,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.MessageType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.Style;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -91,9 +88,9 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
                         new TranslatableText("mestiere.level_up", lText, sText),
                         MessageType.CHAT);
 
-                for (SkillPerk perk : Mestiere.PERKS.get(skill)) {
+                for (Skill.Perk perk : Mestiere.PERKS.get(skill)) {
                     if (perk.level > oldLevel && perk.level <= newLevel) {
-                        ((ServerPlayerEntity)player).sendMessage(perk.getText(Mestiere.KEY_TYPE.MESSAGE), MessageType.CHAT);
+                        ((ServerPlayerEntity)player).sendMessage(perk.getMessage(), MessageType.CHAT);
                     }
                 }
             }
@@ -104,7 +101,7 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
         }
     }
 
-    public boolean hasPerk(SkillPerk perk) {
+    public boolean hasPerk(Skill.Perk perk) {
         return getLevel(perk.skill) >= perk.level;
     }
 
@@ -112,7 +109,7 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
         return hasPerk(Mestiere.PERKS.get(perk));
     }
 
-    public float getScale(SkillPerk perk) {
+    public float getScale(Skill.Perk perk) {
         return MathHelper.clamp(getLevel(perk.skill) - perk.level, 0, perk.maxLevel) / (float)perk.maxLevel;
     }
 

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.Skill;
-import dev.hephaestus.mestiere.skills.SkillPerk;
 import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -23,7 +22,7 @@ import net.minecraft.util.registry.Registry;
 public class NetheriteRecipe extends SkillRecipe {
     private final Item inputItem;
     private final Item outputItem;
-    public NetheriteRecipe(Identifier id, Skill skill, SkillPerk perk, Item inputItem, Item outputItem, int value) {
+    public NetheriteRecipe(Identifier id, Skill skill, Skill.Perk perk, Item inputItem, Item outputItem, int value) {
         super(id, skill, perk, value);
         this.inputItem = inputItem;
         this.outputItem = outputItem;
@@ -172,7 +171,7 @@ public class NetheriteRecipe extends SkillRecipe {
             return new NetheriteRecipe(
                     id,
                     Skills.SMITHING,
-                    netheriteRecipe.perk_required == null ? SkillPerk.NONE : Mestiere.PERKS.get(new Identifier(netheriteRecipe.perk_required)),
+                    netheriteRecipe.perk_required == null ? Skill.Perk.NONE : Mestiere.PERKS.get(new Identifier(netheriteRecipe.perk_required)),
                     inputItem,
                     outputItem,
                     netheriteRecipe.value

@@ -21,10 +21,10 @@ public class SkillRecipe extends TradeOffer implements Recipe<TraderInventory> {
     private PlayerEntity player;
     public final Skill skill;
     public final int value;
-    public final SkillPerk perkRequired;
+    public final Skill.Perk perkRequired;
     public final Identifier id;
 
-    public SkillRecipe(PlayerEntity player, int value, Skill skill, ItemStack firstIngredient, ItemStack secondIngredient, ItemStack outputItem, SkillPerk perkRequired, Identifier id) {
+    public SkillRecipe(PlayerEntity player, int value, Skill skill, ItemStack firstIngredient, ItemStack secondIngredient, ItemStack outputItem, Skill.Perk perkRequired, Identifier id) {
         super(firstIngredient, secondIngredient, outputItem, Integer.MAX_VALUE, 0, 1.0f);
         this.player = player;
         this.skill = skill;
@@ -33,12 +33,12 @@ public class SkillRecipe extends TradeOffer implements Recipe<TraderInventory> {
         this.id = id;
     }
 
-    public SkillRecipe(int value, Skill skill, ItemStack firstIngredient, ItemStack secondIngredient, ItemStack outputItem, Identifier id, SkillPerk perkRequired) {
+    public SkillRecipe(int value, Skill skill, ItemStack firstIngredient, ItemStack secondIngredient, ItemStack outputItem, Identifier id, Skill.Perk perkRequired) {
         this(null, value, skill, firstIngredient, secondIngredient, outputItem, perkRequired, id);
     }
 
     public SkillRecipe(int value, Skill skill, ItemStack firstIngredient, ItemStack secondIngredient, ItemStack outputItem, Identifier id) {
-        this(null, value, skill, firstIngredient, secondIngredient, outputItem, SkillPerk.NONE, id);
+        this(null, value, skill, firstIngredient, secondIngredient, outputItem, Skill.Perk.NONE, id);
     }
 
     public SkillRecipe(PlayerEntity player, SkillRecipe recipe) {
@@ -61,7 +61,7 @@ public class SkillRecipe extends TradeOffer implements Recipe<TraderInventory> {
         super.use();
         Mestiere.COMPONENT.get(this.player).addXp(this.skill, this.value);
 
-        if (this.sound != null) {
+        if (this.sound != null && this.player.world.getServer() != null) {
             this.player.world.getServer().getPlayerManager().getPlayerList().forEach((player) ->
                     player.networkHandler.sendPacket(new PlaySoundS2CPacket(this.sound, SoundCategory.PLAYERS, this.player.getPos().getX(), this.player.getPos().getY(), this.player.getPos().getZ(), 1.0f, 1.0f))
             );
