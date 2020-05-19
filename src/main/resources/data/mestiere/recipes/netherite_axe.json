@@ -2,5 +2,6 @@
   "type": "mestiere:netherite",
   "inputItem": "minecraft:diamond_axe",
   "outputItem": "minecraft:netherite_axe",
-  "value": 192
+  "value": 192,
+  "perk_required": "mestiere:smithing.material.netherite_ingot"
 }

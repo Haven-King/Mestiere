@@ -21,7 +21,7 @@ public class SkillButton extends WButton {
 
     public SkillButton() {
         setOnClick(() -> {
-            List<Skill.Perk> data = Mestiere.PERKS.get(this.skill);
+            List<Skill.Perk> data = Skill.Perk.list(this.skill);
             data.sort(Comparator.comparing((p) -> p.level));
             MestiereScreen.open(new MestiereScreen(this.skill.getText(Mestiere.KEY_TYPE.NAME),
                 new ScrollingGuiDescription<>(

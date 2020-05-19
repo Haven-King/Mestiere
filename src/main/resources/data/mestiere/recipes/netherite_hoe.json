@@ -2,5 +2,6 @@
   "type": "mestiere:netherite",
   "inputItem": "minecraft:diamond_hoe",
   "outputItem": "minecraft:netherite_hoe",
-  "value": 128
+  "value": 128,
+  "perk_required": "mestiere:smithing.material.netherite_ingot"
 }

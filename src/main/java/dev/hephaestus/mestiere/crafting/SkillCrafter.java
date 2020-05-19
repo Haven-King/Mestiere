@@ -97,6 +97,7 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
     private int initializeRecipes() {
         int r = 0;
         for (RecipeType type : types) {
+            //noinspection unchecked
             for (Object recipe : ((RecipeManagerInvoker) getPlayer().getEntityWorld().getRecipeManager()).getAllOfTypeAccessor(type).values()) {
                 if (recipe instanceof SkillRecipe && ((SkillRecipe) recipe).getSkill() == skill && Mestiere.COMPONENT.get(getPlayer()).hasPerk(((SkillRecipe) recipe).getPerk())) {
                     this.recipeMap.put(((SkillRecipe) recipe).getId(), (SkillRecipe) recipe);
@@ -205,20 +206,20 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
     }
 
     public static class Builder {
-        public final static SimpleRegistry<Builder> PROVIDERS = new SimpleRegistry<>();
+        public final static SimpleRegistry<Builder> REGISTRY = new SimpleRegistry<>();
         public static Builder registerContainer(Block block, Skill skill) {
-            return Registry.register(PROVIDERS, Mestiere.newID(Registry.BLOCK.getId(block).getPath()), new Builder(block, skill));
+            return Registry.register(REGISTRY, Mestiere.newID(Registry.BLOCK.getId(block).getPath()), new Builder(block, skill));
         }
 
         public static void registerAllContainers() {
-            for (Builder provider : PROVIDERS) {
+            for (Builder provider : REGISTRY) {
                 provider.registerContainer();
             }
         }
 
         @Environment(EnvType.CLIENT)
         public static void registerAllScreenProviders() {
-            for (Builder provider : PROVIDERS) {
+            for (Builder provider : REGISTRY) {
                 provider.registerScreenProvider();
             }
         }

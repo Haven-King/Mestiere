@@ -1,7 +1,8 @@
 package dev.hephaestus.mestiere;
 
 import dev.hephaestus.mestiere.crafting.*;
-import dev.hephaestus.mestiere.skills.Perks;
+import dev.hephaestus.mestiere.skills.MaterialSmithingPerk;
+import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.skills.Skills;
 import dev.hephaestus.mestiere.util.Commands;
 import dev.hephaestus.mestiere.util.MestiereComponent;
@@ -17,6 +18,7 @@ import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -29,7 +31,6 @@ public class Mestiere implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger();
 
 	public static final Skills SKILLS = Skills.init();
-	public static final Perks PERKS = Perks.init();
 	public static final MestiereConfig CONFIG = MestiereConfig.init();
 
 	public static final Identifier SELECT_RECIPE_ID = newID("select_recipe");
@@ -38,6 +39,12 @@ public class Mestiere implements ModInitializer {
 
 	public static final ComponentType<MestiereComponent> COMPONENT =
 		ComponentRegistry.INSTANCE.registerIfAbsent(newID("component"), MestiereComponent.class);
+
+	public static Skill.Perk HUNTER;
+	public static Skill.Perk SHARP_SHOOTER;
+	public static Skill.Perk GATHERER;
+	public static Skill.Perk SLAYER;
+	public static Skill.Perk SNIPER;
 
 	static {
 		EntityComponents.setRespawnCopyStrategy(COMPONENT, RespawnCopyStrategy.ALWAYS_COPY);
@@ -66,6 +73,22 @@ public class Mestiere implements ModInitializer {
 				});
 		});
 
+		// Register Skill.Perks
+		Skill.Perk.register(new MaterialSmithingPerk(10, Items.GOLD_INGOT));
+		Skill.Perk.register(new MaterialSmithingPerk(20, Items.DIAMOND));
+		Skill.Perk.register(new MaterialSmithingPerk(25, Items.NETHERITE_INGOT));
+
+		HUNTER = Skill.Perk.register(new Skill.Perk(Skills.HUNTING, "hunter", 5, Items.PORKCHOP)).scales(30);
+		Skill.Perk.register(new Skill.Perk(Skills.HUNTING, "sharp_shooter", 15, Items.ARROW)).scales(30);
+
+		GATHERER = Skill.Perk.register(new Skill.Perk(Skills.FARMING, "gatherer", 5, Items.GRASS).scales(15));
+		Skill.Perk.register(new Skill.Perk(Skills.FARMING, "sex_guru", 10, Items.WHEAT));
+		Skill.Perk.register(new Skill.Perk(Skills.FARMING, "green_thumb", 15, Items.WHEAT_SEEDS));
+
+		SLAYER = Skill.Perk.register(new Skill.Perk(Skills.SLAYING, "slayer", 15, Items.ROTTEN_FLESH)).scales(30);
+		Skill.Perk.register(new Skill.Perk(Skills.SLAYING, "sniper", 20, Items.ARROW)).scales(30);
+
+		// Register SkillCrafter providers
 		SkillCrafter.Builder.registerContainer(Blocks.SMITHING_TABLE, Skills.SMITHING).addTypes(TYPES.netherite, TYPES.tools);
 		SkillCrafter.Builder.registerAllContainers();
 	}

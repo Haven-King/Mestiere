@@ -51,7 +51,7 @@ public class AnimalEntityMixin extends PassiveEntity implements SexedEntity {
 
         if (causedByPlayer && source.getAttacker() != null && source.getAttacker().getEntityWorld() instanceof ServerWorld) {
             ServerPlayerEntity player = (ServerPlayerEntity) source.getAttacker();
-            float chance = Mestiere.COMPONENT.get(player).getScale(Mestiere.PERKS.get("hunting.hunter")) / 3.0f;
+            float chance = Mestiere.COMPONENT.get(player).getScale(Mestiere.HUNTER) / 3.0f;
             if (Math.random() > chance) {
                 super.dropLoot(source, true);
             }
@@ -65,7 +65,7 @@ public class AnimalEntityMixin extends PassiveEntity implements SexedEntity {
             MestiereComponent component = Mestiere.COMPONENT.get(source.getAttacker());
 
             if (component.hasPerk(Mestiere.newID("hunting.sharp_shooter"))) {
-                damage += (passiveEntity.getPos().distanceTo(source.getAttacker().getPos()) / 20) * (1.0 + component.getScale(Mestiere.PERKS.get("hunting.sharp_shooter")));
+                damage += (passiveEntity.getPos().distanceTo(source.getAttacker().getPos()) / 20) * (1.0 + component.getScale(Mestiere.SHARP_SHOOTER));
             }
         }
 

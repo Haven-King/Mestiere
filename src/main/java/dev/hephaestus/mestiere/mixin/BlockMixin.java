@@ -1,6 +1,7 @@
 package dev.hephaestus.mestiere.mixin;
 
 import dev.hephaestus.mestiere.Mestiere;
+import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -30,7 +31,7 @@ public class BlockMixin {
         }
 
         if (state.getBlock() instanceof FernBlock || state.getBlock() instanceof TallPlantBlock) {
-            float chance = Mestiere.COMPONENT.get(player).getScale(Mestiere.PERKS.get("farming.gatherer")) / 4.0f;
+            float chance = Mestiere.COMPONENT.get(player).getScale(Mestiere.GATHERER) / 4.0f;
             if (Math.random() > chance) {
                 dropStacks(state, world, pos, blockEntity);
             }

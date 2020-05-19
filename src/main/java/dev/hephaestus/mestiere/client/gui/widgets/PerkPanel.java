@@ -21,8 +21,8 @@ import java.util.List;
 public class PerkPanel extends WPanel {
     private Skill.Perk perk;
 
-    public void init(Identifier skill) {
-        this.perk = Mestiere.PERKS.get(skill);
+    public void init(Identifier perk) {
+        this.perk = Skill.Perk.get(perk);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class PerkPanel extends WPanel {
         super.addTooltip(tooltips);
         tooltips.add(this.perk.getName().formatted(this.perk.skill.format));
         tooltips.add(this.perk.getDescription());
-        if (this.perk.scalesWithLevel) {
+        if (this.perk.scales()) {
             tooltips.add(new TranslatableText("mestiere.scales"));
         }
     }
@@ -45,14 +45,14 @@ public class PerkPanel extends WPanel {
         if (unlocked) {
             ScreenDrawing.drawStringWithShadow(this.perk.getName(),
                 Alignment.LEFT,
-                x + this.height,
+                x + this.height + 4,
                 y + ((20 - 8) / 2),
                 this.width,
                 0xFFFFFFFF);
         } else {
             ScreenDrawing.drawString(this.perk.getName().formatted(Formatting.DARK_GRAY),
                     Alignment.LEFT,
-                    x + this.height,
+                    x + this.height + 4,
                     y + ((20 - 8) / 2),
                     this.width,
                     0xFFFFFFFF);

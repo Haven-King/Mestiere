@@ -2,5 +2,6 @@
   "type": "mestiere:netherite",
   "inputItem": "minecraft:diamond_helmet",
   "outputItem": "minecraft:netherite_helmet",
-  "value": 320
+  "value": 320,
+  "perk_required": "mestiere:smithing.material.netherite_ingot"
 }

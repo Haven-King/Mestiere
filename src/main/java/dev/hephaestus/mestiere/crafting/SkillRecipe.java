@@ -43,7 +43,7 @@ public abstract class SkillRecipe implements Recipe<BasicInventory>, Comparable 
     public SkillRecipe(Identifier id, PacketByteBuf buf) {
         this.id = id;
         this.skill = Mestiere.SKILLS.get(buf.readIdentifier());
-        this.perk = Mestiere.PERKS.get(buf.readIdentifier());
+        this.perk = Skill.Perk.get(buf.readIdentifier());
         this.value = buf.readInt();
     }
 
@@ -85,7 +85,7 @@ public abstract class SkillRecipe implements Recipe<BasicInventory>, Comparable 
     public PlayerEntity getPlayer() {return this.player;}
 
     public boolean canCraft(PlayerEntity playerEntity) {
-        return Mestiere.COMPONENT.get(player).hasPerk(getPerk()) || !Mestiere.CONFIG.hardcoreProgression || !getPerk().hardcore;
+        return Mestiere.COMPONENT.get(player).hasPerk(getPerk()) || !Mestiere.CONFIG.hardcoreProgression || !getPerk().isHardcore();
     }
 
     void write(PacketByteBuf buf) {

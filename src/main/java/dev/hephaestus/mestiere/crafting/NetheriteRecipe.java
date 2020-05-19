@@ -171,7 +171,7 @@ public class NetheriteRecipe extends SkillRecipe {
             return new NetheriteRecipe(
                     id,
                     Skills.SMITHING,
-                    netheriteRecipe.perk_required == null ? Skill.Perk.NONE : Mestiere.PERKS.get(new Identifier(netheriteRecipe.perk_required)),
+                    netheriteRecipe.perk_required == null ? Skill.Perk.NONE : Skill.Perk.get(new Identifier(netheriteRecipe.perk_required)),
                     inputItem,
                     outputItem,
                     netheriteRecipe.value

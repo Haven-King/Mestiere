@@ -88,7 +88,7 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
                         new TranslatableText("mestiere.level_up", lText, sText),
                         MessageType.CHAT);
 
-                for (Skill.Perk perk : Mestiere.PERKS.get(skill)) {
+                for (Skill.Perk perk : Skill.Perk.list(skill)) {
                     if (perk.level > oldLevel && perk.level <= newLevel) {
                         ((ServerPlayerEntity)player).sendMessage(perk.getMessage(), MessageType.CHAT);
                     }
@@ -106,11 +106,11 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
     }
 
     public boolean hasPerk(Identifier perk) {
-        return hasPerk(Mestiere.PERKS.get(perk));
+        return hasPerk(Skill.Perk.get(perk));
     }
 
     public float getScale(Skill.Perk perk) {
-        return MathHelper.clamp(getLevel(perk.skill) - perk.level, 0, perk.maxLevel) / (float)perk.maxLevel;
+        return MathHelper.clamp(getLevel(perk.skill) - perk.level, 0, perk.getMaxLevel()) / (float)perk.getMaxLevel();
     }
 
     @Override

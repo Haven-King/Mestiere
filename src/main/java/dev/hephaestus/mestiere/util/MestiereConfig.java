@@ -3,6 +3,7 @@ package dev.hephaestus.mestiere.util;
 import com.google.gson.*;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.OreVisibilityPerk;
+import dev.hephaestus.mestiere.skills.Skill;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -142,7 +143,7 @@ public class MestiereConfig {
         }
 
         for (Map.Entry<Block, Integer> e : levelRequiredToDetect.entrySet()) {
-            Mestiere.PERKS.register(new OreVisibilityPerk(e.getValue(), e.getKey()));
+            Skill.Perk.register(new OreVisibilityPerk(e.getValue(), e.getKey()));
         }
 
         return instance;

@@ -2,5 +2,6 @@
   "type": "mestiere:netherite",
   "inputItem": "minecraft:diamond_boots",
   "outputItem": "minecraft:netherite_boots",
-  "value": 256
+  "value": 256,
+  "perk_required": "mestiere:smithing.material.netherite_ingot"
 }

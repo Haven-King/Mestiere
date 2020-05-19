@@ -211,7 +211,7 @@ public class SimpleSkillRecipe extends SkillRecipe {
                     id,
                     new Identifier(ingredientRecipe.type),
                     Mestiere.SKILLS.get(new Identifier(ingredientRecipe.type.split("\\.")[0])),
-                    ingredientRecipe.perk_required == null ? Skill.Perk.NONE : Mestiere.PERKS.get(new Identifier(ingredientRecipe.perk_required)),
+                    ingredientRecipe.perk_required == null ? Skill.Perk.NONE : Skill.Perk.get(new Identifier(ingredientRecipe.perk_required)),
                     output,
                     ingredientRecipe.value,   // This *can* be zero, so we don't need to do any validation,
                     components

@@ -38,7 +38,7 @@ public class HostileEntityMixin extends MobEntityWithAi {
 
         if (causedByPlayer && source.getAttacker() != null && source.getAttacker().getEntityWorld() instanceof ServerWorld) {
             ServerPlayerEntity player = (ServerPlayerEntity) source.getAttacker();
-            float chance = Mestiere.COMPONENT.get(player).getScale(Mestiere.PERKS.get("slaying.slayer")) / 2.0f;
+            float chance = Mestiere.COMPONENT.get(player).getScale(Mestiere.SLAYER) / 2.0f;
             if (Math.random() > chance) {
                 super.dropLoot(source, true);
             }
@@ -52,7 +52,7 @@ public class HostileEntityMixin extends MobEntityWithAi {
             MestiereComponent component = Mestiere.COMPONENT.get(source.getAttacker());
 
             if (component.hasPerk(Mestiere.newID("slaying.sniper"))) {
-                damage += (mobEntityWithAi.getPos().distanceTo(source.getAttacker().getPos()) / 20) * (1.0 + component.getScale(Mestiere.PERKS.get("slaying.sniper")));
+                damage += (mobEntityWithAi.getPos().distanceTo(source.getAttacker().getPos()) / 20) * (1.0 + component.getScale(Mestiere.SNIPER));
             }
         }
 
