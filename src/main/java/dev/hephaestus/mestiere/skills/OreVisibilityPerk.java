@@ -16,7 +16,7 @@ import static net.minecraft.util.Util.createTranslationKey;
 
 public class OreVisibilityPerk extends Skill.Perk {
     public OreVisibilityPerk(int level, Block block) {
-        super(Skills.MINING, "ore." + Registry.BLOCK.getId(block).getPath(), level, block.asItem());
+        super(Skill.MINING, "ore." + Registry.BLOCK.getId(block).getPath(), level, block.asItem());
         this.isHardcore(false);
 
         MutableText blockText = new TranslatableText(block.getTranslationKey()).styled((style) -> style.withColor(MestiereConfig.messageFormatting.getOrDefault(Registry.BLOCK.getId(block), Formatting.WHITE)));
@@ -28,7 +28,7 @@ public class OreVisibilityPerk extends Skill.Perk {
                 new BlockFib(block, Blocks.STONE) {
                     @Override
                     protected boolean condition(ServerPlayerEntity player) {
-                        return Mestiere.COMPONENT.get(player).getLevel(Skills.MINING) < level && Mestiere.CONFIG.hardcoreProgression;
+                        return Mestiere.COMPONENT.get(player).getLevel(Skill.MINING) < level && Mestiere.CONFIG.hardcoreProgression;
                     }
                 }
         );

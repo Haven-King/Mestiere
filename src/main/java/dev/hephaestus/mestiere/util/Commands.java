@@ -6,7 +6,6 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.Skill;
-import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.command.arguments.EntityArgumentType;
 import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.server.command.CommandManager;
@@ -37,25 +36,25 @@ public class Commands {
         );
     }
 
-    private static int execute(ServerCommandSource source, String cmd, Collection<ServerPlayerEntity> targets, String skill, int amount) throws CommandSyntaxException {
-        Skill s = Mestiere.SKILLS.get(skill.contains(":") ? new Identifier(skill) : Mestiere.newID(skill));
+    private static int execute(ServerCommandSource source, String cmd, Collection<ServerPlayerEntity> targets, String id, int amount) throws CommandSyntaxException {
+        Skill skill = Skill.get(id.contains(":") ? new Identifier(id) : Mestiere.newID(id));
 
-        if (s == Skills.NONE) {
+        if (skill == Skill.NONE) {
             throw new SimpleCommandExceptionType(new LiteralText("Invalid skill: " + skill)).create();
         }
 
         for(ServerPlayerEntity p : targets) {
             switch (cmd) {
                 case "set":
-                    Mestiere.COMPONENT.get(p).setXp(s, amount);
+                    Mestiere.COMPONENT.get(p).setXp(skill, amount);
                     break;
 
                 case "add":
-                    Mestiere.COMPONENT.get(p).addXp(s, amount);
+                    Mestiere.COMPONENT.get(p).addXp(skill, amount);
                     break;
 
                 case "clear":
-                    Mestiere.COMPONENT.get(p).setXp(s, 0);
+                    Mestiere.COMPONENT.get(p).setXp(skill, 0);
                     break;
 
                 default:
@@ -68,7 +67,7 @@ public class Commands {
 
     private static class CompletionProvider {
         public static final SuggestionProvider<ServerCommandSource> SKILLS = SuggestionProviders.register(newID("skills"), (ctx, builder) -> {
-            Mestiere.SKILLS.forEach(skill -> builder.suggest(skill.id.getPath(), skill.getName()));
+            Skill.forEach(skill -> builder.suggest(skill.id.getPath(), skill.getName()));
             return builder.buildFuture();
         });
 

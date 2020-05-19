@@ -1,9 +1,10 @@
 package dev.hephaestus.mestiere;
 
 import dev.hephaestus.mestiere.crafting.*;
+import dev.hephaestus.mestiere.crafting.recipes.NetheriteRecipe;
+import dev.hephaestus.mestiere.crafting.recipes.SimpleSkillRecipe;
 import dev.hephaestus.mestiere.skills.MaterialSmithingPerk;
 import dev.hephaestus.mestiere.skills.Skill;
-import dev.hephaestus.mestiere.skills.Skills;
 import dev.hephaestus.mestiere.util.Commands;
 import dev.hephaestus.mestiere.util.MestiereComponent;
 import dev.hephaestus.mestiere.util.MestiereConfig;
@@ -18,9 +19,13 @@ import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,32 +35,20 @@ public class Mestiere implements ModInitializer {
 	public static final String MOD_NAME = "Mestiere";
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	public static final Skills SKILLS = Skills.init();
-	public static final MestiereConfig CONFIG = MestiereConfig.init();
+	public static MestiereConfig CONFIG;
 
 	public static final Identifier SELECT_RECIPE_ID = newID("select_recipe");
 
-	public static RecipeTypes TYPES;
-
 	public static final ComponentType<MestiereComponent> COMPONENT =
 		ComponentRegistry.INSTANCE.registerIfAbsent(newID("component"), MestiereComponent.class);
-
-	public static Skill.Perk HUNTER;
-	public static Skill.Perk SHARP_SHOOTER;
-	public static Skill.Perk GATHERER;
-	public static Skill.Perk SLAYER;
-	public static Skill.Perk SNIPER;
 
 	static {
 		EntityComponents.setRespawnCopyStrategy(COMPONENT, RespawnCopyStrategy.ALWAYS_COPY);
 	}
 
-
 	@Override
 	public void onInitialize() {
 		CommandRegistry.INSTANCE.register(false, Commands::register);
-
-		TYPES = RecipeTypes.init();
 
 		EntityComponentCallback.event(ServerPlayerEntity.class).register((player, components) ->
 				components.put(COMPONENT, new MestiereComponent(player)));
@@ -73,23 +66,44 @@ public class Mestiere implements ModInitializer {
 				});
 		});
 
+		// Register Skills
+		Skill.NONE = new Skill(Mestiere.newID("none"), Formatting.BLACK, ItemStack.EMPTY);
+		Skill.ALCHEMY = Skill.register(new Skill(newID("alchemy"), Formatting.LIGHT_PURPLE, new ItemStack(Items.BREWING_STAND)));
+		Skill.FARMING = Skill.register(new Skill(newID("farming"), Formatting.DARK_GREEN, new ItemStack(Items.IRON_HOE)));
+		Skill.HUNTING = Skill.register(new Skill(newID("hunting"), Formatting.GREEN, new ItemStack(Items.BOW)));
+		Skill.LEATHERWORKING = Skill.register(new Skill(newID("leatherworking"), Formatting.GOLD, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER, new ItemStack(Items.LEATHER)));
+		Skill.MINING = Skill.register(new Skill(newID("mining"), Formatting.DARK_GRAY, new ItemStack(Items.IRON_PICKAXE)));
+		Skill.SMITHING = Skill.register(new Skill(newID("smithing"), Formatting.DARK_RED, SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH, new ItemStack(Items.SMITHING_TABLE)));
+		Skill.SLAYING = Skill.register(new Skill(newID("slaying"), Formatting.RED, new ItemStack(Items.IRON_SWORD)));
+
 		// Register Skill.Perks
+		Skill.Perk.NONE = new Skill.Perk(Skill.NONE, "none", Integer.MIN_VALUE, null);
+		Skill.Perk.INVALID = new Skill.Perk(Skill.NONE, "invalid", Integer.MAX_VALUE, null);
+
 		Skill.Perk.register(new MaterialSmithingPerk(10, Items.GOLD_INGOT));
 		Skill.Perk.register(new MaterialSmithingPerk(20, Items.DIAMOND));
 		Skill.Perk.register(new MaterialSmithingPerk(25, Items.NETHERITE_INGOT));
 
-		HUNTER = Skill.Perk.register(new Skill.Perk(Skills.HUNTING, "hunter", 5, Items.PORKCHOP)).scales(30);
-		Skill.Perk.register(new Skill.Perk(Skills.HUNTING, "sharp_shooter", 15, Items.ARROW)).scales(30);
+		Skill.Perk.HUNTER = Skill.Perk.register(new Skill.Perk(Skill.HUNTING, "hunter", 5, Items.PORKCHOP)).scales(30);
+		Skill.Perk.SHARP_SHOOTER = Skill.Perk.register(new Skill.Perk(Skill.HUNTING, "sharp_shooter", 15, Items.ARROW)).scales(30);
 
-		GATHERER = Skill.Perk.register(new Skill.Perk(Skills.FARMING, "gatherer", 5, Items.GRASS).scales(15));
-		Skill.Perk.register(new Skill.Perk(Skills.FARMING, "sex_guru", 10, Items.WHEAT));
-		Skill.Perk.register(new Skill.Perk(Skills.FARMING, "green_thumb", 15, Items.WHEAT_SEEDS));
+		Skill.Perk.GATHERER = Skill.Perk.register(new Skill.Perk(Skill.FARMING, "gatherer", 5, Items.GRASS).scales(15));
+		Skill.Perk.register(new Skill.Perk(Skill.FARMING, "sex_guru", 10, Items.WHEAT));
+		Skill.Perk.register(new Skill.Perk(Skill.FARMING, "green_thumb", 15, Items.WHEAT_SEEDS));
 
-		SLAYER = Skill.Perk.register(new Skill.Perk(Skills.SLAYING, "slayer", 15, Items.ROTTEN_FLESH)).scales(30);
-		Skill.Perk.register(new Skill.Perk(Skills.SLAYING, "sniper", 20, Items.ARROW)).scales(30);
+		Skill.Perk.SLAYER = Skill.Perk.register(new Skill.Perk(Skill.SLAYING, "slayer", 15, Items.ROTTEN_FLESH)).scales(30);
+		Skill.Perk.SNIPER = Skill.Perk.register(new Skill.Perk(Skill.SLAYING, "sniper", 20, Items.ARROW)).scales(30);
+
+		// SkillCrafter recipe types
+		Skill.Recipe.Type.NETHERITE = Skill.Recipe.Type.register(Mestiere.newID("netherite"), new RecipeType<NetheriteRecipe>() {}, NetheriteRecipe.SERIALIZER);
+		Skill.Recipe.Type.LEATHERWORKING = Skill.Recipe.Type.register(Mestiere.newID("leatherworking"), new RecipeType<SimpleSkillRecipe>() {}, new SimpleSkillRecipe.Serializer());
+		Skill.Recipe.Type.ARMOR = Skill.Recipe.Type.register(Mestiere.newID("smithing.armor"), new RecipeType<SimpleSkillRecipe>() {}, new SimpleSkillRecipe.Serializer());
+		Skill.Recipe.Type.TOOLS = Skill.Recipe.Type.register(Mestiere.newID("smithing.tools"), new RecipeType<SimpleSkillRecipe>() {}, new SimpleSkillRecipe.Serializer());
+
+		CONFIG = MestiereConfig.init();
 
 		// Register SkillCrafter providers
-		SkillCrafter.Builder.registerContainer(Blocks.SMITHING_TABLE, Skills.SMITHING).addTypes(TYPES.netherite, TYPES.tools);
+		SkillCrafter.Builder.registerContainer(Blocks.SMITHING_TABLE, Skill.SMITHING).addTypes(Skill.Recipe.Type.TOOLS, Skill.Recipe.Type.NETHERITE);
 		SkillCrafter.Builder.registerAllContainers();
 	}
 

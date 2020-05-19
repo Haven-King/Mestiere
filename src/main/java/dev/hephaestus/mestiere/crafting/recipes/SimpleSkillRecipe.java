@@ -1,9 +1,8 @@
-package dev.hephaestus.mestiere.crafting;
+package dev.hephaestus.mestiere.crafting.recipes;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.Skill;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -22,7 +21,7 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class SimpleSkillRecipe extends SkillRecipe {
+public class SimpleSkillRecipe extends Skill.Recipe {
     private final Identifier recipeType;
 
     private final ItemStack outputItem;
@@ -113,7 +112,7 @@ public class SimpleSkillRecipe extends SkillRecipe {
         return components.length;
     }
 
-    public SkillRecipe.Component[] getComponents() {
+    public Component[] getComponents() {
         return components;
     }
 
@@ -121,7 +120,7 @@ public class SimpleSkillRecipe extends SkillRecipe {
     public void write(PacketByteBuf buf) {
         super.write(buf);
         buf.writeInt(numberOfComponents());
-        for(SkillRecipe.Component component : getComponents()) {
+        for(Component component : getComponents()) {
             component.write(buf);
         }
     }
@@ -181,12 +180,12 @@ public class SimpleSkillRecipe extends SkillRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<SimpleSkillRecipe> {
-        class OutputItem {
+        static class OutputItem {
             String item;
             int amount;
         }
 
-        class IngredientRecipeFormat {
+        static class IngredientRecipeFormat {
             JsonArray ingredients;
             OutputItem outputItem;
             String type;
@@ -210,7 +209,7 @@ public class SimpleSkillRecipe extends SkillRecipe {
             return new SimpleSkillRecipe(
                     id,
                     new Identifier(ingredientRecipe.type),
-                    Mestiere.SKILLS.get(new Identifier(ingredientRecipe.type.split("\\.")[0])),
+                    Skill.get(new Identifier(ingredientRecipe.type.split("\\.")[0])),
                     ingredientRecipe.perk_required == null ? Skill.Perk.NONE : Skill.Perk.get(new Identifier(ingredientRecipe.perk_required)),
                     output,
                     ingredientRecipe.value,   // This *can* be zero, so we don't need to do any validation,
@@ -229,7 +228,7 @@ public class SimpleSkillRecipe extends SkillRecipe {
         }
     }
 
-    public static class Component extends SkillRecipe.Component {
+    public static class Component extends Skill.Recipe.Component {
         public final Ingredient ingredient;
         public final int count;
 

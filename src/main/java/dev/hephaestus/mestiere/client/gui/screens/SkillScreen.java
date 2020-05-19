@@ -59,7 +59,8 @@ public class SkillScreen extends CottonClientScreen {
 
     public static void register(MinecraftClient minecraftClient) {
         if (OPEN_SKILLS_MENU.isPressed() && MinecraftClient.getInstance().player != null && !SkillScreen.isOpen()) {
-            List<Identifier> data = new ArrayList<>(Mestiere.SKILLS.skills.keySet());
+            List<Identifier> data = new ArrayList<>();
+            Skill.forEach(skill -> data.add(skill.id));
             data.sort(Comparator.comparing(Identifier::getPath));
             SkillScreen.open(new SkillScreen(new TranslatableText("mestiere.skills"), new ScrollingGuiDescription<>(
                     data,
@@ -186,7 +187,7 @@ public class SkillScreen extends CottonClientScreen {
         }
 
         public void init(Identifier skill) {
-            this.skill = Mestiere.SKILLS.get(skill);
+            this.skill = Skill.get(skill);
         }
 
         @Override

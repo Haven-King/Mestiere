@@ -1,7 +1,7 @@
 package dev.hephaestus.mestiere.mixin;
 
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.skills.Skills;
+import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.util.MestiereComponent;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
@@ -26,7 +26,7 @@ public class HostileEntityMixin extends MobEntityWithAi {
         super.onDeath(source);
         if (source.getAttacker() instanceof ServerPlayerEntity) {
             Mestiere.COMPONENT.get(source.getAttacker()).addXp(
-                Skills.SLAYING,
+                    Skill.SLAYING,
                 this.getCurrentExperience((PlayerEntity) source.getAttacker()) + (int)this.getPos().distanceTo(source.getAttacker().getPos())/10 + (int)(this.getVelocity().length()*2.5)
             );
         }
@@ -38,7 +38,7 @@ public class HostileEntityMixin extends MobEntityWithAi {
 
         if (causedByPlayer && source.getAttacker() != null && source.getAttacker().getEntityWorld() instanceof ServerWorld) {
             ServerPlayerEntity player = (ServerPlayerEntity) source.getAttacker();
-            float chance = Mestiere.COMPONENT.get(player).getScale(Mestiere.SLAYER) / 2.0f;
+            float chance = Mestiere.COMPONENT.get(player).getScale(Skill.Perk.SLAYER) / 2.0f;
             if (Math.random() > chance) {
                 super.dropLoot(source, true);
             }
@@ -52,7 +52,7 @@ public class HostileEntityMixin extends MobEntityWithAi {
             MestiereComponent component = Mestiere.COMPONENT.get(source.getAttacker());
 
             if (component.hasPerk(Mestiere.newID("slaying.sniper"))) {
-                damage += (mobEntityWithAi.getPos().distanceTo(source.getAttacker().getPos()) / 20) * (1.0 + component.getScale(Mestiere.SNIPER));
+                damage += (mobEntityWithAi.getPos().distanceTo(source.getAttacker().getPos()) / 20) * (1.0 + component.getScale(Skill.Perk.SNIPER));
             }
         }
 

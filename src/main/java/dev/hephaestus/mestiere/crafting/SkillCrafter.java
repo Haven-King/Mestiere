@@ -44,14 +44,14 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
     }
 
 
-    private final HashMap<Identifier, SkillRecipe> recipeMap = new HashMap<>();
-    private final SortedSet<SkillRecipe> recipes = new TreeSet<>();
+    private final HashMap<Identifier, Skill.Recipe> recipeMap = new HashMap<>();
+    private final SortedSet<Skill.Recipe> recipes = new TreeSet<>();
     private final ScreenHandlerContext context;
     private final Skill skill;
     private final Collection<RecipeType> types;
 
-    private BetterListPanel<SkillRecipe, RecipeButton> listPanel;
-    private SkillRecipe recipe;
+    private BetterListPanel<Skill.Recipe, RecipeButton> listPanel;
+    private Skill.Recipe recipe;
 
     public SkillCrafter(int syncId, Skill skill, Collection<RecipeType> types, PlayerInventory playerInventory, ScreenHandlerContext screenHandlerContext) {
         super(null, syncId, playerInventory, new BasicInventory(3), null);
@@ -99,10 +99,10 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
         for (RecipeType type : types) {
             //noinspection unchecked
             for (Object recipe : ((RecipeManagerInvoker) getPlayer().getEntityWorld().getRecipeManager()).getAllOfTypeAccessor(type).values()) {
-                if (recipe instanceof SkillRecipe && ((SkillRecipe) recipe).getSkill() == skill && Mestiere.COMPONENT.get(getPlayer()).hasPerk(((SkillRecipe) recipe).getPerk())) {
-                    this.recipeMap.put(((SkillRecipe) recipe).getId(), (SkillRecipe) recipe);
-                    this.recipes.add(((SkillRecipe) recipe).withPlayer(playerInventory.player));
-                    r = Math.max(r, ((SkillRecipe) recipe).numberOfInputs());
+                if (recipe instanceof Skill.Recipe && ((Skill.Recipe) recipe).getSkill() == skill && Mestiere.COMPONENT.get(getPlayer()).hasPerk(((Skill.Recipe) recipe).getPerk())) {
+                    this.recipeMap.put(((Skill.Recipe) recipe).getId(), (Skill.Recipe) recipe);
+                    this.recipes.add(((Skill.Recipe) recipe).withPlayer(playerInventory.player));
+                    r = Math.max(r, ((Skill.Recipe) recipe).numberOfInputs());
                 }
             }
         }
@@ -141,7 +141,7 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
     }
 
     private void setRecipeIfMatchFound() {
-        for (SkillRecipe recipe : recipes) {
+        for (Skill.Recipe recipe : recipes) {
             if (recipe.matches((BasicInventory) blockInventory)) {
                 setRecipe(recipe);
                 break;
@@ -157,7 +157,7 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
         return setRecipe(recipeMap.get(id));
     }
 
-    public ActionResult setRecipe(SkillRecipe recipe) {
+    public ActionResult setRecipe(Skill.Recipe recipe) {
         if (recipe == null) return ActionResult.FAIL;
 
         this.recipe = recipe;
@@ -272,7 +272,7 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
         }
 
 
-        private SkillRecipe recipe;
+        private Skill.Recipe recipe;
 
         public RecipeButton() {
 
@@ -282,7 +282,7 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
         private SkillCrafter controller;
         private int maxNumberOfInputs = 1;
 
-        public void init(SkillRecipe recipe, SkillCrafter controller, int maxNumberOfInputs) {
+        public void init(Skill.Recipe recipe, SkillCrafter controller, int maxNumberOfInputs) {
             this.recipe = recipe;
             this.setEnabled(recipe.canCraft(controller.getPlayer()));
 

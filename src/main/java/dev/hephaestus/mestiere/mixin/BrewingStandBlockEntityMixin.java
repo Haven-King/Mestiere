@@ -1,7 +1,8 @@
 package dev.hephaestus.mestiere.mixin;
 
+import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.SkilledExperienceOrbEntity;
-import dev.hephaestus.mestiere.skills.Skills;
+import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.util.MestiereConfig;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
@@ -33,7 +34,7 @@ public abstract class BrewingStandBlockEntityMixin extends LockableContainerBloc
     @Inject(method = "craft", at = @At("TAIL"))
     public void dropXP(CallbackInfo ci) {
         if (this.world != null)
-            this.world.spawnEntity(new SkilledExperienceOrbEntity(this.world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), this.value, Skills.ALCHEMY));
+            this.world.spawnEntity(new SkilledExperienceOrbEntity(this.world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), this.value, Skill.ALCHEMY));
     }
 
     @Shadow @Override

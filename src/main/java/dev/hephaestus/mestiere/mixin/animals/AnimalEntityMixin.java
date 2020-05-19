@@ -2,7 +2,7 @@ package dev.hephaestus.mestiere.mixin.animals;
 
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.SkilledExperienceOrbEntity;
-import dev.hephaestus.mestiere.skills.Skills;
+import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.util.MestiereComponent;
 import dev.hephaestus.mestiere.util.SexedEntity;
 import net.minecraft.entity.EntityType;
@@ -39,7 +39,7 @@ public class AnimalEntityMixin extends PassiveEntity implements SexedEntity {
         super.onDeath(source);
         if (source.getAttacker() instanceof ServerPlayerEntity && !this.isBaby()) {
             Mestiere.COMPONENT.get(source.getAttacker()).addXp(
-                    Skills.HUNTING,
+                    Skill.HUNTING,
                     this.getCurrentExperience((PlayerEntity) source.getAttacker()) + (int)this.getPos().distanceTo(source.getAttacker().getPos())/10 + (int)(this.getVelocity().length()*2.5)
             );
         }
@@ -51,7 +51,7 @@ public class AnimalEntityMixin extends PassiveEntity implements SexedEntity {
 
         if (causedByPlayer && source.getAttacker() != null && source.getAttacker().getEntityWorld() instanceof ServerWorld) {
             ServerPlayerEntity player = (ServerPlayerEntity) source.getAttacker();
-            float chance = Mestiere.COMPONENT.get(player).getScale(Mestiere.HUNTER) / 3.0f;
+            float chance = Mestiere.COMPONENT.get(player).getScale(Skill.Perk.HUNTER) / 3.0f;
             if (Math.random() > chance) {
                 super.dropLoot(source, true);
             }
@@ -65,7 +65,7 @@ public class AnimalEntityMixin extends PassiveEntity implements SexedEntity {
             MestiereComponent component = Mestiere.COMPONENT.get(source.getAttacker());
 
             if (component.hasPerk(Mestiere.newID("hunting.sharp_shooter"))) {
-                damage += (passiveEntity.getPos().distanceTo(source.getAttacker().getPos()) / 20) * (1.0 + component.getScale(Mestiere.SHARP_SHOOTER));
+                damage += (passiveEntity.getPos().distanceTo(source.getAttacker().getPos()) / 20) * (1.0 + component.getScale(Skill.Perk.SHARP_SHOOTER));
             }
         }
 
@@ -108,8 +108,8 @@ public class AnimalEntityMixin extends PassiveEntity implements SexedEntity {
     }
 
     @Redirect(method = "breed", at = @At(value = "NEW", target = "net/minecraft/entity/ExperienceOrbEntity"))
-    public ExperienceOrbEntity thing(World world, double x, double y, double z, int amount) {
-        return new SkilledExperienceOrbEntity(world, x, y, z, world.getRandom().nextInt(7) + 1, Skills.FARMING);
+    public ExperienceOrbEntity spawnSkilledOrb(World world, double x, double y, double z, int amount) {
+        return new SkilledExperienceOrbEntity(world, x, y, z, world.getRandom().nextInt(7) + 1, Skill.FARMING);
     }
 
     private Sex sex;

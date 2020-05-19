@@ -1,10 +1,8 @@
-package dev.hephaestus.mestiere.crafting;
+package dev.hephaestus.mestiere.crafting.recipes;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.skills.Skill;
-import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.BasicInventory;
@@ -19,7 +17,7 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class NetheriteRecipe extends SkillRecipe {
+public class NetheriteRecipe extends Skill.Recipe {
     private final Item inputItem;
     private final Item outputItem;
     public NetheriteRecipe(Identifier id, Skill skill, Skill.Perk perk, Item inputItem, Item outputItem, int value) {
@@ -42,7 +40,7 @@ public class NetheriteRecipe extends SkillRecipe {
 
     @Override
     public RecipeType getType() {
-        return Mestiere.TYPES.netherite;
+        return Skill.Recipe.Type.NETHERITE;
     }
 
     @Override
@@ -170,7 +168,7 @@ public class NetheriteRecipe extends SkillRecipe {
 
             return new NetheriteRecipe(
                     id,
-                    Skills.SMITHING,
+                    Skill.SMITHING,
                     netheriteRecipe.perk_required == null ? Skill.Perk.NONE : Skill.Perk.get(new Identifier(netheriteRecipe.perk_required)),
                     inputItem,
                     outputItem,

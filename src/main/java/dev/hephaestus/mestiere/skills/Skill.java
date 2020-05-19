@@ -1,8 +1,18 @@
 package dev.hephaestus.mestiere.skills;
 
 import dev.hephaestus.mestiere.Mestiere;
+import it.unimi.dsi.fastutil.ints.IntList;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.BasicInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -11,21 +21,43 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
 
 import static net.minecraft.util.Util.createTranslationKey;
 
 public class Skill {
+    private static final SimpleRegistry<Skill> REGISTRY = new SimpleRegistry<>();
+    public static Skill NONE;
+    public static Skill ALCHEMY;
+    public static Skill SMITHING;
+    public static Skill LEATHERWORKING;
+    public static Skill FARMING;
+    public static Skill SLAYING;
+    public static Skill HUNTING;
+    public static Skill MINING;
+
+
+    public static Skill register(Skill skill) {
+        return Registry.register(REGISTRY, skill.id, skill);
+    }
+
+    public static void forEach(Consumer<? super Skill> action) {
+        REGISTRY.forEach(action);
+    }
+
+    public static Skill get(Identifier id) {
+        return REGISTRY.get(id);
+    }
+
     public final Identifier id;
     public final Formatting format;
     public final SoundEvent sound;
     public final ItemStack icon;
 
     private final Text name;
-
 
     public Skill(Identifier id, Formatting format, SoundEvent sound, ItemStack icon) {
         this.id = id;
@@ -45,8 +77,13 @@ public class Skill {
     }
 
     public static class Perk implements Comparable<Perk> {
-        public static final Perk NONE = new Perk(Skills.NONE, "none", Integer.MIN_VALUE, null);
-        public static final Perk INVALID = new Perk(Skills.NONE, "invalid", Integer.MAX_VALUE, null);
+        public static Perk NONE;
+        public static Perk INVALID;
+        public static Skill.Perk HUNTER;
+        public static Skill.Perk SHARP_SHOOTER;
+        public static Skill.Perk GATHERER;
+        public static Skill.Perk SLAYER;
+        public static Skill.Perk SNIPER;
 
         private static final SimpleRegistry<Perk> REGISTRY = new SimpleRegistry<>();
         private static final HashMap<Identifier, ArrayList<Perk>> SKILL_TO_PERK_MAP = new HashMap<>();
@@ -140,6 +177,111 @@ public class Skill {
         @Override
         public int compareTo(Perk perk) {
             return Integer.compare(this.level, perk.level);
+        }
+    }
+
+    public abstract static class Recipe implements net.minecraft.recipe.Recipe<BasicInventory>, Comparable  {
+        public static class Type {
+            public static RecipeType NETHERITE;
+            public static RecipeType LEATHERWORKING;
+            public static RecipeType ARMOR;
+            public static RecipeType TOOLS;
+
+            public static RecipeType register(Identifier id, RecipeType<?> type, RecipeSerializer<?> serializer) {
+                Registry.register(Registry.RECIPE_SERIALIZER, id, serializer);
+                return Registry.register(Registry.RECIPE_TYPE, id, type);
+            }
+        }
+
+        private final Identifier id;
+        private final Skill skill;
+        private final Perk perk;
+        private final int value;
+
+        private PlayerEntity player;
+
+
+        public Recipe(Identifier id, Skill skill, Perk perk, int value) {
+            this.id = id;
+            this.skill = skill;
+            this.perk = perk;
+            this.value = value;
+        }
+
+        @SuppressWarnings("CopyConstructorMissesField")
+        public Recipe(Recipe recipe) {
+            this.id = recipe.id;
+            this.skill = recipe.skill;
+            this.perk = recipe.perk;
+            this.value = recipe.value;
+        }
+
+        public Recipe(Identifier id, PacketByteBuf buf) {
+            this.id = id;
+            this.skill = get(buf.readIdentifier());
+            this.perk = Perk.get(buf.readIdentifier());
+            this.value = buf.readInt();
+        }
+
+        @Override
+        public boolean matches(BasicInventory inv, World world) {
+            return matches(inv);
+        }
+
+        @Override
+        public Identifier getId() {
+            return id;
+        }
+
+        public int compareTo(Object o) {
+            int result = 0;
+
+            if (o instanceof Recipe) {
+                result = -Boolean.compare(canCraft(getPlayer()), ((Recipe) o).canCraft(getPlayer()));
+                result = result == 0 ? Integer.compare(getValue(), ((Recipe)o).getValue()) : result;
+                result = result == 0 ? getId().compareTo(((Recipe) o).getId()) : result;
+            }
+            return result;
+        }
+
+        public abstract boolean matches(BasicInventory inventory);
+
+        public abstract int numberOfInputs();
+        public abstract ItemStack getOutput(BasicInventory inv);
+
+        public int getValue() {return this.value;}
+        public Perk getPerk() {return this.perk;}
+        public Skill getSkill() {return this.skill;}
+
+        public Recipe withPlayer(PlayerEntity player) {
+            this.player = player;
+            return this;
+        }
+
+        public PlayerEntity getPlayer() {return this.player;}
+
+        public boolean canCraft(PlayerEntity playerEntity) {
+            return Mestiere.COMPONENT.get(player).hasPerk(getPerk()) || !Mestiere.CONFIG.hardcoreProgression || !getPerk().isHardcore();
+        }
+
+        protected void write(PacketByteBuf buf) {
+            buf.writeIdentifier(Registry.RECIPE_TYPE.getId(getType()));
+            buf.writeIdentifier(getSkill().id);
+            buf.writeIdentifier(getPerk().id);
+            buf.writeItemStack(getOutput());
+            buf.writeInt(getValue());
+        }
+
+        @Environment(EnvType.CLIENT)
+        public abstract ItemStack getItem(int i, float deltaTick);
+
+        public abstract void fillInputSlots(PlayerInventory playerInventory, Inventory blockInventory);
+
+        public abstract static class Component {
+            public abstract IntList getRawIds();
+            public abstract int count();
+            public abstract boolean matches(ItemStack stack);
+            public abstract void write(PacketByteBuf buf);
         }
     }
 }

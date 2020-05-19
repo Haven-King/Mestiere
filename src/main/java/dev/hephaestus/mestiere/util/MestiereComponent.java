@@ -31,18 +31,16 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
     public void fromTag(CompoundTag tag) {
         CompoundTag skillTag = tag.getCompound(Mestiere.MOD_ID);
 
-        for (Skill s : Mestiere.SKILLS) {
-            this.skills.put(s, skillTag.getInt(s.id.toString()));
-        }
+        Skill.forEach(skill -> this.skills.put(skill, skillTag.getInt(skill.id.toString())));
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
         CompoundTag skillTag = new CompoundTag();
 
-        for (Skill s : Mestiere.SKILLS) {
-            skillTag.putInt(s.id.toString(), skills.getOrDefault(s, 0));
-        }
+        Skill.forEach(skill ->
+            skillTag.putInt(skill.id.toString(), skills.getOrDefault(skill, 0))
+        );
 
         tag.put(Mestiere.MOD_ID, skillTag);
 

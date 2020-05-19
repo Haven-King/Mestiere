@@ -1,8 +1,8 @@
 package dev.hephaestus.mestiere.mixin.animals;
 
 import dev.hephaestus.mestiere.Mestiere;
+import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.util.SexedEntity;
-import dev.hephaestus.mestiere.skills.Skills;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.CowEntity;
@@ -44,7 +44,7 @@ public class CowEntityMixin extends AnimalEntity {
             cir.setReturnValue(false);
         } else {
             if (player instanceof ServerPlayerEntity)
-                Mestiere.COMPONENT.get(player).addXp(Skills.FARMING, 2);
+                Mestiere.COMPONENT.get(player).addXp(Skill.FARMING, 2);
 
             this.timeToMilk = 14000;
         }

@@ -1,7 +1,7 @@
 package dev.hephaestus.mestiere.mixin.plants;
 
 import dev.hephaestus.mestiere.Mestiere;
-import dev.hephaestus.mestiere.skills.Skills;
+import dev.hephaestus.mestiere.skills.Skill;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MelonBlock;
@@ -28,6 +28,6 @@ public class MelonBlockMixin extends Block {
     @Override
     public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
         super.afterBreak(world, player, pos, state, blockEntity, stack);
-        Mestiere.COMPONENT.get(player).addXp(Skills.FARMING, 1);
+        Mestiere.COMPONENT.get(player).addXp(Skill.FARMING, 1);
     }
 }
