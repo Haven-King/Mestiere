@@ -27,6 +27,14 @@ repositories {
 		name = "CottonMC"
 		url = "http://server.bbkr.space:8081/artifactory/libs-release"
 	}
+	maven {
+		name = "GitHubPackages"
+		url = uri("https://maven.pkg.github.com/fablabsmc/gamerules")
+		credentials {
+			username = System.getenv("GITHUB_USERNAME")
+			password = System.getenv("GITHUB_PASSWORD")
+		}
+	}
 }
 
 dependencies {
@@ -44,6 +52,9 @@ dependencies {
 
 	modApi "me.shedaniel.cloth:config-2:${project.cloth_config_2_version}"
 	include "me.shedaniel.cloth:config-2:${project.cloth_config_2_version}"
+
+	modApi "io.github.fablabsmc:GameRules:master-1.0.0.10+20w18a"
+	include "io.github.fablabsmc:GameRules:master-1.0.0.10+20w18a"
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation "io.github.prospector:modmenu:${project.mod_menu_version}"

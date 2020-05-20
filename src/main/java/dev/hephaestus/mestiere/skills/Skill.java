@@ -274,7 +274,7 @@ public class Skill {
         public PlayerEntity getPlayer() {return this.player;}
 
         public boolean canCraft(PlayerEntity playerEntity) {
-            return Mestiere.COMPONENT.get(player).hasPerk(getPerk()) || !Mestiere.CONFIG.hardcoreProgression || !getPerk().isHardcore();
+            return Mestiere.COMPONENT.get(player).hasPerk(getPerk()) || player.world.getGameRules().getBoolean(Mestiere.HARDCORE) || !getPerk().isHardcore();
         }
 
         protected void write(PacketByteBuf buf) {

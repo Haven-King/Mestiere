@@ -29,7 +29,7 @@ public class OreVisibilityPerk extends Skill.Perk {
                 new BlockFib(block, Blocks.STONE) {
                     @Override
                     protected boolean condition(ServerPlayerEntity player) {
-                        return Mestiere.COMPONENT.get(player).getLevel(Skill.MINING) < level && Mestiere.CONFIG.hardcoreProgression;
+                        return Mestiere.COMPONENT.get(player).getLevel(Skill.MINING) < level && player.world.getGameRules().getBoolean(Mestiere.HARDCORE);
                     }
                 }
         );

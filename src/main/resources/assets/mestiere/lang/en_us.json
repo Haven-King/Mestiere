@@ -54,5 +54,6 @@
   "perk.mestiere.smithing.material.gold_ingot.name": "King Midas",
   "perk.mestiere.smithing.material.diamond.name": "Lucy in the sky...",
   "perk.mestiere.smithing.material.netherite_ingot.name": "Back in Black",
+  "gamerule.mestiere.hardcoreMode": "Mestiere - Hardcore Mode",
   "merchant.trades": ""
 }

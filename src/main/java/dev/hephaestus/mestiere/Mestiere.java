@@ -8,6 +8,8 @@ import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.util.Commands;
 import dev.hephaestus.mestiere.util.MestiereComponent;
 import dev.hephaestus.mestiere.util.MestiereConfig;
+import io.github.fablabsmc.fablabs.api.gamerule.v1.RuleFactory;
+import io.github.fablabsmc.fablabs.mixin.gamerule.GameRulesAccessor;
 import nerdhub.cardinal.components.api.ComponentRegistry;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.EntityComponentCallback;
@@ -27,6 +29,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.GameRules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,6 +37,8 @@ public class Mestiere implements ModInitializer {
 	public static final String MOD_ID = "mestiere";
 	public static final String MOD_NAME = "Mestiere";
 	public static final Logger LOGGER = LogManager.getLogger();
+
+	public static GameRules.RuleKey<GameRules.BooleanRule> HARDCORE = GameRulesAccessor.invokeRegister("mestiere.hardcoreMode", GameRules.RuleCategory.MISC, RuleFactory.createBooleanRule(true));
 
 	public static MestiereConfig CONFIG;
 

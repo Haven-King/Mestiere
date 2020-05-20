@@ -27,8 +27,6 @@ import java.util.Map;
 
 public class MestiereConfig {
     float levelModifier = 1.0f;
-    public boolean hardcoreProgression = true;
-
     public static HashMap<Block, Integer> miningValues = new HashMap<Block, Integer>() {{
         put(Blocks.STONE, 1);
         put(Blocks.COAL_ORE, 4);
@@ -97,7 +95,6 @@ public class MestiereConfig {
             fi.close();
 
             instance.levelModifier = json.get("levelModifier").getAsFloat();
-            instance.hardcoreProgression = json.get("hardcoreProgression").getAsBoolean();
 
             JsonObject miningValuesJson = json.getAsJsonObject("mining_values");
 
@@ -156,7 +153,6 @@ public class MestiereConfig {
             BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
             JsonObject config = new JsonObject();
             config.addProperty("levelModifier", levelModifier);
-            config.addProperty("hardcoreProgression", hardcoreProgression);
 
             JsonObject miningValuesJson = new JsonObject();
             for (Map.Entry<Block, Integer> entry : miningValues.entrySet()) {
