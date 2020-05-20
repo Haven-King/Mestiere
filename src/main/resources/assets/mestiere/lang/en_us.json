@@ -8,7 +8,6 @@
   "mestiere.category.colors": "Colors",
   "mestiere.category.miningLevels": "Mining Levels",
   "mestiere.level_up": "Congratulations! You have reached level %s in %s!",
-  "skill.mestiere.clergy.name": "Clergy",
   "skill.mestiere.farming.name": "Farming",
   "skill.mestiere.hunting.name": "Hunting",
   "skill.mestiere.leatherworking.name": "Leatherworking",
@@ -54,6 +53,8 @@
   "perk.mestiere.smithing.material.gold_ingot.name": "King Midas",
   "perk.mestiere.smithing.material.diamond.name": "Lucy in the sky...",
   "perk.mestiere.smithing.material.netherite_ingot.name": "Back in Black",
-  "gamerule.mestiere.hardcoreMode": "Mestiere - Hardcore Mode",
-  "merchant.trades": ""
+  "gamerule.category.mestiere": "Mestiere",
+  "gamerule.mestiere.hardcoreMode": "Hardcore Mode",
+  "item.mestiere.iron_chunk": "Iron Chunk",
+  "item.mestiere.gold_chunk": "Gold Chunk"
 }

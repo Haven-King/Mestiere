@@ -1,5 +1,6 @@
 package dev.hephaestus.mestiere;
 
+import com.chocohead.mm.api.ClassTinkerers;
 import dev.hephaestus.mestiere.crafting.SkillCrafter;
 import dev.hephaestus.mestiere.crafting.recipes.NetheriteRecipe;
 import dev.hephaestus.mestiere.crafting.recipes.SimpleSkillRecipe;
@@ -21,6 +22,8 @@ import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.RecipeType;
@@ -29,6 +32,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameRules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +42,7 @@ public class Mestiere implements ModInitializer {
 	public static final String MOD_NAME = "Mestiere";
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	public static GameRules.RuleKey<GameRules.BooleanRule> HARDCORE = GameRulesAccessor.invokeRegister("mestiere.hardcoreMode", GameRules.RuleCategory.MISC, RuleFactory.createBooleanRule(true));
+	public static GameRules.RuleKey<GameRules.BooleanRule> HARDCORE = GameRulesAccessor.invokeRegister("mestiere.hardcoreMode", ClassTinkerers.getEnum(GameRules.RuleCategory.class, "mestiere"), RuleFactory.createBooleanRule(true));
 
 	public static MestiereConfig CONFIG;
 
@@ -71,9 +75,12 @@ public class Mestiere implements ModInitializer {
 				});
 		});
 
+		Registry.register(Registry.ITEM, newID("iron_chunk"), new Item(new Item.Settings().group(ItemGroup.MATERIALS)));
+		Registry.register(Registry.ITEM, newID("gold_chunk"), new Item(new Item.Settings().group(ItemGroup.MATERIALS)));
+
 		// Register Skills
 		Skill.NONE = new Skill(Mestiere.newID("none"), Formatting.BLACK, ItemStack.EMPTY);
-		Skill.CLERGY = Skill.register(new Skill(newID("clergy"), Formatting.LIGHT_PURPLE, new ItemStack(Items.BREWING_STAND)));
+//		Skill.PRAYER = Skill.register(new Skill(newID("prayer"), Formatting.LIGHT_PURPLE, new ItemStack(Items.NETHER_STAR)));
 		Skill.FARMING = Skill.register(new Skill(newID("farming"), Formatting.DARK_GREEN, new ItemStack(Items.IRON_HOE)));
 		Skill.HUNTING = Skill.register(new Skill(newID("hunting"), Formatting.GREEN, new ItemStack(Items.BOW)));
 		Skill.LEATHERWORKING = Skill.register(new Skill(newID("leatherworking"), Formatting.GOLD, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER, new ItemStack(Items.LEATHER)));

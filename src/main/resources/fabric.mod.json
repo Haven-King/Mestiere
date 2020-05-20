@@ -25,6 +25,9 @@
     ],
     "modmenu": [
       "dev.hephaestus.mestiere.ModMenuIntegration"
+    ],
+    "mm:early_risers": [
+      "dev.hephaestus.mestiere.GameRuleCategory"
     ]
   },
   "mixins": [

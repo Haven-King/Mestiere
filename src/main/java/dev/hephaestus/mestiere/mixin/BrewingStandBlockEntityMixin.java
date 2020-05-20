@@ -33,7 +33,7 @@ public abstract class BrewingStandBlockEntityMixin extends LockableContainerBloc
     @Inject(method = "craft", at = @At("TAIL"))
     public void dropXP(CallbackInfo ci) {
         if (this.world != null)
-            this.world.spawnEntity(new SkilledExperienceOrbEntity(this.world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), this.value, Skill.CLERGY));
+            this.world.spawnEntity(new SkilledExperienceOrbEntity(this.world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), this.value, Skill.PRAYER));
     }
 
     @Shadow @Override

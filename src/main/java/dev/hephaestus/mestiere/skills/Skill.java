@@ -31,7 +31,7 @@ import static net.minecraft.util.Util.createTranslationKey;
 public class Skill {
     private static final SimpleRegistry<Skill> REGISTRY = new SimpleRegistry<>();
     public static Skill NONE;
-    public static Skill CLERGY;
+    public static Skill PRAYER;
     public static Skill SMITHING;
     public static Skill LEATHERWORKING;
     public static Skill FARMING;
