@@ -9,6 +9,7 @@
     "BrewingStandBlockEntityMixin",
     "ExperienceOrbEntityMixin",
     "HostileEntityMixin",
+    "ItemStackMixin",
     "RecipeManagerInvoker",
     "ServerPlayerEntityMixin",
     "animals.AnimalEntityMixin",

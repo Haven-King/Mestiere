@@ -136,7 +136,7 @@ public class NetheriteRecipe extends Skill.Recipe {
     }
 
     @Override
-    public ItemStack getOutput(BasicInventory inv) {
+    public ItemStack getOutput(BasicInventory inv, PlayerEntity playerEntity) {
         ItemStack inStack = inv.getStack(1);
 
         ItemStack outStack = new ItemStack(outputItem);

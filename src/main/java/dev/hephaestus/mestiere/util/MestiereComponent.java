@@ -110,7 +110,7 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
     }
 
     public float getScale(Skill.Perk perk) {
-        return MathHelper.clamp(getLevel(perk.skill) - perk.level, 0, perk.getMaxLevel()) / (float)perk.getMaxLevel();
+        return MathHelper.clamp((getLevel(perk.skill)-perk.level) / ((float)perk.getMaxLevel()-perk.level), 0, 1);
     }
 
     @Override

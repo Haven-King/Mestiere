@@ -1,0 +1,19 @@
+{
+  "type": "mestiere:smithing.tools",
+  "ingredients": [
+    {
+      "item": "minecraft:diamond",
+      "amount": 2
+    },
+    {
+      "item": "minecraft:stick",
+      "amount": 1
+    }
+  ],
+  "outputItem": {
+    "item": "minecraft:diamond_sword",
+    "amount": 1
+  },
+  "value": 32,
+  "perk_required": "mestiere:smithing.material.diamond"
+}

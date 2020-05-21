@@ -1,0 +1,19 @@
+{
+  "type": "mestiere:smithing.tools",
+  "ingredients": [
+    {
+      "item": "minecraft:gold_ingot",
+      "amount": 2
+    },
+    {
+      "item": "minecraft:stick",
+      "amount": 1
+    }
+  ],
+  "outputItem": {
+    "item": "minecraft:golden_sword",
+    "amount": 1
+  },
+  "value": 8,
+  "perk_required": "mestiere:smithing.material.gold_ingot"
+}

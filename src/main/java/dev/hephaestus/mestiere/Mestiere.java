@@ -4,7 +4,7 @@ import com.chocohead.mm.api.ClassTinkerers;
 import dev.hephaestus.mestiere.crafting.SkillCrafter;
 import dev.hephaestus.mestiere.crafting.recipes.NetheriteRecipe;
 import dev.hephaestus.mestiere.crafting.recipes.SimpleSkillRecipe;
-import dev.hephaestus.mestiere.skills.MaterialSmithingPerk;
+import dev.hephaestus.mestiere.skills.MaterialCraftingPerk;
 import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.util.Commands;
 import dev.hephaestus.mestiere.util.MestiereComponent;
@@ -29,6 +29,7 @@ import net.minecraft.item.Items;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -37,12 +38,18 @@ import net.minecraft.world.GameRules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.UUID;
+
 public class Mestiere implements ModInitializer {
 	public static final String MOD_ID = "mestiere";
 	public static final String MOD_NAME = "Mestiere";
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	public static GameRules.RuleKey<GameRules.BooleanRule> HARDCORE = GameRulesAccessor.invokeRegister("mestiere.hardcoreMode", ClassTinkerers.getEnum(GameRules.RuleCategory.class, "mestiere"), RuleFactory.createBooleanRule(true));
+	public static final GameRules.RuleKey<GameRules.BooleanRule> HARDCORE = GameRulesAccessor.invokeRegister("mestiere.hardcoreMode", ClassTinkerers.getEnum(GameRules.RuleCategory.class, "mestiere"), RuleFactory.createBooleanRule(true));
+
+	public static final UUID[] ARMOR_MODIFIERS = new UUID[]{UUID.fromString("CAFECAFE-C624-495F-8C9F-6020A9A58B6B"), UUID.fromString("CAFECAFE-0E66-4726-AB29-64469D734E0D"), UUID.fromString("CAFECAFE-C118-4544-8365-64846904B48E"), UUID.fromString("CAFECAFE-FEE1-4E67-B886-69FD380BB150")};
+	public static final UUID ATTACK_DAMAGE_MODIFIER_UUID = UUID.fromString("CAFECAFE-645C-4F38-A497-9C13A33DB5CF");
+	public static final UUID ATTACK_SPEED_MODIFIER_UUID = UUID.fromString("CAFECAFE-4180-4865-B01B-BCCE9785ACA3");
 
 	public static MestiereConfig CONFIG;
 
@@ -83,19 +90,23 @@ public class Mestiere implements ModInitializer {
 //		Skill.PRAYER = Skill.register(new Skill(newID("prayer"), Formatting.LIGHT_PURPLE, new ItemStack(Items.NETHER_STAR)));
 		Skill.FARMING = Skill.register(new Skill(newID("farming"), Formatting.DARK_GREEN, new ItemStack(Items.IRON_HOE)));
 		Skill.HUNTING = Skill.register(new Skill(newID("hunting"), Formatting.GREEN, new ItemStack(Items.BOW)));
-		Skill.LEATHERWORKING = Skill.register(new Skill(newID("leatherworking"), Formatting.GOLD, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER, new ItemStack(Items.LEATHER)));
+		Skill.LEATHERWORKING = Skill.register(new Skill(newID("leatherworking"), Formatting.GOLD, new ItemStack(Items.LEATHER)));
 		Skill.MINING = Skill.register(new Skill(newID("mining"), Formatting.DARK_GRAY, new ItemStack(Items.IRON_PICKAXE)));
-		Skill.SMITHING = Skill.register(new Skill(newID("smithing"), Formatting.DARK_RED, SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH, new ItemStack(Items.SMITHING_TABLE)));
+		Skill.SMITHING = Skill.register(new Skill(newID("smithing"), Formatting.DARK_RED, new ItemStack(Items.SMITHING_TABLE))).craftSound(SoundEvents.BLOCK_ANVIL_USE);
 		Skill.SLAYING = Skill.register(new Skill(newID("slaying"), Formatting.RED, new ItemStack(Items.ZOMBIE_HEAD)));
 
 		// Register Skill.Perks
 		Skill.Perk.NONE = new Skill.Perk(Skill.NONE, "none", Integer.MIN_VALUE, null);
 		Skill.Perk.INVALID = new Skill.Perk(Skill.NONE, "invalid", Integer.MAX_VALUE, null);
 
-		Skill.Perk.IRON_INGOT_SMITH = Skill.Perk.register(new Skill.Perk(Skill.SMITHING, "material.iron_ingot", 10, Items.IRON_INGOT).scales(20));
-		Skill.Perk.GOLD_INGOT_SMITH = Skill.Perk.register(new MaterialSmithingPerk(20, Items.GOLD_INGOT).scales(30));
-		Skill.Perk.DIAMOND_SMITH = Skill.Perk.register(new MaterialSmithingPerk(30, Items.DIAMOND));
-		Skill.Perk.NETHERITE_SMITH = Skill.Perk.register(new MaterialSmithingPerk(35, Items.NETHERITE_INGOT));
+		Skill.Perk.IRON_INGOT_SMITH = Skill.Perk.register(new MaterialCraftingPerk(Skill.SMITHING, Items.IRON_INGOT, 10)
+				.setMessage(new TranslatableText("perk.mestiere.smithing.material.iron_ingot.message"))
+				.setDescription(new TranslatableText("perk.mestiere.smithing.material.iron_ingot.description"))
+				.scales(20));
+
+		Skill.Perk.GOLD_INGOT_SMITH = Skill.Perk.register(new MaterialCraftingPerk(Skill.SMITHING, Items.GOLD_INGOT, 20).scales(30));
+		Skill.Perk.DIAMOND_SMITH = Skill.Perk.register(new MaterialCraftingPerk(Skill.SMITHING, Items.DIAMOND, 30));
+		Skill.Perk.NETHERITE_SMITH = Skill.Perk.register(new MaterialCraftingPerk(Skill.SMITHING, Items.NETHERITE_INGOT, 35));
 
 		Skill.Perk.HUNTER = Skill.Perk.register(new Skill.Perk(Skill.HUNTING, "hunter", 5, Items.PORKCHOP)).scales(30);
 		Skill.Perk.SHARP_SHOOTER = Skill.Perk.register(new Skill.Perk(Skill.HUNTING, "sharp_shooter", 15, Items.ARROW)).scales(30);

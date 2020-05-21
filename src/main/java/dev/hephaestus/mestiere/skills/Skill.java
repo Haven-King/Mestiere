@@ -54,22 +54,27 @@ public class Skill {
 
     public final Identifier id;
     public final Formatting format;
-    public final SoundEvent sound;
     public final ItemStack icon;
 
     private final Text name;
 
-    public Skill(Identifier id, Formatting format, SoundEvent sound, ItemStack icon) {
+    private SoundEvent craftSound;
+
+    public Skill(Identifier id, Formatting format, ItemStack icon) {
         this.id = id;
         this.format = format;
-        this.sound = sound;
         this.icon = icon;
 
         this.name = new TranslatableText(createTranslationKey("skill", Mestiere.newID(this.id.getPath() + ".name"))).formatted(format);
     }
 
-    public Skill(Identifier id, Formatting format, ItemStack icon) {
-        this(id, format, null, icon);
+    public Skill craftSound(SoundEvent sound) {
+        this.craftSound = sound;
+        return this;
+    }
+
+    public SoundEvent getCraftSound() {
+        return this.craftSound;
     }
 
     public MutableText getName() {
@@ -152,16 +157,19 @@ public class Skill {
             return this;
         }
 
-        public void setName(Text text) {
+        public Perk setName(Text text) {
             this.name = text;
+            return this;
         }
 
-        public void setDescription(Text text) {
+        public Perk setDescription(Text text) {
             this.description = text;
+            return this;
         }
 
-        public void setMessage(Text text) {
+        public Perk setMessage(Text text) {
             this.message = text;
+            return this;
         }
 
         public MutableText getName() {
@@ -273,7 +281,9 @@ public class Skill {
         public abstract boolean matches(BasicInventory inventory);
 
         public abstract int numberOfInputs();
-        public abstract ItemStack getOutput(BasicInventory inv);
+        public ItemStack getOutput(BasicInventory inv, PlayerEntity player) {
+            return getOutput();
+        }
 
         public int getValue() {return this.value;}
         public Perk getPerk() {return this.perk;}
@@ -288,6 +298,10 @@ public class Skill {
 
         public boolean canCraft(PlayerEntity playerEntity) {
             return Mestiere.COMPONENT.get(player).hasPerk(getPerk()) || player.world.getGameRules().getBoolean(Mestiere.HARDCORE) || !getPerk().isHardcore();
+        }
+
+        public ItemStack craft(BasicInventory blockInventory, PlayerEntity player) {
+            return this.craft(blockInventory);
         }
 
         protected void write(PacketByteBuf buf) {

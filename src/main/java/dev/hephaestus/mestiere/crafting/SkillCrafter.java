@@ -28,6 +28,7 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -82,7 +83,7 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
         root.add(ARROW, 15 + maxNumberOfInputs * 2, 2, 4, 2);
 
         WItemSlot outputSlot = new WItemSlot(blockInventory, 0, 1, 1, true, false);
-        outputSlot.setModifiable(false);
+        outputSlot.setInsertingAllowed(false);
         root.add(outputSlot, 20 + maxNumberOfInputs * 2, 2);
         root.add(WItemSlot.of(blockInventory, 1), 10 + maxNumberOfInputs * 2, 2);
         root.add(WItemSlot.of(blockInventory, 2), 13 + maxNumberOfInputs * 2, 2);
@@ -112,30 +113,18 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
 
     @Override
     public ItemStack onSlotClick(int slotNumber, int button, SlotActionType action, PlayerEntity player) {
-        ItemStack result = null;
-        if (slotNumber == 36 && recipe != null) {
-            if (recipe.matches((BasicInventory) blockInventory, null)) {
-                if (action == SlotActionType.PICKUP && player.inventory.getCursorStack().isEmpty()) {
-                    player.inventory.setCursorStack(recipe.craft((BasicInventory) blockInventory));
-                    result = player.inventory.getCursorStack();
-                } else if (action == SlotActionType.QUICK_MOVE) {
-                    ItemStack stack = recipe.craft((BasicInventory) blockInventory);
-                    player.inventory.offerOrDrop(player.world, stack);
-                    result = stack;
-                }
-            }
-        }
-
-        if (result == null) {
-            result = super.onSlotClick(slotNumber, button, action, player);
-        }
-
-        if (recipe == null)
+        if (slotNumber == 36 && recipe != null && recipe.matches((BasicInventory) blockInventory, null)) {
+            recipe.craft((BasicInventory) blockInventory, player);
+            context.run((world, pos) -> {
+                world.playSound(pos.getX(), pos.getY(), pos.getZ(), skill.getCraftSound(), SoundCategory.BLOCKS, 1.0f, 1.0f, false);
+            });
+        } else if (recipe == null) {
             setRecipeIfMatchFound();
+        }
 
+        ItemStack result = super.onSlotClick(slotNumber, button, action, player);
 
-        if (recipe != null)
-            updateResult();
+        updateOutput();
 
         return result;
     }
@@ -161,12 +150,12 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
         if (recipe == null) return ActionResult.FAIL;
 
         this.recipe = recipe;
-        return updateResult();
+        return updateOutput();
     }
 
-    public ActionResult updateResult() {
+    public ActionResult updateOutput() {
         if (recipe.matches((BasicInventory) blockInventory, null)) {
-            blockInventory.setStack(0, recipe.getOutput((BasicInventory) blockInventory));
+            blockInventory.setStack(0, recipe.getOutput((BasicInventory) blockInventory, getPlayer()));
             return ActionResult.SUCCESS;
         }
         else {
@@ -196,7 +185,7 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
         if (recipe != null)
             recipe.fillInputSlots(playerInventory, blockInventory);
 
-        updateResult();
+        updateOutput();
     }
 
     @Override

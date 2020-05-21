@@ -3,21 +3,28 @@ package dev.hephaestus.mestiere.crafting.recipes;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dev.hephaestus.mestiere.Mestiere;
+import dev.hephaestus.mestiere.skills.MaterialCraftingPerk;
 import dev.hephaestus.mestiere.skills.Skill;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.text.TextColor;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -74,18 +81,65 @@ public class SimpleSkillRecipe extends Skill.Recipe {
         return components.length;
     }
 
+    private void addModifiers(Item ingredient, ItemStack output, PlayerEntity player) {
+        MaterialCraftingPerk perk = MaterialCraftingPerk.get(ingredient);
+
+        if (perk != null && perk.scales()) {
+            float scale = Mestiere.COMPONENT.get(player).getScale(perk);
+            if (output.getItem() instanceof ArmorItem) {
+                EquipmentSlot equipmentSlot = ((ArmorItem) output.getItem()).getSlotType();
+                int slotNumber = equipmentSlot.getEntitySlotId();
+
+                output.addAttributeModifier(EntityAttributes.GENERIC_ARMOR, new EntityAttributeModifier(
+                    Mestiere.ARMOR_MODIFIERS[slotNumber], "Mestiere Armor", scale * 2.0, EntityAttributeModifier.Operation.ADDITION
+                ), equipmentSlot);
+
+                output.addAttributeModifier(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, new EntityAttributeModifier(
+                    Mestiere.ARMOR_MODIFIERS[slotNumber], "Mestiere Armor Toughness", scale * 2.0, EntityAttributeModifier.Operation.ADDITION
+                ), equipmentSlot);
+            } else if (output.getItem() instanceof SwordItem || output.getItem() instanceof AxeItem) {
+                output.addAttributeModifier(EntityAttributes.GENERIC_ATTACK_DAMAGE, new EntityAttributeModifier(
+                    Mestiere.ATTACK_DAMAGE_MODIFIER_UUID, "Mestiere Attack Damage", scale, EntityAttributeModifier.Operation.ADDITION
+                ), EquipmentSlot.MAINHAND);
+            } else {
+                // TODO
+            }
+
+            Formatting color = Formatting.WHITE;
+            if (scale > 0.5) color = Formatting.BLUE;
+            if (scale > 0.75) color = Formatting.YELLOW;
+            if (scale > 0.95) color = Formatting.GOLD;
+
+            Formatting finalColor = color;
+            output.setCustomName(new TranslatableText(output.getTranslationKey()).styled(
+                    style -> style.withItalic(scale >= 0.95)
+                            .withColor(finalColor)));
+        }
+    }
+
     @Override
-    public ItemStack getOutput(BasicInventory inv) {
-        return getOutput();
+    public ItemStack getOutput(BasicInventory inv, PlayerEntity player) {
+        ItemStack output = this.getOutput().copy();
+
+        for (int i = 0; i < components.length; ++i) {
+            addModifiers(inv.getStack(i+1).getItem(), output, player);
+        }
+
+        return output;
     }
 
     @Override
     public ItemStack craft(BasicInventory inv) {
+        return null;
+    }
+
+    @Override
+    public ItemStack craft(BasicInventory inv, PlayerEntity player) {
         for (int i = 0; i < components.length; ++i) {
             inv.getStack(i+1).decrement(components[i].count());
         }
 
-        return this.getOutput().copy();
+        return this.getOutput(inv, player);
     }
 
     @Override
