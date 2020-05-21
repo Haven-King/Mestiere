@@ -127,11 +127,7 @@ public class SkillScreen extends CottonClientScreen {
         @Override
         public void addTooltip(List<Text> tooltips) {
             super.addTooltip(tooltips);
-            tooltips.add(this.perk.getName().formatted(this.perk.skill.format));
-            tooltips.add(this.perk.getDescription());
-            if (this.perk.scales()) {
-                tooltips.add(new TranslatableText("mestiere.scales"));
-            }
+            tooltips.addAll(perk.getTooltips());
         }
 
         @Override

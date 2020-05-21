@@ -80,19 +80,20 @@ public class Skill {
         public static Perk NONE;
         public static Perk INVALID;
 
-        public static Skill.Perk GOLD_INGOT_SMITH;
-        public static Skill.Perk DIAMOND_SMITH;
-        public static Skill.Perk NETHERITE_SMITH;
+        public static Perk IRON_INGOT_SMITH;
+        public static Perk GOLD_INGOT_SMITH;
+        public static Perk DIAMOND_SMITH;
+        public static Perk NETHERITE_SMITH;
 
-        public static Skill.Perk HUNTER;
-        public static Skill.Perk SHARP_SHOOTER;
+        public static Perk HUNTER;
+        public static Perk SHARP_SHOOTER;
 
-        public static Skill.Perk GATHERER;
-        public static Skill.Perk SEX_GURU;
-        public static Skill.Perk GREEN_THUMB;
+        public static Perk GATHERER;
+        public static Perk SEX_GURU;
+        public static Perk GREEN_THUMB;
 
-        public static Skill.Perk SLAYER;
-        public static Skill.Perk SNIPER;
+        public static Perk SLAYER;
+        public static Perk SNIPER;
 
         private static final SimpleRegistry<Perk> REGISTRY = new SimpleRegistry<>();
         private static final HashMap<Identifier, ArrayList<Perk>> SKILL_TO_PERK_MAP = new HashMap<>();
@@ -173,6 +174,18 @@ public class Skill {
 
         public MutableText getMessage() {
             return this.message.copy();
+        }
+
+        public List<Text> getTooltips() {
+            List<Text> tooltips = new ArrayList<>();
+
+            tooltips.add(this.getName().formatted(this.skill.format));
+            tooltips.add(this.getDescription());
+            if (this.scales()) {
+                tooltips.add(new TranslatableText("mestiere.scales", this.maxLevel).styled(style -> style.withColor(Formatting.DARK_GRAY)));
+            }
+
+            return tooltips;
         }
 
         public boolean isHardcore() {

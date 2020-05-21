@@ -13,7 +13,7 @@ import static net.minecraft.util.Util.createTranslationKey;
 public class MaterialSmithingPerk extends Skill.Perk {
     public MaterialSmithingPerk(int level, Item material) {
         super(Skill.SMITHING, "material." + Registry.ITEM.getId(material).getPath(), level, material);
-        this.isHardcore(false);
+        this.isHardcore(true);
 
         MutableText materialText = new TranslatableText(material.getTranslationKey()).styled((style) -> style.withColor(MestiereConfig.messageFormatting.getOrDefault(Registry.ITEM.getId(material), Formatting.WHITE)).withBold(true));
         setName(new TranslatableText(createTranslationKey("perk", Mestiere.newID("smithing.material." + Registry.ITEM.getId(material).getPath() + ".name")), materialText));

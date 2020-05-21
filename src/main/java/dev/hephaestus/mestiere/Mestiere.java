@@ -92,9 +92,10 @@ public class Mestiere implements ModInitializer {
 		Skill.Perk.NONE = new Skill.Perk(Skill.NONE, "none", Integer.MIN_VALUE, null);
 		Skill.Perk.INVALID = new Skill.Perk(Skill.NONE, "invalid", Integer.MAX_VALUE, null);
 
-		Skill.Perk.GOLD_INGOT_SMITH = Skill.Perk.register(new MaterialSmithingPerk(10, Items.GOLD_INGOT));
-		Skill.Perk.DIAMOND_SMITH = Skill.Perk.register(new MaterialSmithingPerk(20, Items.DIAMOND));
-		Skill.Perk.NETHERITE_SMITH = Skill.Perk.register(new MaterialSmithingPerk(25, Items.NETHERITE_INGOT));
+		Skill.Perk.IRON_INGOT_SMITH = Skill.Perk.register(new Skill.Perk(Skill.SMITHING, "material.iron_ingot", 10, Items.IRON_INGOT).scales(20));
+		Skill.Perk.GOLD_INGOT_SMITH = Skill.Perk.register(new MaterialSmithingPerk(20, Items.GOLD_INGOT).scales(30));
+		Skill.Perk.DIAMOND_SMITH = Skill.Perk.register(new MaterialSmithingPerk(30, Items.DIAMOND));
+		Skill.Perk.NETHERITE_SMITH = Skill.Perk.register(new MaterialSmithingPerk(35, Items.NETHERITE_INGOT));
 
 		Skill.Perk.HUNTER = Skill.Perk.register(new Skill.Perk(Skill.HUNTING, "hunter", 5, Items.PORKCHOP)).scales(30);
 		Skill.Perk.SHARP_SHOOTER = Skill.Perk.register(new Skill.Perk(Skill.HUNTING, "sharp_shooter", 15, Items.ARROW)).scales(30);

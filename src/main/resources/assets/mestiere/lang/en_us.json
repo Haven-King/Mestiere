@@ -1,7 +1,7 @@
 {
   "mestiere.skills": "Skills",
   "mestiere.perks": "Perks",
-  "mestiere.scales": "Scales with level!",
+  "mestiere.scales": "Scales up to level %d",
   "mestiere.levelModifier": "Level Modifier",
   "mestiere.hardcoreProgression": "Hardcore Progression",
   "mestiere.category.general": "General",
