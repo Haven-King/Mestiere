@@ -64,7 +64,7 @@ public class SkillScreen extends CottonClientScreen {
             data.sort(Comparator.comparing(Identifier::getPath));
             SkillScreen.open(new SkillScreen(new TranslatableText("mestiere.skills"), new ScrollingGuiDescription<>(
                     data,
-                    SkillButton::new,
+                    WSkillButton::new,
                     (i, button) -> button.init(i)
             )));
         }
@@ -117,7 +117,7 @@ public class SkillScreen extends CottonClientScreen {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class PerkPanel extends WPanel {
+    public static class WPerkPanel extends WPanel {
         private Skill.Perk perk;
 
         public void init(Identifier perk) {
@@ -165,17 +165,17 @@ public class SkillScreen extends CottonClientScreen {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class SkillButton extends WButton {
+    public static class WSkillButton extends WButton {
         private Skill skill;
 
-        public SkillButton() {
+        public WSkillButton() {
             setOnClick(() -> {
                 List<Skill.Perk> data = Skill.Perk.list(this.skill);
                 data.sort(Comparator.comparing((p) -> p.level));
                 open(new SkillScreen(this.skill.getName(),
                     new ScrollingGuiDescription<>(
                             data.stream().map((p) -> p.id).collect(Collectors.toList()),
-                            PerkPanel::new,
+                            WPerkPanel::new,
                             (i, panel) -> panel.init(i)
                     )));
                 }

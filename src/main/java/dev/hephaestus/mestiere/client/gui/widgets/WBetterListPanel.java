@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-public class BetterListPanel<D, W extends WWidget> extends WListPanel<D, W> {
-    public BetterListPanel(List<D> data, Supplier<W> supplier, BiConsumer<D, W> configurator) {
+public class WBetterListPanel<D, W extends WWidget> extends WListPanel<D, W> {
+    public WBetterListPanel(List<D> data, Supplier<W> supplier, BiConsumer<D, W> configurator) {
         super(data, supplier, configurator);
     }
 

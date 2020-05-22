@@ -3,7 +3,7 @@ package dev.hephaestus.mestiere.crafting;
 import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.client.gui.widgets.ScrollingGui;
 import dev.hephaestus.mestiere.client.gui.screens.SkillCraftingScreen;
-import dev.hephaestus.mestiere.client.gui.widgets.BetterListPanel;
+import dev.hephaestus.mestiere.client.gui.widgets.WBetterListPanel;
 import dev.hephaestus.mestiere.mixin.RecipeManagerInvoker;
 import dev.hephaestus.mestiere.skills.Skill;
 import io.github.cottonmc.cotton.gui.CottonCraftingController;
@@ -51,7 +51,7 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
     private final Skill skill;
     private final Collection<RecipeType> types;
 
-    private BetterListPanel<Skill.Recipe, RecipeButton> listPanel;
+    private WBetterListPanel<Skill.Recipe, RecipeButton> listPanel;
     private Skill.Recipe recipe;
 
     public SkillCrafter(int syncId, Skill skill, Collection<RecipeType> types, PlayerInventory playerInventory, ScreenHandlerContext screenHandlerContext) {
@@ -71,7 +71,7 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
         WGridPanel root = new WGridPanel(9);
         setRootPanel(root);
 
-        listPanel = new BetterListPanel<>(
+        listPanel = new WBetterListPanel<>(
                 new ArrayList<>(recipes),
                 RecipeButton::new,
                 (recipe, button) -> button.init(recipe, this, maxNumberOfInputs)
@@ -154,7 +154,7 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
     }
 
     public ActionResult updateOutput() {
-        if (recipe.matches((BasicInventory) blockInventory, null)) {
+        if (recipe != null && recipe.matches((BasicInventory) blockInventory, null)) {
             blockInventory.setStack(0, recipe.getOutput((BasicInventory) blockInventory, getPlayer()));
             return ActionResult.SUCCESS;
         }
