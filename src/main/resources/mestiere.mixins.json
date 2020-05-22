@@ -24,6 +24,7 @@
     "plants.MelonBlockMixin"
   ],
   "client": [
+    "client.BlastFurnaceScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

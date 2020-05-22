@@ -22,9 +22,11 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.BasicInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -32,8 +34,10 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.world.World;
 
 import java.util.*;
 
@@ -50,15 +54,17 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
     private final ScreenHandlerContext context;
     private final Skill skill;
     private final Collection<RecipeType> types;
+    private final Builder.ScreenProvider altScreenFactory;
 
     private WBetterListPanel<Skill.Recipe, RecipeButton> listPanel;
     private Skill.Recipe recipe;
 
-    public SkillCrafter(int syncId, Skill skill, Collection<RecipeType> types, PlayerInventory playerInventory, ScreenHandlerContext screenHandlerContext) {
+    public SkillCrafter(int syncId, Skill skill, Collection<RecipeType> types, PlayerInventory playerInventory, ScreenHandlerContext screenHandlerContext, Builder.ScreenProvider altScreenFactory) {
         super(null, syncId, playerInventory, new BasicInventory(3), null);
         this.context = screenHandlerContext;
         this.skill = skill;
         this.types = types;
+        this.altScreenFactory = altScreenFactory;
 
         // Register our Controller for syncing purposes
         if (playerInventory.player instanceof ServerPlayerEntity) INSTANCES.put(syncId, this);
@@ -142,6 +148,10 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
         return playerInventory.player;
     }
 
+    public int getSyncId() {
+        return this.syncId;
+    }
+
     public ActionResult setRecipe(Identifier id) {
         return setRecipe(recipeMap.get(id));
     }
@@ -217,14 +227,24 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
         private final Skill skill;
         private final ArrayList<RecipeType> types;
 
+        private ScreenProvider altScreenFactory;
+        private Item altScreenIcon;
+
         public Builder(Block block, Skill skill) {
             this.block = block;
             this.skill = skill;
             this.types = new ArrayList<>();
         }
 
-        public void addTypes(RecipeType... types) {
+        public Builder addTypes(RecipeType... types) {
             this.types.addAll(Arrays.asList(types));
+            return this;
+        }
+
+        public Builder withAlt(ScreenProvider factory, Item icon) {
+            this.altScreenFactory = factory;
+            this.altScreenIcon = icon;
+            return this;
         }
 
         private SkillCrafter buildContainer(int syncId, Identifier id, PlayerEntity player, PacketByteBuf buf) {
@@ -232,7 +252,8 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
                     this.skill,
                     this.types,
                     player.inventory,
-                    ScreenHandlerContext.create(player.world, buf.readBlockPos()));
+                    ScreenHandlerContext.create(player.world, buf.readBlockPos()),
+                    altScreenFactory);
         }
 
 
@@ -242,12 +263,16 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
 
         @Environment(EnvType.CLIENT)
         private SkillCraftingScreen buildScreen(int syncId, Identifier id, PlayerEntity player, PacketByteBuf buf) {
-            return new SkillCraftingScreen(buildContainer(syncId, id, player, buf));
+            return new SkillCraftingScreen(buildContainer(syncId, id, player, buf), altScreenIcon);
         }
 
         @Environment(EnvType.CLIENT)
         public void registerScreenProvider() {
             ScreenProviderRegistry.INSTANCE.registerFactory(Registry.BLOCK.getId(block), this::buildScreen);
+        }
+
+        public interface ScreenProvider {
+            NamedScreenHandlerFactory getScreen(World world, BlockPos pos);
         }
     }
 
@@ -315,5 +340,11 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
                 ClientSidePacketRegistry.INSTANCE.sendToServer(Mestiere.SELECT_RECIPE_ID, buf);
             }
         }
+    }
+
+    public void openAltScreen() {
+        context.run((world, pos) -> {
+            getPlayer().openHandledScreen(altScreenFactory.getScreen(world, pos));
+        });
     }
 }

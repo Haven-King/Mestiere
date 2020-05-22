@@ -21,13 +21,13 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.TranslatableText;
@@ -55,6 +55,7 @@ public class Mestiere implements ModInitializer {
 	public static MestiereConfig CONFIG;
 
 	public static final Identifier SELECT_RECIPE_ID = newID("select_recipe");
+	public static final Identifier OPEN_ALT_SCREEN = newID("open_alt_screen");
 
 	public static final ComponentType<MestiereComponent> COMPONENT =
 		ComponentRegistry.INSTANCE.registerIfAbsent(newID("component"), MestiereComponent.class);
@@ -81,6 +82,15 @@ public class Mestiere implements ModInitializer {
 					if (controller.setRecipe(recipeId) == ActionResult.PASS)
 						controller.fillInputSlots();
 				});
+		});
+
+		ServerSidePacketRegistry.INSTANCE.register(OPEN_ALT_SCREEN, (packetContext, packetByteBuf) -> {
+			int syncId = packetByteBuf.readInt();
+
+			packetContext.getTaskQueue().execute(() -> {
+				dev.hephaestus.mestiere.crafting.SkillCrafter controller = dev.hephaestus.mestiere.crafting.SkillCrafter.getInstance(syncId);
+				controller.openAltScreen();
+			});
 		});
 
 		Registry.register(Registry.ITEM, newID("iron_chunk"), new Item(new Item.Settings().group(ItemGroup.MATERIALS)));
@@ -129,6 +139,9 @@ public class Mestiere implements ModInitializer {
 
 		// Register SkillCrafter providers
 		SkillCrafter.Builder.registerContainer(Blocks.SMITHING_TABLE, Skill.SMITHING).addTypes(Skill.Recipe.Type.TOOLS, Skill.Recipe.Type.NETHERITE);
+		SkillCrafter.Builder.registerContainer(Blocks.BLAST_FURNACE, Skill.SMITHING).addTypes(Skill.Recipe.Type.ARMOR)
+			.withAlt((world, pos) -> (NamedScreenHandlerFactory)world.getBlockEntity(pos), Items.BLAST_FURNACE);
+
 		SkillCrafter.Builder.registerAllContainers();
 	}
 

@@ -7,6 +7,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -25,14 +26,11 @@ public class BlastFurnaceMixin extends Block {
 
     @Inject(method="openScreen", at=@At("HEAD"), cancellable = true)
     public void openScreen(World world, BlockPos blockPos, PlayerEntity player, CallbackInfo ci) {
-        Item mainHand = player.getMainHandStack().getItem();
-        if ( mainHand == Items.LEATHER_HELMET || mainHand == Items.LEATHER_CHESTPLATE || mainHand == Items.LEATHER_LEGGINGS || mainHand == Items.LEATHER_BOOTS || mainHand == Items.LEATHER_HORSE_ARMOR) {
-            if (!world.isClient)
-                ContainerProviderRegistry.INSTANCE.openContainer(
-                        Registry.BLOCK.getId(Blocks.CAULDRON), player, (packetByteBuf -> packetByteBuf.writeBlockPos(blockPos))
-                );
+        if (!world.isClient)
+            ContainerProviderRegistry.INSTANCE.openContainer(
+                    Registry.BLOCK.getId(Blocks.BLAST_FURNACE), player, (packetByteBuf -> packetByteBuf.writeBlockPos(blockPos))
+            );
 
-            ci.cancel();
-        }
+        ci.cancel();
     }
 }
