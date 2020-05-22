@@ -18,6 +18,7 @@ import nerdhub.cardinal.components.api.util.EntityComponents;
 import nerdhub.cardinal.components.api.util.RespawnCopyStrategy;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
@@ -34,6 +35,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameRules;
 import org.apache.logging.log4j.LogManager;
@@ -56,6 +58,7 @@ public class Mestiere implements ModInitializer {
 
 	public static final Identifier SELECT_RECIPE_ID = newID("select_recipe");
 	public static final Identifier OPEN_ALT_SCREEN = newID("open_alt_screen");
+	public static final Identifier OPEN_CRAFT_SCREEN = newID("open_craft_screen");
 
 	public static final ComponentType<MestiereComponent> COMPONENT =
 		ComponentRegistry.INSTANCE.registerIfAbsent(newID("component"), MestiereComponent.class);
@@ -93,6 +96,16 @@ public class Mestiere implements ModInitializer {
 			});
 		});
 
+		ServerSidePacketRegistry.INSTANCE.register(OPEN_CRAFT_SCREEN, (packetContext, packetByteBuf) -> {
+			Identifier blockId = packetByteBuf.readIdentifier();
+			BlockPos pos = packetByteBuf.readBlockPos();
+			PlayerEntity player = packetContext.getPlayer();
+
+			packetContext.getTaskQueue().execute(() -> ContainerProviderRegistry.INSTANCE.openContainer(
+					blockId, player, (buf -> buf.writeBlockPos(pos))
+			));
+		});
+
 		Registry.register(Registry.ITEM, newID("iron_chunk"), new Item(new Item.Settings().group(ItemGroup.MATERIALS)));
 		Registry.register(Registry.ITEM, newID("gold_chunk"), new Item(new Item.Settings().group(ItemGroup.MATERIALS)));
 
@@ -101,7 +114,7 @@ public class Mestiere implements ModInitializer {
 //		Skill.PRAYER = Skill.register(new Skill(newID("prayer"), Formatting.LIGHT_PURPLE, new ItemStack(Items.NETHER_STAR)));
 		Skill.FARMING = Skill.register(new Skill(newID("farming"), Formatting.DARK_GREEN, new ItemStack(Items.IRON_HOE)));
 		Skill.HUNTING = Skill.register(new Skill(newID("hunting"), Formatting.GREEN, new ItemStack(Items.BOW)));
-		Skill.LEATHERWORKING = Skill.register(new Skill(newID("leatherworking"), Formatting.GOLD, new ItemStack(Items.LEATHER)));
+		Skill.LEATHERWORKING = Skill.register(new Skill(newID("leatherworking"), Formatting.GOLD, new ItemStack(Items.LEATHER))).craftSound(SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER);
 		Skill.MINING = Skill.register(new Skill(newID("mining"), Formatting.DARK_GRAY, new ItemStack(Items.IRON_PICKAXE)));
 		Skill.SMITHING = Skill.register(new Skill(newID("smithing"), Formatting.DARK_RED, new ItemStack(Items.SMITHING_TABLE))).craftSound(SoundEvents.BLOCK_ANVIL_USE);
 		Skill.SLAYING = Skill.register(new Skill(newID("slaying"), Formatting.RED, new ItemStack(Items.ZOMBIE_HEAD)));
@@ -139,6 +152,7 @@ public class Mestiere implements ModInitializer {
 
 		// Register SkillCrafter providers
 		SkillCrafter.Builder.registerContainer(Blocks.SMITHING_TABLE, Skill.SMITHING).addTypes(Skill.Recipe.Type.TOOLS, Skill.Recipe.Type.NETHERITE);
+		SkillCrafter.Builder.registerContainer(Blocks.CAULDRON, Skill.LEATHERWORKING).addTypes(Skill.Recipe.Type.LEATHERWORKING);
 		SkillCrafter.Builder.registerContainer(Blocks.BLAST_FURNACE, Skill.SMITHING).addTypes(Skill.Recipe.Type.ARMOR)
 			.withAlt((world, pos) -> (NamedScreenHandlerFactory)world.getBlockEntity(pos), Items.BLAST_FURNACE);
 

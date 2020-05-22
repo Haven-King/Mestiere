@@ -29,8 +29,7 @@ public class CauldronBlockMixin extends Block {
 
     @Inject(at = @At("HEAD"), method = "onUse", cancellable = true)
     public void activateInjection(BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<ActionResult> ci) {
-        ItemStack itemStack_1 = player.getStackInHand(hand);
-        if (itemStack_1.getItem() == Items.LEATHER && blockState.get(Properties.LEVEL_3) > 0 && !world.isClient()) {
+        if (blockState.get(Properties.LEVEL_3) > 0 && !world.isClient()) {
             if (!world.isClient)
                 ContainerProviderRegistry.INSTANCE.openContainer(
                         Registry.BLOCK.getId(Blocks.CAULDRON), player, (packetByteBuf -> packetByteBuf.writeBlockPos(blockPos))

@@ -20,11 +20,11 @@ import net.minecraft.network.PacketByteBuf;
 public class SkillCraftingScreen extends CottonInventoryScreen<SkillCrafter> {
     public static int i;
     private WItemButton button;
-    public SkillCraftingScreen(SkillCrafter container, Item altScreen) {
+    public SkillCraftingScreen(SkillCrafter container, Item altScreenItem) {
         super(container, container.getPlayer());
         i++;
-        if (altScreen != null) {
-            button = new WItemButton(altScreen);
+        if (altScreenItem != null) {
+            button = new WItemButton(altScreenItem);
             button.setOnClick(() -> {
                 PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                 buf.writeInt(container.getSyncId());

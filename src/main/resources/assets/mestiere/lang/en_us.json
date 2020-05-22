@@ -1,4 +1,5 @@
 {
+  "mestiere.xp_progress": "XP to next level: %d/%d",
   "mestiere.skills": "Skills",
   "mestiere.perks": "Perks",
   "mestiere.scales": "Scales up to level %d",

@@ -113,6 +113,13 @@ public class NetheriteRecipe extends Skill.Recipe {
     }
 
     @Override
+    public ItemStack craft(BasicInventory inv, PlayerEntity player) {
+        super.craft(inv, player);
+
+        return craft(inv);
+    }
+
+    @Override
     public ItemStack craft(BasicInventory inv) {
         ItemStack inStack = inv.removeStack(1);
         inv.getStack(2).decrement(1);

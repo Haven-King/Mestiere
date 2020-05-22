@@ -4,6 +4,7 @@ import dev.hephaestus.mestiere.Mestiere;
 import dev.hephaestus.mestiere.client.gui.widgets.ScrollingGui;
 import dev.hephaestus.mestiere.client.gui.widgets.ScrollingGuiDescription;
 import dev.hephaestus.mestiere.skills.Skill;
+import dev.hephaestus.mestiere.util.MestiereComponent;
 import io.github.cottonmc.cotton.gui.GuiDescription;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
@@ -18,6 +19,7 @@ import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -180,6 +182,15 @@ public class SkillScreen extends CottonClientScreen {
                     )));
                 }
             );
+
+        }
+
+        @Override
+        public void addTooltip(List<Text> tooltip) {
+            MestiereComponent player = Mestiere.COMPONENT.get(MinecraftClient.getInstance().player);
+            tooltip.add(new TranslatableText("mestiere.xp_progress", MestiereComponent.getXp(player.getLevel(skill)), MestiereComponent.getXp(player.getLevel(skill)+1)));
+
+            super.addTooltip(tooltip);
         }
 
         public void init(Identifier skill) {

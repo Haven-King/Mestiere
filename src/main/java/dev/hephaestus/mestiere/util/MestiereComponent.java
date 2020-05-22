@@ -57,7 +57,7 @@ public class MestiereComponent implements XpComponent, EntitySyncedComponent {
         return this.skills.getOrDefault(skill, 0);
     }
 
-    public int getXp(int level) {
+    public static int getXp(int level) {
         return (int) (1.375 * ((level * level) - 1));
     }
 

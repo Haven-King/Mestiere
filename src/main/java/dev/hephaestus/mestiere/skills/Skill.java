@@ -301,6 +301,7 @@ public class Skill {
         }
 
         public ItemStack craft(BasicInventory blockInventory, PlayerEntity player) {
+            Mestiere.COMPONENT.get(player).addXp(skill, this.value, true);
             return this.craft(blockInventory);
         }
 

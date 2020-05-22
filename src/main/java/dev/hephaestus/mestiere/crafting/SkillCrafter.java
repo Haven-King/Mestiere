@@ -122,7 +122,8 @@ public class SkillCrafter extends CottonCraftingController implements ScrollingG
         if (slotNumber == 36 && recipe != null && recipe.matches((BasicInventory) blockInventory, null)) {
             recipe.craft((BasicInventory) blockInventory, player);
             context.run((world, pos) -> {
-                world.playSound(pos.getX(), pos.getY(), pos.getZ(), skill.getCraftSound(), SoundCategory.BLOCKS, 1.0f, 1.0f, false);
+                if (skill.getCraftSound() != null)
+                    world.playSound(pos.getX(), pos.getY(), pos.getZ(), skill.getCraftSound(), SoundCategory.BLOCKS, 1.0f, 1.0f, false);
             });
         } else if (recipe == null) {
             setRecipeIfMatchFound();

@@ -139,6 +139,8 @@ public class SimpleSkillRecipe extends Skill.Recipe {
             inv.getStack(i+1).decrement(components[i].count());
         }
 
+        super.craft(inv, player);
+
         return this.getOutput(inv, player);
     }
 
