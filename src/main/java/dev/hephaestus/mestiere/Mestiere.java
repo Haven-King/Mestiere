@@ -9,6 +9,7 @@ import dev.hephaestus.mestiere.skills.Skill;
 import dev.hephaestus.mestiere.util.Commands;
 import dev.hephaestus.mestiere.util.MestiereComponent;
 import dev.hephaestus.mestiere.util.MestiereConfig;
+import dev.hephaestus.mestiere.util.NoRecipe;
 import io.github.fablabsmc.fablabs.api.gamerule.v1.RuleFactory;
 import io.github.fablabsmc.fablabs.mixin.gamerule.GameRulesAccessor;
 import nerdhub.cardinal.components.api.ComponentRegistry;
@@ -106,6 +107,9 @@ public class Mestiere implements ModInitializer {
 			));
 		});
 
+		Registry.register(Registry.RECIPE_SERIALIZER, newID("no_recipe"), NoRecipe.SERIALIZER);
+		Registry.register(Registry.RECIPE_TYPE, newID("no_recipe"), NoRecipe.TYPE);
+
 		Registry.register(Registry.ITEM, newID("iron_chunk"), new Item(new Item.Settings().group(ItemGroup.MATERIALS)));
 		Registry.register(Registry.ITEM, newID("gold_chunk"), new Item(new Item.Settings().group(ItemGroup.MATERIALS)));
 
@@ -131,6 +135,11 @@ public class Mestiere implements ModInitializer {
 		Skill.Perk.GOLD_INGOT_SMITH = Skill.Perk.register(new MaterialCraftingPerk(Skill.SMITHING, Items.GOLD_INGOT, 20).scales(30));
 		Skill.Perk.DIAMOND_SMITH = Skill.Perk.register(new MaterialCraftingPerk(Skill.SMITHING, Items.DIAMOND, 30));
 		Skill.Perk.NETHERITE_SMITH = Skill.Perk.register(new MaterialCraftingPerk(Skill.SMITHING, Items.NETHERITE_INGOT, 35));
+
+		Skill.Perk.LEATHERWORKING = Skill.Perk.register(new MaterialCraftingPerk(Skill.LEATHERWORKING, Items.LEATHER, 10)
+				.setMessage(new TranslatableText("perk.mestiere.leatherworking.material.leather.message"))
+				.setDescription(new TranslatableText("perk.mestiere.leatherworking.material.leather.description"))
+				.scales(20));
 
 		Skill.Perk.HUNTER = Skill.Perk.register(new Skill.Perk(Skill.HUNTING, "hunter", 5, Items.PORKCHOP)).scales(30);
 		Skill.Perk.SHARP_SHOOTER = Skill.Perk.register(new Skill.Perk(Skill.HUNTING, "sharp_shooter", 15, Items.ARROW)).scales(30);

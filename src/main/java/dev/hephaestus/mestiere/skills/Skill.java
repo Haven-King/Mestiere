@@ -90,6 +90,8 @@ public class Skill {
         public static Perk DIAMOND_SMITH;
         public static Perk NETHERITE_SMITH;
 
+        public static Perk LEATHERWORKING;
+
         public static Perk HUNTER;
         public static Perk SHARP_SHOOTER;
 

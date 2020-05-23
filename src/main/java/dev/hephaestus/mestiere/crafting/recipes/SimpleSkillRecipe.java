@@ -1,5 +1,6 @@
 package dev.hephaestus.mestiere.crafting.recipes;
 
+import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -11,6 +12,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,6 +29,10 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+
+import java.util.Map;
+
+import static net.minecraft.entity.attribute.EntityAttributes.*;
 
 public class SimpleSkillRecipe extends Skill.Recipe {
     private final Identifier recipeType;
@@ -81,24 +87,38 @@ public class SimpleSkillRecipe extends Skill.Recipe {
         return components.length;
     }
 
-    private void addModifiers(Item ingredient, ItemStack output, PlayerEntity player) {
-        MaterialCraftingPerk perk = MaterialCraftingPerk.get(ingredient);
+    private void addModifiers(ItemStack ingredient, ItemStack output, PlayerEntity player) {
+        MaterialCraftingPerk perk = MaterialCraftingPerk.get(ingredient.getItem());
 
-        if (perk != null && perk.scales()) {
-            float scale = Mestiere.COMPONENT.get(player).getScale(perk);
+        EquipmentSlot slot = output.getItem() instanceof ArmorItem ? ((ArmorItem) output.getItem()).getSlotType() : EquipmentSlot.MAINHAND;
+        Multimap<EntityAttribute, EntityAttributeModifier> modifiers = ingredient.getAttributeModifiers(slot);
+
+        if ((perk != null && perk.scales()) || modifiers.size() > 0) {
+            float scale = 0F;
+            if (perk != null)
+                scale = Mestiere.COMPONENT.get(player).getScale(perk);
+
             if (output.getItem() instanceof ArmorItem) {
-                EquipmentSlot equipmentSlot = ((ArmorItem) output.getItem()).getSlotType();
-                int slotNumber = equipmentSlot.getEntitySlotId();
+                int slotNumber = slot.getEntitySlotId();
 
-                output.addAttributeModifier(EntityAttributes.GENERIC_ARMOR, new EntityAttributeModifier(
-                    Mestiere.ARMOR_MODIFIERS[slotNumber], "Mestiere Armor", scale * 2.0, EntityAttributeModifier.Operation.ADDITION
-                ), equipmentSlot);
+                double existingModifier = 0D;
 
-                output.addAttributeModifier(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, new EntityAttributeModifier(
-                    Mestiere.ARMOR_MODIFIERS[slotNumber], "Mestiere Armor Toughness", scale * 2.0, EntityAttributeModifier.Operation.ADDITION
-                ), equipmentSlot);
+                if (modifiers.containsKey(GENERIC_ARMOR)) {
+                    for (EntityAttributeModifier modifier : modifiers.get(GENERIC_ARMOR)) {
+                        if (modifier.getName().contains("Mestiere"))
+                            existingModifier = modifier.getValue();
+                    }
+                }
+
+                output.addAttributeModifier(GENERIC_ARMOR, new EntityAttributeModifier(
+                    Mestiere.ARMOR_MODIFIERS[slotNumber], "Mestiere Armor", scale * 2.0 + existingModifier, EntityAttributeModifier.Operation.ADDITION
+                ), slot);
+
+                output.addAttributeModifier(GENERIC_ARMOR_TOUGHNESS, new EntityAttributeModifier(
+                    Mestiere.ARMOR_MODIFIERS[slotNumber], "Mestiere Armor Toughness", scale * 2.0 + existingModifier, EntityAttributeModifier.Operation.ADDITION
+                ), slot);
             } else if (output.getItem() instanceof SwordItem || output.getItem() instanceof AxeItem) {
-                output.addAttributeModifier(EntityAttributes.GENERIC_ATTACK_DAMAGE, new EntityAttributeModifier(
+                output.addAttributeModifier(GENERIC_ATTACK_DAMAGE, new EntityAttributeModifier(
                     Mestiere.ATTACK_DAMAGE_MODIFIER_UUID, "Mestiere Attack Damage", scale, EntityAttributeModifier.Operation.ADDITION
                 ), EquipmentSlot.MAINHAND);
             } else {
@@ -111,8 +131,9 @@ public class SimpleSkillRecipe extends Skill.Recipe {
             if (scale > 0.95) color = Formatting.GOLD;
 
             Formatting finalColor = color;
+            float finalScale = scale;
             output.setCustomName(new TranslatableText(output.getTranslationKey()).styled(
-                    style -> style.withItalic(scale >= 0.95)
+                    style -> style.withItalic(finalScale >= 0.95)
                             .withColor(finalColor)));
         }
     }
@@ -122,7 +143,7 @@ public class SimpleSkillRecipe extends Skill.Recipe {
         ItemStack output = this.getOutput().copy();
 
         for (int i = 0; i < components.length; ++i) {
-            addModifiers(inv.getStack(i+1).getItem(), output, player);
+            addModifiers(inv.getStack(i+1), output, player);
         }
 
         return output;
@@ -136,12 +157,13 @@ public class SimpleSkillRecipe extends Skill.Recipe {
     @Override
     public ItemStack craft(BasicInventory inv, PlayerEntity player) {
         for (int i = 0; i < components.length; ++i) {
-            inv.getStack(i+1).decrement(components[i].count());
+            ItemStack stack = inv.getStack(i+1);
+            stack.decrement(components[i].count());
         }
 
         super.craft(inv, player);
 
-        return this.getOutput(inv, player);
+        return getOutput(inv, player);
     }
 
     @Override
